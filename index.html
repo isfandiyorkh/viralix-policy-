@@ -1,0 +1,863 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f3ef" />
+  <title>VIRALIX | Официальная политика сервиса</title>
+  <style>
+    :root {
+      --bg: #f4f3ef;
+      --paper: #ffffff;
+      --ink: #171717;
+      --muted: #505050;
+      --line: #dbd8d0;
+      --line-strong: #c9c4b8;
+      --accent: #3b3934;
+      --accent-soft: #766f61;
+      --ok: #2e5e3f;
+      --warn: #7a5333;
+      --risk: #6a2f2f;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --shadow: 0 14px 34px #0000000f;
+      --max: 1040px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Georgia", "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffff80 0%, #ffffff00 120px),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 36px,
+          #00000003 36px 37px
+        ),
+        var(--bg);
+      line-height: 1.66;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.42;
+      background:
+        radial-gradient(640px 280px at 92% 12%, #00000008, #00000000 72%),
+        radial-gradient(520px 220px at 8% 28%, #00000007, #00000000 74%),
+        radial-gradient(380px 180px at 70% 82%, #00000006, #00000000 75%);
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.16;
+      background:
+        radial-gradient(circle at 12% 82%, #00000008 0 1px, #00000000 1.8px) 0 0 / 30px 30px,
+        linear-gradient(120deg, #00000000 0 47%, #00000005 47% 53%, #00000000 53% 100%) 0 0 / 220px 220px;
+      animation: backdropDrift 24s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 200;
+    }
+
+    .progress__bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1f1f1f, #625c50);
+      transition: width 120ms linear;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 14px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .masthead {
+      background: var(--paper);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 20px 18px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .masthead::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -70px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: 1px solid #00000014;
+      background: radial-gradient(circle at 30% 30%, #00000008, #00000000 70%);
+      animation: floatMark 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .brandline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      font-family: "Arial", "Helvetica", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      border: 1px solid var(--line-strong);
+      color: #333;
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: #f7f6f2;
+    }
+
+    .tag.alert {
+      border-color: #bfa986;
+      background: #fbf6eb;
+      color: #5e462b;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4.6vw, 42px);
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: #121212;
+      text-wrap: balance;
+    }
+
+    .intro {
+      margin: 12px 0 0;
+      font-size: clamp(15px, 2.1vw, 18px);
+      color: #303030;
+      max-width: 980px;
+    }
+
+    .decree {
+      margin-top: 12px;
+      border-left: 3px solid #666050;
+      background: #f7f5f0;
+      border: 1px solid #d5d0c3;
+      border-left-width: 3px;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-family: "Arial", sans-serif;
+      font-size: 13px;
+      color: #2d2d2d;
+    }
+
+    .section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 14px 14px 12px;
+      margin-bottom: 9px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #7a7467, #7a746700 75%);
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: clamp(19px, 2.7vw, 24px);
+      line-height: 1.25;
+      color: #1a1a1a;
+      font-weight: 700;
+      text-wrap: balance;
+    }
+
+    .section p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #222;
+    }
+
+    .section ul {
+      margin: 0;
+      padding-left: 19px;
+    }
+
+    .section li {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #242424;
+    }
+
+    .section strong {
+      color: #121212;
+    }
+
+    .callout {
+      margin-top: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid #d0cbc0;
+      background: #f9f8f4;
+      padding: 9px 10px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .callout.ok {
+      border-color: #b8cdbd;
+      background: #f4faf6;
+      color: var(--ok);
+    }
+
+    .callout.warn {
+      border-color: #d9c7b4;
+      background: #fdf7f1;
+      color: var(--warn);
+    }
+
+    .callout.risk {
+      border-color: #d7bcbc;
+      background: #fdf4f4;
+      color: var(--risk);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid #e8e5dd;
+      padding: 8px 9px;
+      vertical-align: top;
+      color: #2e2e2e;
+    }
+
+    th {
+      background: #f3f1eb;
+      color: #1c1c1c;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .appendix {
+      background: #fdfcf9;
+      border-style: dashed;
+    }
+
+    .footer {
+      margin-top: 8px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 12px 12px;
+      color: #2f2f2f;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      box-shadow: var(--shadow);
+    }
+
+    .footer strong {
+      color: #111;
+    }
+
+    .legal-strip {
+      margin-top: 10px;
+      border-top: 1px solid #d8d3c7;
+      padding: 10px 6px 0;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.55;
+      color: #6f6a5f;
+      letter-spacing: 0.1px;
+    }
+
+    .to-top {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid #bfb9ac;
+      background: #fffffff2;
+      color: #222;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px #00000012;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: 220;
+    }
+
+    .to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    
+    @keyframes backdropDrift {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(10px, -8px, 0); }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        padding: 12px 10px 38px;
+      }
+
+      .masthead {
+        padding: 15px 12px;
+      }
+
+      .section {
+        padding: 12px 10px 10px;
+      }
+
+      .section p,
+      .section li {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+
+  <div class="shell">
+    <header class="masthead reveal">
+      <div class="brandline">
+        <span class="tag">Официальный документ</span>
+        <span class="tag">VIRALIX BOT</span>
+        <span class="tag">Редакция 3.0</span>
+        <span class="tag alert">Обязательно для пользователей и админов</span>
+      </div>
+      <h1>Официальная политика сервиса VIRALIX</h1>
+      <p class="intro">
+        Настоящий документ устанавливает единый нормативный порядок для функционирования сервиса,
+        взаимодействия с пользователями, обработки финансовых операций, разрешения споров и применения
+        санкций. Политика сформулирована в формате практического регламента: каждый пункт ориентирован
+        на конкретное решение и применяется администрацией в неизменном виде.
+      </p>
+      <div class="decree">
+        С момента публикации данный регламент признается основным источником правил сервиса.
+        Приоритет в любых спорных ситуациях имеют данные системы, журналы событий и статусы операций.
+      </div>
+    </header>
+
+    <section class="section reveal">
+      <h2>1. Преамбула и правовой статус документа</h2>
+      <p>
+        Политика VIRALIX является внутренним обязательным регламентом и применяется ко всем пользователям
+        без исключений, независимо от объема активности, уровня, статуса или истории операций.
+      </p>
+      <ul>
+        <li>Документ определяет единые правила, а не рекомендации.</li>
+        <li>Администрация не рассматривает обращения вне рамок утвержденных пунктов.</li>
+        <li>Любое использование бота считается полным и безусловным согласием с текущей редакцией.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>2. Цели политики и базовые принципы управления</h2>
+      <p>Политика принята для выполнения трех приоритетных задач:</p>
+      <ul>
+        <li>сохранение устойчивости внутренней экономики сервиса;</li>
+        <li>обеспечение равного применения правил ко всем пользователям;</li>
+        <li>минимизация конфликтов за счет прозрачного и проверяемого порядка решений.</li>
+      </ul>
+      <p>
+        Ключевые принципы: доказуемость, последовательность, соразмерность мер, недопустимость двойных стандартов,
+        приоритет фактов над субъективной трактовкой.
+      </p>
+    </section>
+
+    <section class="section reveal">
+      <h2>3. Область действия и применимость</h2>
+      <ul>
+        <li>Политика распространяется на игровые сессии, финансовые операции, бонусные механики, тикеты и модерацию.</li>
+        <li>Документ обязателен для операторов, модераторов и администраторов сервиса.</li>
+        <li>Пункты применяются к событиям, зафиксированным после публикации редакции.</li>
+      </ul>
+      <div class="callout warn">
+        Исключения допускаются только при критическом инциденте безопасности и оформляются отдельным решением администрации.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>4. Термины и определения</h2>
+      <ul>
+        <li><strong>Профиль</strong> — учетная запись пользователя, связанная с Telegram ID.</li>
+        <li><strong>Баланс</strong> — основной учетный показатель средств пользователя внутри сервиса.</li>
+        <li><strong>Кэшбэк-копилка</strong> — отдельный накопительный контур с отдельным режимом доступа.</li>
+        <li><strong>Сессия</strong> — единичный игровой цикл от старта ставки до фиксации результата.</li>
+        <li><strong>Заявка</strong> — формализованная запись операции пополнения или вывода.</li>
+        <li><strong>Транзакция</strong> — неизменяемая системная запись начисления/списания.</li>
+        <li><strong>Системный лог</strong> — журнал событий, формируемый сервисом автоматически.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>5. Допустимость использования и юрисдикция</h2>
+      <ul>
+        <li>Пользователь обязан самостоятельно проверить, что использование сервиса соответствует применимым требованиям его территории.</li>
+        <li>Ответственность за правомерность действий, соблюдение местных ограничений и налоговых/отчетных обязанностей несет пользователь.</li>
+        <li>Администрация вправе ограничить доступ при выявлении юридических или комплаенс-рисков, подтвержденных внутренней проверкой.</li>
+      </ul>
+      <div class="callout risk">
+        При наличии правового конфликта приоритет имеют требования применимого законодательства и зафиксированные системные данные по операциям.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>6. Политика аккаунта, идентификации и доступа</h2>
+      <ul>
+        <li>Один Telegram-аккаунт = один профиль в VIRALIX.</li>
+        <li>Передача аккаунта третьим лицам, коллективный доступ, аренда или продажа доступа запрещены.</li>
+        <li>Действия, совершенные через аккаунт, считаются действиями владельца аккаунта.</li>
+        <li>Пользователь обязан обеспечить безопасность своего Telegram-профиля и устройства.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>7. Функционирование игровой системы</h2>
+      <p>
+        Игровые механики используют события Telegram dice в сочетании с серверной логикой сервиса.
+        Итоговая запись в базе данных является единственным официальным результатом игровой операции.
+      </p>
+      <ul>
+        <li>Результат сессии считается действительным после успешной фиксации в системе.</li>
+        <li>Ручная корректировка результата без служебного основания не применяется.</li>
+        <li>Случаи ошибок обрабатываются только через регламент технических инцидентов.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>8. Экономическая устойчивость и риск-менеджмент</h2>
+      <p>
+        Для защиты общей платежеспособности сервис применяет многослойную систему лимитов.
+        Эти лимиты являются системным механизмом управления риском, а не санкцией.
+      </p>
+      <ul>
+        <li>персональные лимиты ставки;</li>
+        <li>дневные лимиты прибыли пользователя;</li>
+        <li>лимиты риска банка на операцию и на период;</li>
+        <li>временные блокировки при достижении порогов.</li>
+      </ul>
+      <div class="callout">
+        Ограничения вступают в действие автоматически и не требуют ручного подтверждения администратором.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>9. Запрещенные практики и злоупотребления</h2>
+      <ul>
+        <li>мультиаккаунтинг в любом виде;</li>
+        <li>автоматизация действий (боты, скрипты, макросы, автокликеры);</li>
+        <li>поиск и эксплуатация уязвимостей логики ради финансовой выгоды;</li>
+        <li>координация действий группой пользователей с целью обхода лимитов;</li>
+        <li>манипулятивное давление на поддержку и администрацию.</li>
+      </ul>
+      <div class="callout risk">
+        Попытка извлечения выгоды из известного бага рассматривается как нарушение даже без явного предупреждения.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>10. Пополнение: порядок, верификация, финализация</h2>
+      <ul>
+        <li>Пополнение проводится только через заявку, созданную в интерфейсе сервиса.</li>
+        <li>Статус <strong>pending</strong> означает, что зачисление еще не произведено.</li>
+        <li>Зачисление выполняется исключительно после проверки администратором.</li>
+        <li>При отклонении пользователь получает мотивированную причину.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Статус</th>
+              <th>Юридический смысл</th>
+              <th>Финансовый эффект</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>pending</td>
+              <td>Заявка принята, но не подтверждена</td>
+              <td>Зачисления нет</td>
+            </tr>
+            <tr>
+              <td>approved</td>
+              <td>Заявка признана корректной</td>
+              <td>Средства зачислены по регламенту</td>
+            </tr>
+            <tr>
+              <td>rejected</td>
+              <td>Заявка отклонена по основаниям</td>
+              <td>Зачисление не выполняется</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>11. Вывод: процедура, статусы, основания отказа</h2>
+      <ul>
+        <li>Вывод доступен при соблюдении системных критериев и лимитов.</li>
+        <li>При создании заявки сумма и комиссии резервируются до финального статуса.</li>
+        <li>При отказе резерв подлежит возврату согласно источнику списания.</li>
+        <li>Финальное решение формализуется только через изменение статуса заявки в системе.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Статус</th>
+              <th>Операционное значение</th>
+              <th>Результат для пользователя</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>pending</td>
+              <td>Ожидает первичной проверки</td>
+              <td>Ожидание</td>
+            </tr>
+            <tr>
+              <td>awaiting_check</td>
+              <td>Подготовка подтверждающего документа</td>
+              <td>Ожидание передачи чека</td>
+            </tr>
+            <tr>
+              <td>approved</td>
+              <td>Операция завершена</td>
+              <td>Получение чека</td>
+            </tr>
+            <tr>
+              <td>rejected</td>
+              <td>Операция отклонена с основанием</td>
+              <td>Возврат резерва по регламенту</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>12. Комиссии, удержания и возвраты</h2>
+      <p>
+        Комиссионные и сервисные удержания применяются по текущей конфигурации платформы.
+        Все удержания и возвраты отражаются транзакционно и доступны для внутренней верификации.
+      </p>
+      <ul>
+        <li>Комиссия считается частью финансового протокола операции.</li>
+        <li>Возврат комиссии возможен только при подтвержденной отмене или отклонении операции.</li>
+        <li>Решение о возврате всегда подтверждается записями в журнале транзакций.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>13. Бонусная модель, титулы и реферальные механики</h2>
+      <ul>
+        <li>Любые бонусы предоставляются на условиях, определенных системой.</li>
+        <li>Реферальные выплаты могут быть отложены до достижения оборота и иных условий.</li>
+        <li>Бонусы, полученные через нарушение правил, подлежат отмене.</li>
+        <li>Администрация вправе приостановить бонусные начисления в период аномальной активности.</li>
+      </ul>
+      <div class="callout warn">
+        Бонусы не являются безусловным активом до выполнения всех критериев, проверяемых системой.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>14. Промокоды и ограничения активации</h2>
+      <ul>
+        <li>Промокоды имеют лимит использования, срок действия и возможные дополнительные условия.</li>
+        <li>Повторная активация одного кода одним пользователем не допускается, если не указано иное.</li>
+        <li>При техническом конфликте приоритет имеет фактическая запись об активации в базе.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>15. Поддержка, тикеты и сроки ответа</h2>
+      <ul>
+        <li>Все обращения подаются через тикет-систему.</li>
+        <li>Для корректного разбора пользователь обязан указывать конкретику: номер заявки, время, суть проблемы.</li>
+        <li>Срок ответа зависит от сложности инцидента и объема необходимой проверки.</li>
+        <li>Неуважительная коммуникация не ускоряет рассмотрение и может привести к ограничению поддержки.</li>
+      </ul>
+      <div class="callout">
+        Повторные сообщения с одинаковым содержанием объединяются в один кейс и не создают параллельных разбирательств.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>16. Споры и стандарт доказательств</h2>
+      <p>Решение в споре принимается по иерархии доказательств:</p>
+      <ol>
+        <li>неизменяемые записи транзакций и статусов операций;</li>
+        <li>системные логи по времени и типу события;</li>
+        <li>служебные журналы администраторских действий;</li>
+        <li>материалы пользователя (скриншоты, комментарии, внешние доказательства).</li>
+      </ol>
+      <div class="callout risk">
+        Скриншот сам по себе не отменяет результат, если система зафиксировала завершенную операцию.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>17. Технические инциденты и порядок компенсации</h2>
+      <ul>
+        <li>Инцидент признается только при подтверждении по логам и базе данных.</li>
+        <li>При подтверждении сбоя применяется регламент возврата или корректирующей операции.</li>
+        <li>Если операция подтверждена системой как завершенная, она считается действительной.</li>
+        <li>В период инцидента отдельные функции могут быть временно ограничены.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>18. Противодействие мошенничеству</h2>
+      <ul>
+        <li>Сервис применяет автоматические и ручные методы антифрода.</li>
+        <li>Подозрительные операции могут быть временно приостановлены для проверки.</li>
+        <li>При подтверждении злоупотребления применяется санкция согласно матрице нарушений.</li>
+      </ul>
+      <div class="callout ok">
+        Цель антифрода — защита добросовестных пользователей и сохранение устойчивости всей системы.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>19. Матрица санкций</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Уровень</th>
+              <th>Тип нарушения</th>
+              <th>Меры</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>I</td>
+              <td>Незначительное процедурное нарушение</td>
+              <td>Предупреждение, фиксация в журнале</td>
+            </tr>
+            <tr>
+              <td>II</td>
+              <td>Повторные нарушения, агрессивное поведение, манипуляции в обращениях</td>
+              <td>Временные ограничения по операциям/поддержке</td>
+            </tr>
+            <tr>
+              <td>III</td>
+              <td>Системные попытки обхода правил, бонусные злоупотребления</td>
+              <td>Отмена начислений, длительные ограничения, ручной контроль</td>
+            </tr>
+            <tr>
+              <td>IV</td>
+              <td>Мошенничество, мультиаккаунтинг, эксплуатация уязвимостей</td>
+              <td>Полная блокировка аккаунта и отмена спорных операций</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        При тяжелом нарушении администрация вправе применить максимальную меру сразу, без промежуточных этапов.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>20. Политика данных и внутреннего аудита</h2>
+      <ul>
+        <li>Сервис хранит минимально необходимый объем данных для работы функций и разрешения споров.</li>
+        <li>История операций и тикетов может использоваться для внутреннего аудита безопасности.</li>
+        <li>Данные не используются для целей, не связанных с функционированием и защитой сервиса.</li>
+        <li>Доступ к служебным данным ограничен ролью и задачами сотрудника.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>21. Коммуникационная политика администрации</h2>
+      <ul>
+        <li>Ответы администрации должны быть нейтральными, фактологичными и опираться на записи системы.</li>
+        <li>Запрещены неформальные обещания, противоречащие регламенту.</li>
+        <li>Каждое отказное решение сопровождается указанием основания и статуса операции.</li>
+        <li>При эскалации спора администратор обязан передать кейс с полной фактологической сводкой.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>22. Изменение и актуализация политики</h2>
+      <ul>
+        <li>Администрация вправе обновлять документ для поддержания устойчивости и правовой определенности.</li>
+        <li>Новая редакция действует с момента публикации в официальном канале документа (кнопка «Политика»).</li>
+        <li>Продолжение использования сервиса после публикации редакции означает согласие с ней.</li>
+      </ul>
+    </section>
+
+    <section class="section appendix reveal">
+      <h2>Приложение А. Единый алгоритм разбирательства инцидента</h2>
+      <ol>
+        <li>Идентификация события по времени, ID пользователя, типу операции.</li>
+        <li>Проверка статуса операции в базе.</li>
+        <li>Сопоставление с транзакциями и логами.</li>
+        <li>Классификация: штатная операция / ошибка / злоупотребление.</li>
+        <li>Выбор решения по матрице санкций или по регламенту возврата.</li>
+        <li>Фиксация итога в тикете и служебной заметке.</li>
+      </ol>
+    </section>
+
+    <section class="section appendix reveal">
+      <h2>Приложение Б. Стандарт формулировки решения для пользователя</h2>
+      <p>
+        «Проверка завершена. По данным системы операция №[ID] имеет статус [STATUS].
+        Основание решения: [КРАТКОЕ ОБОСНОВАНИЕ]. Применено действие: [МЕРА].
+        Данное решение принято в соответствии с пунктом [N] официальной политики сервиса.»
+      </p>
+      <div class="callout">
+        Применение шаблона снижает конфликтность, исключает неоднозначные ответы и обеспечивает единый стандарт коммуникации.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>23. Заключительное положение</h2>
+      <p>
+        Политика VIRALIX создана как серьезный управленческий документ: ее задача не в формальности,
+        а в реальном обеспечении предсказуемости решений, финансовой устойчивости и равных правил для всех.
+      </p>
+      <p>
+        В случае любого конфликта основой решения является не интерпретация сторон, а проверяемые данные системы.
+        Тем самым исключается субъективность и обеспечивается единый порядок правоприменения внутри сервиса.
+      </p>
+    </section>
+
+    <footer class="footer reveal">
+      <strong>VIRALIX BOT | Официальный нормативный документ (редакция 3.0)</strong><br />
+      Документ предназначен для публичного ознакомления пользователей и для практической работы администрации
+      при рассмотрении операционных и спорных ситуаций.
+    </footer>
+    <div class="legal-strip reveal">
+      Данный материал является официальной публичной редакцией внутренней политики VIRALIX и используется как единый стандарт модерации, поддержки и разрешения спорных ситуаций.
+      При расхождении трактовок приоритет имеет текст документа, размещенный на этой странице, а также подтвержденные системные записи по операциям и обращениям.
+    </div>
+  </div>
+
+  <button class="to-top" id="toTopBtn" aria-label="Наверх">↑</button>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function () {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (tg) {
+        tg.ready();
+        tg.expand();
+      }
+
+      var reveals = document.querySelectorAll(".reveal");
+      var bar = document.getElementById("progressBar");
+      var topBtn = document.getElementById("toTopBtn");
+
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("show");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.1 });
+
+      reveals.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+
+      function refreshProgress() {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        var ratio = docH > 0 ? Math.min(1, Math.max(0, scrollTop / docH)) : 0;
+        bar.style.width = (ratio * 100).toFixed(2) + "%";
+        if (scrollTop > 380) {
+          topBtn.classList.add("show");
+        } else {
+          topBtn.classList.remove("show");
+        }
+      }
+
+      window.addEventListener("scroll", refreshProgress, { passive: true });
+      window.addEventListener("resize", refreshProgress);
+      refreshProgress();
+
+      topBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>
