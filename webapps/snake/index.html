@@ -1,0 +1,3069 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Snake GRAM</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+    :root{
+        --bg1:#020b08;
+        --bg2:#061812;
+        --bg3:#03100b;
+        --mint:#59ffc3;
+        --green:#1fda8d;
+        --green2:#0f9e67;
+        --green3:#083a28;
+        --gold:#ffd76b;
+        --gold2:#ffb52b;
+        --red:#ff606e;
+        --red2:#ff9b7d;
+        --blue:#62d7ff;
+        --purple:#b184ff;
+        --white:#ffffff;
+    }
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        user-select:none;
+        -webkit-user-select:none;
+        -webkit-tap-highlight-color:transparent;
+        touch-action:none;
+        font-family:Inter,"Segoe UI",Arial,sans-serif;
+    }
+
+    html,body{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        background:#020b08;
+    }
+
+    body{
+        position:fixed;
+        inset:0;
+    }
+
+    #game{
+        position:fixed;
+        inset:0;
+        width:100vw;
+        height:100vh;
+        display:block;
+        background:#0d2a1f;
+        filter:saturate(1.5);
+    }
+
+    .hud{
+        position:fixed;
+        top:calc(env(safe-area-inset-top) + 56px);
+        left:50%;
+        transform:translateX(-50%);
+        z-index:30;
+        min-width:168px;
+        height:50px;
+        padding:0 20px;
+        border-radius:999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        background:rgba(7,18,14,.74);
+        border:1px solid rgba(255,255,255,.11);
+        box-shadow:
+            0 18px 44px rgba(0,0,0,.34),
+            inset 0 1px 0 rgba(255,255,255,.14),
+            0 0 26px rgba(89,255,195,.10);
+        backdrop-filter:blur(18px);
+    }
+
+    #gram{
+        font-size:25px;
+        font-weight:900;
+        line-height:1;
+        letter-spacing:-.04em;
+        color:var(--mint);
+        font-variant-numeric:tabular-nums;
+        text-shadow:0 0 16px rgba(89,255,195,.34);
+    }
+
+    .hud .label{
+        font-size:12px;
+        font-weight:900;
+        letter-spacing:.14em;
+        color:rgba(245,255,250,.62);
+    }
+
+    .controls{
+        position:fixed;
+        left:50%;
+        bottom:calc(env(safe-area-inset-bottom) + 14px);
+        transform:translateX(-50%);
+        z-index:30;
+        width:218px;
+        height:148px;
+        display:grid;
+        grid-template-columns:repeat(3,66px);
+        grid-template-rows:repeat(2,66px);
+        gap:8px;
+        justify-content:center;
+        align-content:center;
+    }
+
+    .btn{
+        border:none;
+        outline:none;
+        border-radius:22px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:30px;
+        font-weight:900;
+        color:rgba(255,255,255,.87);
+        background:
+            radial-gradient(circle at 35% 22%, rgba(255,255,255,.16), transparent 33%),
+            linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.045));
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:
+            0 16px 30px rgba(0,0,0,.34),
+            inset 0 1px 0 rgba(255,255,255,.16);
+        backdrop-filter:blur(16px);
+        transition:transform .08s ease, box-shadow .08s ease, color .08s ease;
+        cursor:pointer;
+    }
+
+    .btn:active{
+        transform:scale(.91);
+        color:var(--mint);
+        box-shadow:
+            0 10px 22px rgba(0,0,0,.34),
+            0 0 26px rgba(89,255,195,.18),
+            inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .up{grid-column:2;grid-row:1;}
+    .left{grid-column:1;grid-row:2;}
+    .down{grid-column:2;grid-row:2;}
+    .right{grid-column:3;grid-row:2;}
+
+    .overlay{
+        position:fixed;
+        inset:0;
+        z-index:50;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:18px;
+        background:rgba(1,8,6,.58);
+        backdrop-filter:blur(11px);
+        transition:opacity .22s ease, visibility .22s ease;
+    }
+
+    .overlay.hidden{
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+    }
+
+    .modal{
+        width:min(92vw,440px);
+        border-radius:34px;
+        padding:46px 32px 32px;
+        text-align:center;
+        background:
+            radial-gradient(circle at 50% 0%, rgba(89,255,195,.13), transparent 44%),
+            linear-gradient(180deg, rgba(255,255,255,.095), rgba(255,255,255,.04));
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:
+            0 26px 80px rgba(0,0,0,.44),
+            inset 0 1px 0 rgba(255,255,255,.13);
+        animation:modalIn .28s ease both;
+        will-change:transform,opacity;
+    }
+
+    @keyframes modalIn{
+        from{transform:scale(.93) translateY(8px);opacity:0;}
+        to{transform:scale(1) translateY(0);opacity:1;}
+    }
+
+    .iconWrap{ display:none; }
+
+    @keyframes floatIcon{
+        0%,100%{transform:translateY(0) rotate(-2deg);}
+        50%{transform:translateY(-6px) rotate(2deg);}
+    }
+
+    .modal h1{
+        font-size:54px;
+        line-height:.95;
+        font-weight:900;
+        letter-spacing:-.05em;
+        color:#f6fff9;
+        margin-bottom:22px;
+    }
+
+    .result{
+        display:none;
+        margin-bottom:28px;
+        font-size:22px;
+        font-weight:800;
+        color:rgba(255,255,255,.92);
+    }
+
+    .result b{
+        color:var(--mint);
+        text-shadow:0 0 14px rgba(89,255,195,.28);
+    }
+
+    .start{
+        width:100%;
+        height:68px;
+        border:none;
+        outline:none;
+        border-radius:999px;
+        font-size:20px;
+        font-weight:900;
+        letter-spacing:.08em;
+        color:#062316;
+        background:
+            radial-gradient(circle at 32% 20%, rgba(255,255,255,.34), transparent 22%),
+            linear-gradient(135deg, var(--mint), var(--green));
+        box-shadow:
+            0 16px 34px rgba(31,218,141,.22),
+            inset 0 1px 0 rgba(255,255,255,.48);
+        cursor:pointer;
+        transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+
+    .start:hover{
+        filter:brightness(1.12);
+        box-shadow:
+            0 20px 44px rgba(31,218,141,.30),
+            inset 0 1px 0 rgba(255,255,255,.52);
+    }
+
+    .start:active{
+        transform:scale(.96);
+        filter:brightness(.95);
+        box-shadow:
+            0 8px 20px rgba(31,218,141,.18),
+            inset 0 1px 0 rgba(255,255,255,.38);
+    }
+
+    .modalActions{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .claim{
+        width:100%;
+        height:62px;
+        border:none;
+        outline:none;
+        border-radius:999px;
+        font-size:16px;
+        font-weight:900;
+        letter-spacing:.08em;
+        color:#ffe7dc;
+        background:
+            radial-gradient(circle at 32% 20%, rgba(255,255,255,.26), transparent 26%),
+            linear-gradient(135deg, #ff9a7c, #ff606e);
+        box-shadow:
+            0 16px 34px rgba(255,96,110,.24),
+            inset 0 1px 0 rgba(255,255,255,.34);
+        cursor:pointer;
+        transition:transform .12s ease, box-shadow .12s ease, filter .12s ease, opacity .12s ease;
+    }
+
+    .claim:hover{
+        filter:brightness(1.08);
+        box-shadow:
+            0 20px 44px rgba(255,96,110,.30),
+            inset 0 1px 0 rgba(255,255,255,.48);
+    }
+
+    .claim:active{
+        transform:scale(.96);
+        filter:brightness(.95);
+    }
+
+    .claim:disabled{
+        opacity:.58;
+        cursor:not-allowed;
+    }
+
+    .hiddenAction{
+        display:none;
+    }
+
+    .claimStatus{
+        min-height:20px;
+        margin-top:10px;
+        font-size:13px;
+        font-weight:700;
+        letter-spacing:.02em;
+        color:rgba(240,255,248,.72);
+    }
+
+    .claimStatus.ok{
+        color:#8dffcf;
+    }
+
+    .claimStatus.warn{
+        color:#ffd7a7;
+    }
+
+    .sessionInfo{
+        margin:-6px 0 18px;
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:.05em;
+        color:rgba(240,255,248,.62);
+        text-transform:uppercase;
+    }
+
+    .statusBar{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:0;
+        pointer-events:none;
+        display:none;
+    }
+    .statusBar_unused{
+        position:fixed;
+        top:calc(env(safe-area-inset-top) + 70px);
+        left:50%;
+        transform:translateX(-50%);
+        z-index:25;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+        align-items:center;
+        pointer-events:none;
+    }
+
+    .status{
+        position:fixed;
+        z-index:31;
+        height:50px;
+        min-width:108px;
+        padding:0 16px;
+        border-radius:999px;
+        background:rgba(7,18,14,.78);
+        border:1px solid rgba(255,255,255,.13);
+        backdrop-filter:blur(18px);
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:2px;
+        pointer-events:none;
+        will-change:transform,opacity;
+        box-shadow:
+            0 18px 44px rgba(0,0,0,.34),
+            inset 0 1px 0 rgba(255,255,255,.14);
+    }
+    .status.slot-right{
+        top:calc(env(safe-area-inset-top) + 56px);
+        left:calc(50% + 96px);
+        animation:statusSideIn .28s cubic-bezier(.25,1.4,.4,1) both;
+    }
+    .status.slot-left{
+        top:calc(env(safe-area-inset-top) + 56px);
+        right:calc(50% + 96px);
+        animation:statusSideIn .28s cubic-bezier(.25,1.4,.4,1) both;
+    }
+    .status.slot-top{
+        top:calc(env(safe-area-inset-top) + 4px);
+        left:50%;
+        transform:translateX(-50%);
+        animation:statusTopIn .28s cubic-bezier(.25,1.4,.4,1) both;
+    }
+    .status.slot-right.fadeOut,
+    .status.slot-left.fadeOut{
+        animation:statusSideOut .22s ease both;
+    }
+    .status.slot-top.fadeOut{
+        animation:statusTopOut .22s ease both;
+    }
+    .status_unused{
+        min-width:128px;
+        padding:8px 16px 7px;
+        border-radius:18px;
+        background:rgba(7,18,14,.78);
+        border:1px solid rgba(255,255,255,.13);
+        box-shadow:
+            0 14px 32px rgba(0,0,0,.36),
+            inset 0 1px 0 rgba(255,255,255,.14);
+        backdrop-filter:blur(14px);
+        text-align:center;
+        animation:statusIn .26s cubic-bezier(.25,1.4,.4,1) both;
+        will-change:transform,opacity;
+    }
+
+    /* fadeOut handled per-slot above */
+
+    .status .stLabel{
+        font-size:9.5px;
+        letter-spacing:.16em;
+        font-weight:900;
+        color:rgba(255,255,255,.66);
+        white-space:nowrap;
+    }
+
+    .status .stTimer{
+        font-size:20px;
+        font-weight:900;
+        line-height:1;
+        font-variant-numeric:tabular-nums;
+        margin-top:3px;
+        letter-spacing:-.02em;
+    }
+
+    .status.speed{
+        border-color:rgba(255,215,107,.30);
+        box-shadow:
+            0 14px 32px rgba(0,0,0,.36),
+            0 0 24px rgba(255,215,107,.18),
+            inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .status.speed .stLabel{ color:rgba(255,225,150,.85); }
+    .status.speed .stTimer{
+        color:#ffd76b;
+        text-shadow:0 0 16px rgba(255,215,107,.55);
+    }
+
+    .status.shield{
+        border-color:rgba(180,240,255,.30);
+        box-shadow:
+            0 14px 32px rgba(0,0,0,.36),
+            0 0 24px rgba(180,240,255,.18),
+            inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .status.shield .stLabel{ color:rgba(220,245,255,.86); }
+    .status.shield .stTimer{
+        color:#ffffff;
+        text-shadow:0 0 16px rgba(255,255,255,.55);
+    }
+
+    .status.magnet{
+        border-color:rgba(255,140,180,.30);
+        box-shadow:
+            0 14px 32px rgba(0,0,0,.36),
+            0 0 24px rgba(255,140,180,.18),
+            inset 0 1px 0 rgba(255,255,255,.18);
+    }
+
+    .status.magnet .stLabel{ color:rgba(255,210,225,.88); }
+    .status.magnet .stTimer{
+        color:#ff7eb4;
+        text-shadow:0 0 16px rgba(255,125,180,.55);
+    }
+
+    @keyframes statusSideIn{
+        from{transform:translateY(-10px) scale(.85);opacity:0;}
+        to{transform:translateY(0) scale(1);opacity:1;}
+    }
+
+    @keyframes statusSideOut{
+        from{transform:translateY(0) scale(1);opacity:1;}
+        to{transform:translateY(-10px) scale(.85);opacity:0;}
+    }
+
+    @keyframes statusTopIn{
+        from{transform:translateX(-50%) translateY(-12px) scale(.85);opacity:0;}
+        to{transform:translateX(-50%) translateY(0) scale(1);opacity:1;}
+    }
+
+    @keyframes statusTopOut{
+        from{transform:translateX(-50%) translateY(0) scale(1);opacity:1;}
+        to{transform:translateX(-50%) translateY(-12px) scale(.85);opacity:0;}
+    }
+
+    @media (max-height:700px){
+        .hud{top:calc(env(safe-area-inset-top) + 50px);height:44px;}
+        .status{height:42px;min-width:90px;padding:4px 11px;}
+        .status.slot-right{top:calc(env(safe-area-inset-top) + 51px);left:calc(50% + 86px);}
+        .status.slot-left{top:calc(env(safe-area-inset-top) + 51px);right:calc(50% + 86px);}
+        .status.slot-top{top:calc(env(safe-area-inset-top) + 4px);}
+        #gram{font-size:22px;}
+        .controls{
+            bottom:calc(env(safe-area-inset-bottom) + 8px);
+            width:194px;
+            height:126px;
+            grid-template-columns:repeat(3,59px);
+            grid-template-rows:repeat(2,59px);
+            gap:7px;
+        }
+        .btn{border-radius:19px;font-size:26px;}
+        .modal{padding:36px 24px 24px;border-radius:28px;width:min(92vw,400px);}
+        .modal h1{font-size:46px;margin-bottom:18px;}
+        .result{font-size:19px;margin-bottom:22px;}
+        .start{height:60px;font-size:18px;}
+        .claim{height:56px;font-size:15px;}
+    }
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div class="hud">
+    <div id="gram">0</div>
+    <div class="label">GRAM</div>
+</div>
+
+<div class="statusBar" id="statusBar"></div>
+
+<div id="overlay" class="overlay">
+    <div class="modal">
+        <div class="iconWrap">🐍</div>
+        <h1 id="title">SNAKE GRAM</h1>
+        <div id="sessionInfo" class="sessionInfo">Session</div>
+        <div id="result" class="result">Ваш результат: <b id="finalScore">0</b> GRAM</div>
+        <div class="modalActions">
+            <button id="claimBtn" class="claim hiddenAction">ПОЛУЧИТЬ</button>
+            <button id="startBtn" class="start">НАЧАТЬ ИГРУ</button>
+        </div>
+        <div id="claimStatus" class="claimStatus"></div>
+    </div>
+</div>
+
+<script>
+(async () => {
+    "use strict";
+
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    // Globally disable shadowBlur — its glow halos tint the whole frame and shift the
+    // perceived background colour. All assignments to ctx.shadowBlur are silently ignored.
+    try {
+        Object.defineProperty(ctx, "shadowBlur", {
+            get(){ return 0; },
+            set(){},
+            configurable: true
+        });
+    } catch(e){}
+
+    const gramEl = document.getElementById("gram");
+    const overlay = document.getElementById("overlay");
+    const titleEl = document.getElementById("title");
+    const resultEl = document.getElementById("result");
+    const finalScoreEl = document.getElementById("finalScore");
+    const sessionInfoEl = document.getElementById("sessionInfo");
+    const startBtn = document.getElementById("startBtn");
+    const claimBtn = document.getElementById("claimBtn");
+    const claimStatusEl = document.getElementById("claimStatus");
+
+    let audioCtx = null;
+
+    let dpr = 1, vw = 0, vh = 0;
+    let cell = 24, cols = 18, rows = 18;
+    let boardX = 0, boardY = 0, boardW = 0, boardH = 0;
+
+    const SAFE_TOP = 122;
+    const SAFE_BOTTOM = 92;
+    const SPAWN_MARGIN = 1;
+    const DANGER_ZONE_SIZE = 5;
+    const DANGER_ZONE_PADDING = 3;
+    const DANGER_MIN_INTERVAL = 5000;
+    const DANGER_MAX_INTERVAL = 11000;
+    const DANGER_MIN_WARN = 4000;
+    const DANGER_MAX_WARN = 6000;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    function readNonNegativeIntParam(name, fallback){
+        const raw = parseInt(urlParams.get(name) || "", 10);
+        return Number.isFinite(raw) ? Math.max(0, raw) : fallback;
+    }
+    const snakeMaxPayout = readNonNegativeIntParam("max", 999999);
+    const snakeServerPayout = Math.min(
+        snakeMaxPayout,
+        readNonNegativeIntParam("payout", snakeMaxPayout)
+    );
+    const sessionCfg = {
+        sessionId: parseInt(urlParams.get("sid") || "0", 10) || 0,
+        userId: parseInt(urlParams.get("uid") || "0", 10) || 0,
+        ticketPrice: Math.max(0, readNonNegativeIntParam("price", 0)),
+        maxPayout: snakeMaxPayout,
+        serverPayout: snakeServerPayout,
+        currency: String(urlParams.get("currency") || "GRAM"),
+        botUsername: String(urlParams.get("bot") || "").replace(/^@/, "").trim()
+    };
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    const SESSION_LOCK_KEY = "snake_pro_active_session_lock_v2";
+    const lockOwner = `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    let lockOwned = false;
+    let sessionConsumed = false;
+    let claimInFlight = false;
+    let autoClaimTriggered = false;
+    let autoClaimFallbackTimer = null;
+    let autoClaimFallbackOpened = false;
+
+
+    function clampSnakePayout(rawValue){
+        const parsed = Number.isFinite(rawValue) ? Math.floor(rawValue) : 0;
+        const safe = Math.max(0, parsed);
+        if(sessionCfg.serverPayout > 0){
+            const capped = Math.min(sessionCfg.serverPayout, safe);
+            return capped;
+        }
+        return safe;
+    }
+
+    function clearAutoClaimFallback(){
+        if(autoClaimFallbackTimer){
+            clearTimeout(autoClaimFallbackTimer);
+            autoClaimFallbackTimer = null;
+        }
+    }
+
+    const COLORS = {
+        mint:"#59ffc3",
+        green:"#1fda8d",
+        green2:"#0f9e67",
+        green3:"#083a28",
+        gold:"#ffd76b",
+        gold2:"#ffb52b",
+        red:"#ff606e",
+        red2:"#ff9b7d",
+        blue:"#62d7ff",
+        purple:"#b184ff",
+        white:"#ffffff",
+        dark:"#052218"
+    };
+
+    const ITEM_TYPES = {
+        coin:      { chance:62, points:[100,300], grow:1, color:COLORS.gold  },
+        lightning: { chance:16, points:[140,260], grow:0, color:"#9ed6ff"   },
+        shield:    { chance:12, points:[120,220], grow:0, color:COLORS.white },
+        magnet:    { chance:10, points:[140,260], grow:0, color:"#ff7eb4"   }
+    };
+
+    const state = {
+        running:false,
+        over:false,
+
+        snake:[],
+        prevSnake:[],
+        dir:{x:1,y:0},
+        next:{x:1,y:0},
+        locked:false,
+
+        gram:0,
+        grow:0,
+        shieldUntil:0,
+        speedUntil:0,
+        magnetUntil:0,
+
+        items:[],
+        particles:[],
+        waves:[],
+        texts:[],
+        trails:[],
+        sparkles:[],
+        snakeWaves:[],
+        dangerZones:[],
+        blasts:[],
+        backgroundBlobs:[],
+
+        tick:142,
+        tickBase:142,
+        acc:0,
+        last:0,
+        time:0,
+        glow:0,
+        shake:0,
+        worldFlash:0,
+        nextDangerAt:0,
+        roundId:"",
+        roundStartedAt:0,
+        roundEndedAt:0,
+        claimSent:false,
+        sessionBlocked:false,
+        blinkAt: 2400,
+        blinkTimer: 0
+    };
+
+    function formatSessionId(value){
+        const num = parseInt(String(value || "0"), 10) || 0;
+        return num > 0 ? String(num) : "LOCAL";
+    }
+
+    function updateSessionLabel(){
+        if(!sessionInfoEl) return;
+        sessionInfoEl.textContent = `SESSION ${formatSessionId(sessionCfg.sessionId)}`;
+    }
+
+    function setClaimStatus(text, type){
+        claimStatusEl.textContent = text || "";
+        claimStatusEl.classList.remove("ok", "warn");
+        if(type) claimStatusEl.classList.add(type);
+    }
+
+    function canUseStorage(){
+        try{
+            const key = "__snake_lock_test__";
+            localStorage.setItem(key, "1");
+            localStorage.removeItem(key);
+            return true;
+        } catch(e){
+            return false;
+        }
+    }
+
+    function cloudStorageAvailable(){
+        return Boolean(
+            tg &&
+            tg.CloudStorage &&
+            typeof tg.CloudStorage.getItem === "function" &&
+            typeof tg.CloudStorage.setItem === "function" &&
+            typeof tg.CloudStorage.removeItem === "function"
+        );
+    }
+
+    function cloudGetItem(key){
+        return new Promise((resolve) => {
+            if(!cloudStorageAvailable()){
+                resolve("");
+                return;
+            }
+            tg.CloudStorage.getItem(key, (err, value) => {
+                resolve(err ? "" : String(value || ""));
+            });
+        });
+    }
+
+    function cloudSetItem(key, value){
+        return new Promise((resolve) => {
+            if(!cloudStorageAvailable()){
+                resolve(false);
+                return;
+            }
+            tg.CloudStorage.setItem(key, value, (err) => {
+                resolve(!err);
+            });
+        });
+    }
+
+    function cloudRemoveItem(key){
+        return new Promise((resolve) => {
+            if(!cloudStorageAvailable()){
+                resolve(false);
+                return;
+            }
+            tg.CloudStorage.removeItem(key, (err) => {
+                resolve(!err);
+            });
+        });
+    }
+
+    function parseLock(raw){
+        if(!raw) return null;
+        try{
+            const data = JSON.parse(raw);
+            if(!data || typeof data !== "object") return null;
+            return {
+                sid: parseInt(String(data.sid || "0"), 10) || 0,
+                owner: String(data.owner || ""),
+                ts: parseInt(String(data.ts || "0"), 10) || 0,
+                consumed: Boolean(data.consumed)
+            };
+        } catch(e){
+            return null;
+        }
+    }
+
+    async function readSessionLock(){
+        if(cloudStorageAvailable()){
+            return parseLock(await cloudGetItem(SESSION_LOCK_KEY));
+        }
+        if(!canUseStorage()) return null;
+        return parseLock(localStorage.getItem(SESSION_LOCK_KEY));
+    }
+
+    async function writeSessionLock(payload){
+        const raw = JSON.stringify(payload);
+        if(cloudStorageAvailable()){
+            return await cloudSetItem(SESSION_LOCK_KEY, raw);
+        }
+        if(!canUseStorage()) return false;
+        try{
+            localStorage.setItem(SESSION_LOCK_KEY, raw);
+            return true;
+        } catch(e){
+            return false;
+        }
+    }
+
+    async function removeSessionLock(){
+        if(cloudStorageAvailable()){
+            return await cloudRemoveItem(SESSION_LOCK_KEY);
+        }
+        if(!canUseStorage()) return false;
+        try{
+            localStorage.removeItem(SESSION_LOCK_KEY);
+            return true;
+        } catch(e){
+            return false;
+        }
+    }
+
+    async function acquireSessionLock(){
+        if(sessionCfg.sessionId <= 0){
+            lockOwned = true;
+            return true;
+        }
+        if(!cloudStorageAvailable() && !canUseStorage()){
+            lockOwned = true;
+            return true;
+        }
+
+        const now = Date.now();
+        const lockFreshMs = 20 * 60 * 1000;
+        const current = await readSessionLock();
+
+        if(current && current.sid === sessionCfg.sessionId){
+            if(current.consumed){
+                lockOwned = false;
+                sessionConsumed = true;
+                return false;
+            }
+            if(current.owner && current.owner !== lockOwner && now - current.ts <= lockFreshMs){
+                lockOwned = false;
+                return false;
+            }
+        }
+
+        const next = { sid: sessionCfg.sessionId, owner: lockOwner, ts: now, consumed: false };
+        if(!await writeSessionLock(next)){
+            lockOwned = false;
+            return false;
+        }
+        const verify = await readSessionLock();
+        lockOwned = Boolean(verify && verify.sid === sessionCfg.sessionId && verify.owner === lockOwner);
+        return lockOwned;
+    }
+
+    async function markSessionAsConsumed(){
+        sessionConsumed = true;
+        if(sessionCfg.sessionId <= 0 || (!cloudStorageAvailable() && !canUseStorage())) return;
+        await writeSessionLock({
+            sid: sessionCfg.sessionId,
+            owner: lockOwner,
+            ts: Date.now(),
+            consumed: true
+        });
+        lockOwned = true;
+    }
+
+    async function releaseSessionLock(force){
+        if(sessionCfg.sessionId <= 0 || (!cloudStorageAvailable() && !canUseStorage())) return;
+        if(!force && sessionConsumed) return;
+        const current = await readSessionLock();
+        if(current && current.sid === sessionCfg.sessionId && current.owner === lockOwner){
+            await removeSessionLock();
+        }
+        lockOwned = false;
+    }
+
+    function blockSessionScreen(message){
+        state.sessionBlocked = true;
+        state.running = false;
+        state.over = true;
+        titleEl.textContent = "СЕССИЯ ЗАВЕРШЕНА";
+        resultEl.style.display = "none";
+        claimBtn.classList.add("hiddenAction");
+        startBtn.classList.add("hiddenAction");
+        setClaimStatus(message || "Эту игровую сессию уже использовали.", "warn");
+        overlay.classList.remove("hidden");
+    }
+
+    function resize(){
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        vw = window.innerWidth;
+        vh = window.innerHeight;
+
+        canvas.width = Math.floor(vw * dpr);
+        canvas.height = Math.floor(vh * dpr);
+        canvas.style.width = vw + "px";
+        canvas.style.height = vh + "px";
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+
+        const availableW = Math.max(260, vw - 22);
+        const availableH = Math.max(260, vh - SAFE_TOP - SAFE_BOTTOM);
+
+        cell = Math.floor(Math.min(29, Math.max(18, Math.min(availableW / 18, availableH / 18))));
+        cols = Math.max(14, Math.floor(availableW / cell));
+        rows = Math.max(14, Math.floor(availableH / cell));
+
+        boardW = cols * cell;
+        boardH = rows * cell;
+        boardX = Math.floor((vw - boardW) / 2);
+        boardY = Math.floor(SAFE_TOP + (availableH - boardH) / 2);
+
+        createBackgroundBlobs();
+
+        if (!state.snake.length) {
+            buildSnake();
+        } else {
+            keepInside();
+            filterItems();
+            filterDangerZones();
+            let safety = 12;
+            while (state.items.length < 4 && safety-- > 0) {
+                const before = state.items.length;
+                spawnItem();
+                if (state.items.length === before) break;
+            }
+        }
+    }
+
+    function createBackgroundBlobs(){
+        state.backgroundBlobs = [
+        ];
+    }
+
+    function buildSnake(){
+        state.snake = [];
+        const sx = Math.floor(cols / 2);
+        const sy = Math.floor(rows / 2);
+        for(let i=0;i<5;i++) state.snake.push({x:sx-i,y:sy,popAt:0});
+        state.prevSnake = cloneSnake();
+    }
+
+    function keepInside(){
+        for(const p of state.snake){
+            p.x = Math.max(0, Math.min(cols - 1, p.x));
+            p.y = Math.max(0, Math.min(rows - 1, p.y));
+        }
+    }
+
+    function filterItems(){
+        state.items = state.items.filter(i =>
+            i.x >= SPAWN_MARGIN &&
+            i.y >= SPAWN_MARGIN &&
+            i.x <= cols - 1 - SPAWN_MARGIN &&
+            i.y <= rows - 1 - SPAWN_MARGIN
+        );
+    }
+
+    function filterDangerZones(){
+        state.dangerZones = state.dangerZones.filter(z => {
+            if(z.x < SPAWN_MARGIN || z.y < SPAWN_MARGIN) return false;
+            if(z.x + z.size - 1 > cols - 1 - SPAWN_MARGIN) return false;
+            if(z.y + z.size - 1 > rows - 1 - SPAWN_MARGIN) return false;
+            return true;
+        });
+    }
+
+    function cloneSnake(){
+        return state.snake.map(p => ({x:p.x,y:p.y,popAt:p.popAt||0}));
+    }
+
+    function isShielded(){
+        return state.time < state.shieldUntil;
+    }
+
+    function resetGame(){
+        buildSnake();
+
+        state.running = true;
+        state.over = false;
+        state.dir = {x:1,y:0};
+        state.next = {x:1,y:0};
+        state.locked = false;
+
+        state.gram = 0;
+        state.grow = 0;
+        state.shieldUntil = 0;
+        state.speedUntil = 0;
+        state.magnetUntil = 0;
+
+        state.items = [];
+        state.particles = [];
+        state.waves = [];
+        state.texts = [];
+        state.trails = [];
+        state.sparkles = [];
+        state.snakeWaves = [];
+        state.dangerZones = [];
+        state.blasts = [];
+
+        state.tickBase = 142;
+        state.tick = 142;
+        state.acc = 0;
+        state.last = performance.now();
+        state.glow = 0;
+        state.shake = 0;
+        state.worldFlash = 0;
+        state.nextDangerAt = state.time + randomInt(DANGER_MIN_INTERVAL, DANGER_MAX_INTERVAL);
+        state.roundId = createRoundId();
+        state.roundStartedAt = Date.now();
+        state.roundEndedAt = 0;
+        state.claimSent = false;
+        autoClaimTriggered = false;
+        autoClaimFallbackOpened = false;
+        clearAutoClaimFallback();
+        state.blinkTimer = 0;
+        state.blinkAt = 1800 + Math.random() * 2200;
+
+        spawnItem("coin");
+        spawnItem("coin");
+        spawnItem("lightning");
+        spawnItem("shield");
+
+        claimBtn.classList.add("hiddenAction");
+        claimBtn.disabled = false;
+        claimBtn.textContent = "Получить";
+        startBtn.classList.remove("hiddenAction");
+        setClaimStatus("", "");
+        updateHud();
+    }
+
+    async function startGame(){
+        if(state.sessionBlocked){
+            blockSessionScreen("Эту игровую сессию уже закрыли.");
+            return;
+        }
+        if(sessionConsumed){
+            blockSessionScreen("Награда по этой сессии уже была получена.");
+            return;
+        }
+        if(sessionCfg.sessionId > 0 && !lockOwned){
+            const ok = await acquireSessionLock();
+            if(!ok){
+                blockSessionScreen("Сессия уже активна на другом устройстве.");
+                return;
+            }
+        }
+        wakeAudio();
+        resetGame();
+        titleEl.textContent = "SNAKE GRAM";
+        startBtn.textContent = "НАЧАТЬ ИГРУ";
+        overlay.classList.add("hidden");
+        playSound(520, "sine", .06, .05);
+        playSound(760, "triangle", .10, .04);
+    }
+
+    function showGameOver(){
+        state.running = false;
+        state.over = true;
+        state.roundEndedAt = Date.now();
+        state.gram = clampSnakePayout(state.gram);
+        updateHud();
+
+        finalScoreEl.textContent = state.gram;
+        titleEl.textContent = "GAME OVER";
+        resultEl.style.display = "block";
+        startBtn.classList.add("hiddenAction");
+
+        const canClaim = !state.claimSent && !sessionConsumed && !state.sessionBlocked;
+        claimBtn.classList.remove("hiddenAction");
+        claimBtn.textContent = canClaim ? "Получить" : "НАГРАДА ПОЛУЧЕНА";
+        claimBtn.disabled = claimInFlight || !canClaim;
+        if(canClaim) {
+            setClaimStatus("Нажмите кнопку для получения награды.", "");
+        } else if(sessionConsumed || state.claimSent) {
+            setClaimStatus("Награда за эту сессию уже получена.", "warn");
+        }
+
+        // Force modal re-animation
+        const modal = overlay.querySelector('.modal');
+        modal.style.animation = 'none';
+        modal.offsetHeight; // reflow
+        modal.style.animation = '';
+        overlay.classList.remove("hidden");
+    }
+
+    function updateHud(){
+        gramEl.textContent = state.gram;
+    }
+
+    function randomFreeCell(){
+        const minX = SPAWN_MARGIN;
+        const minY = SPAWN_MARGIN;
+        const maxX = cols - 1 - SPAWN_MARGIN;
+        const maxY = rows - 1 - SPAWN_MARGIN;
+
+        for(let tries = 0; tries < 250; tries++){
+            const x = randomInt(minX, maxX);
+            const y = randomInt(minY, maxY);
+
+            const onSnake = state.snake.some(p => p.x === x && p.y === y);
+            const onItem = state.items.some(p => p.x === x && p.y === y);
+
+            if(!onSnake && !onItem) return {x, y};
+        }
+        return null;
+    }
+
+    function chooseItemType(){
+        const keys = Object.keys(ITEM_TYPES);
+        const total = keys.reduce((sum, key) => sum + ITEM_TYPES[key].chance, 0);
+        let r = Math.random() * total;
+
+        for(const key of keys){
+            r -= ITEM_TYPES[key].chance;
+            if(r <= 0) return key;
+        }
+        return "coin";
+    }
+
+    function spawnItem(forceType){
+        if(state.items.length >= 6) return;
+        const pos = randomFreeCell();
+        if(!pos) return;
+
+        state.items.push({
+            x: pos.x,
+            y: pos.y,
+            type: forceType || chooseItemType(),
+            born: state.time,
+            phase: Math.random() * Math.PI * 2,
+            sparkle: Math.random() * 2000
+        });
+    }
+
+    function cellCenter(x, y){
+        return {
+            x: boardX + x * cell + cell / 2,
+            y: boardY + y * cell + cell / 2
+        };
+    }
+
+    function createRoundId(){
+        return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    function scheduleNextDangerSpawn(){
+        state.nextDangerAt = state.time + randomInt(DANGER_MIN_INTERVAL, DANGER_MAX_INTERVAL);
+    }
+
+    function rectDistance(a, b){
+        const aRight = a.x + a.size - 1;
+        const aBottom = a.y + a.size - 1;
+        const bRight = b.x + b.size - 1;
+        const bBottom = b.y + b.size - 1;
+
+        const dx = Math.max(0, Math.max(a.x - bRight, b.x - aRight));
+        const dy = Math.max(0, Math.max(a.y - bBottom, b.y - aBottom));
+        return Math.max(dx, dy);
+    }
+
+    function canPlaceDangerRect(rect, ignoreId){
+        if(rect.x < SPAWN_MARGIN || rect.y < SPAWN_MARGIN) return false;
+        if(rect.x + rect.size - 1 > cols - 1 - SPAWN_MARGIN) return false;
+        if(rect.y + rect.size - 1 > rows - 1 - SPAWN_MARGIN) return false;
+
+        for(const z of state.dangerZones){
+            if(ignoreId && z.id === ignoreId) continue;
+            const other = { x:z.x, y:z.y, size:z.size };
+            if(rectDistance(rect, other) < DANGER_ZONE_PADDING) return false;
+        }
+
+        for(const item of state.items){
+            if(
+                item.x >= rect.x &&
+                item.x <= rect.x + rect.size - 1 &&
+                item.y >= rect.y &&
+                item.y <= rect.y + rect.size - 1
+            ) return false;
+        }
+        return true;
+    }
+
+    function findDangerRect(){
+        const maxX = cols - DANGER_ZONE_SIZE - SPAWN_MARGIN;
+        const maxY = rows - DANGER_ZONE_SIZE - SPAWN_MARGIN;
+        for(let tries = 0; tries < 260; tries++){
+            const rect = {
+                x: randomInt(SPAWN_MARGIN, maxX),
+                y: randomInt(SPAWN_MARGIN, maxY),
+                size: DANGER_ZONE_SIZE
+            };
+            if(canPlaceDangerRect(rect, "")) return rect;
+        }
+        return null;
+    }
+
+    function spawnDangerBatch(){
+        const targetCount = state.gram > 5000 ? randomInt(1, 4) : 1;
+        for(let i = 0; i < targetCount; i++){
+            const rect = findDangerRect();
+            if(!rect) continue;
+            const warnDuration = randomInt(DANGER_MIN_WARN, DANGER_MAX_WARN);
+            const zone = {
+                id: `${state.time.toFixed(0)}_${Math.random().toString(36).slice(2, 8)}`,
+                x: rect.x,
+                y: rect.y,
+                size: rect.size,
+                stage: "warning",
+                bornAt: state.time,
+                warnUntil: state.time + warnDuration,
+                explodeAt: 0,
+                removeAt: 0,
+                phase: Math.random() * Math.PI * 2,
+                killChecked: false
+            };
+            state.dangerZones.push(zone);
+            const c = cellCenter(zone.x + zone.size / 2 - .5, zone.y + zone.size / 2 - .5);
+            wave(c.x, c.y, "rgba(255,96,110,.95)", cell * 3.4);
+        }
+    }
+
+    function snakeInsideZone(zone){
+        return state.snake.some(seg =>
+            seg.x >= zone.x &&
+            seg.x <= zone.x + zone.size - 1 &&
+            seg.y >= zone.y &&
+            seg.y <= zone.y + zone.size - 1
+        );
+    }
+
+    function detonateZone(zone){
+        zone.stage = "exploding";
+        zone.explodeAt = state.time;
+        zone.removeAt = state.time + 820;
+        state.worldFlash = .82;
+        state.shake = Math.max(state.shake, 10);
+
+        const c = cellCenter(zone.x + zone.size / 2 - .5, zone.y + zone.size / 2 - .5);
+        burst(c.x, c.y, COLORS.red, 54);
+        burst(c.x, c.y, "#ffc5a3", 30);
+        burst(c.x, c.y, "#ff8248", 26);
+        starBurst(c.x, c.y, COLORS.red2, 9);
+        wave(c.x, c.y, "rgba(255,96,110,.98)", cell * 5.2);
+        wave(c.x, c.y, "rgba(255,180,120,.82)", cell * 3.8);
+        createBlast(c.x, c.y, cell * 6.4, "#ff5f6d", "#ffb37a");
+        playSound(205, "square", .12, .10);
+        playSound(82, "sawtooth", .16, .08);
+        vibrate([45, 30, 70]);
+    }
+
+    function updateDangerZones(){
+        if(!state.running) return;
+
+        if(state.time >= state.nextDangerAt){
+            spawnDangerBatch();
+            scheduleNextDangerSpawn();
+        }
+
+        for(let i = state.dangerZones.length - 1; i >= 0; i--){
+            const zone = state.dangerZones[i];
+            if(zone.stage === "warning" && state.time >= zone.warnUntil){
+                detonateZone(zone);
+            }
+
+            if(zone.stage === "exploding"){
+                if(!zone.killChecked){
+                    zone.killChecked = true;
+                    if(snakeInsideZone(zone)){
+                        endGame("danger");
+                        return;
+                    }
+                }
+                if(state.time >= zone.removeAt){
+                    state.dangerZones.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    function input(dirName){
+        wakeAudio();
+        if(!state.running || state.locked) return;
+
+        const dirs = {
+            up:{x:0,y:-1},
+            down:{x:0,y:1},
+            left:{x:-1,y:0},
+            right:{x:1,y:0}
+        };
+
+        const d = dirs[dirName];
+        if(!d) return;
+        if(d.x === -state.dir.x && d.y === -state.dir.y) return;
+
+        state.next = d;
+        state.locked = true;
+    }
+
+    function step(){
+        if(!state.running) return;
+
+        state.prevSnake = cloneSnake();
+        state.dir = { ...state.next };
+
+        const head = state.snake[0];
+        let nextHead = {
+            x: head.x + state.dir.x,
+            y: head.y + state.dir.y
+        };
+
+        const wall = nextHead.x < 0 || nextHead.y < 0 || nextHead.x >= cols || nextHead.y >= rows;
+        const body = state.snake.some((p, i) => i > 0 && p.x === nextHead.x && p.y === nextHead.y);
+
+        if(wall || body){
+            if(isShielded()){
+                const hp = cellCenter(head.x, head.y);
+                burst(hp.x, hp.y, COLORS.white, 26);
+                wave(hp.x, hp.y, COLORS.white, 95);
+                floatText("ЩИТ", hp.x, hp.y, COLORS.white);
+                state.glow = .5;
+                state.shake = 6;
+                vibrate(35);
+                playSound(360, "triangle", .08, .06);
+
+                if(wall){
+                    nextHead.x = (nextHead.x + cols) % cols;
+                    nextHead.y = (nextHead.y + rows) % rows;
+                }else{
+                    // try perpendicular safe direction; otherwise reverse
+                    const opts = [{x:-state.dir.y,y:state.dir.x},{x:state.dir.y,y:-state.dir.x},{x:-state.dir.x,y:-state.dir.y}];
+                    let chosen = null;
+                    for(const d of opts){
+                        const nx = head.x + d.x, ny = head.y + d.y;
+                        if(nx<0||ny<0||nx>=cols||ny>=rows) continue;
+                        if(state.snake.some((p,i)=>i>0 && p.x===nx && p.y===ny)) continue;
+                        chosen = d; break;
+                    }
+                    if(!chosen) chosen = opts[2];
+                    state.next = chosen;
+                    state.dir = { ...chosen };
+                    nextHead = {
+                        x: head.x + state.dir.x,
+                        y: head.y + state.dir.y
+                    };
+                }
+            } else {
+                endGame();
+                return;
+            }
+        }
+
+        nextHead.popAt = 0;
+        state.snake.unshift(nextHead);
+
+        // Magnet: pull coins within 4-cell radius (Chebyshev) one cell toward head each step
+        if(state.time < state.magnetUntil){
+            const MAGNET_RANGE = 4;
+            for(const it of state.items){
+                if(it.type !== "coin") continue;
+                const dx = nextHead.x - it.x;
+                const dy = nextHead.y - it.y;
+                if(dx === 0 && dy === 0) continue;
+                if(Math.max(Math.abs(dx), Math.abs(dy)) > MAGNET_RANGE) continue;
+                if(Math.abs(dx) >= Math.abs(dy)) it.x += Math.sign(dx);
+                else it.y += Math.sign(dy);
+            }
+        }
+
+        const itemIndex = state.items.findIndex(i => i.x === nextHead.x && i.y === nextHead.y);
+        if(itemIndex !== -1) collectItem(itemIndex);
+
+        if(state.grow > 0){
+            state.grow--;
+            // Mark the preserved tail as 'newly grown' for pop animation
+            const tail = state.snake[state.snake.length - 1];
+            if(tail) tail.popAt = state.time;
+        } else {
+            state.snake.pop();
+        }
+
+        while(state.snake.length > 46){
+            state.snake.pop();
+            if(state.grow > 0) state.grow--;
+        }
+
+        let _safety = 12;
+        while(state.items.length < 4 && _safety-- > 0){
+            const _before = state.items.length;
+            spawnItem();
+            if(state.items.length === _before) break;
+        }
+
+        const levelSpeed = Math.min(42, Math.floor(state.gram / 1500) * 4);
+        const fastSpeed = state.time < state.speedUntil ? 28 : 0;
+        state.tick = Math.max(72, state.tickBase - levelSpeed - fastSpeed);
+
+        state.locked = false;
+    }
+
+    function collectItem(index){
+        const item = state.items[index];
+        const data = ITEM_TYPES[item.type];
+        const p = cellCenter(item.x, item.y);
+        const gain = randomInt(data.points[0], data.points[1]);
+
+        state.items.splice(index, 1);
+
+        const before = state.gram;
+        state.gram = Math.min(sessionCfg.serverPayout, state.gram + gain);
+        const actualGain = state.gram - before;
+        if(actualGain <= 0){
+            updateHud();
+            return;
+        }
+        state.grow += data.grow;
+        updateHud();
+
+        if(item.type === "shield"){
+            const base = Math.max(state.shieldUntil, state.time);
+            state.shieldUntil = base + 7000;
+            state.glow = .55;
+            state.snakeWaves.push({
+                startAt: state.time,
+                duration: 800,
+                color: "#ffffff",
+                glow: "rgba(255,255,255,.85)"
+            });
+        }
+
+        if(item.type === "lightning"){
+            state.speedUntil = state.time + 5600;
+            state.glow = .55;
+            // Electric waves head -> tail (blue)
+            state.snakeWaves.push({startAt: state.time,        duration: 700, color: "#ffffff", glow: "rgba(180,225,255,.95)"});
+            state.snakeWaves.push({startAt: state.time + 180,  duration: 700, color: "#a8dcff", glow: "rgba(120,180,255,.85)"});
+            state.snakeWaves.push({startAt: state.time + 360,  duration: 700, color: "#7cb8ff", glow: "rgba(80,150,230,.75)"});
+        }
+
+        if(item.type === "magnet"){
+            const base = Math.max(state.magnetUntil, state.time);
+            state.magnetUntil = base + 6000;
+            state.glow = .55;
+            state.snakeWaves.push({
+                startAt: state.time,
+                duration: 720,
+                color: "#ff7eb4",
+                glow: "rgba(255,125,180,.85)"
+            });
+        }
+
+        if(item.type === "coin"){
+            // Growth pulse wave (gold)
+            state.snakeWaves.push({
+                startAt: state.time,
+                duration: 620,
+                color: data.color,
+                glow: data.color
+            });
+        }
+
+        const c = data.color;
+
+        burst(p.x, p.y, c, 24);
+        floatText("+" + actualGain, p.x, p.y, c);
+        starBurst(p.x, p.y, c, 4);
+
+        if(item.type === "coin"){
+            playSound(620, "sine", .06, .05);
+            playSound(940, "triangle", .09, .035);
+            vibrate(16);
+        } else if(item.type === "lightning"){
+            playSound(700, "triangle", .07, .05);
+            playSound(1120, "sine", .12, .035);
+            vibrate(28);
+        } else if(item.type === "shield"){
+            playSound(430, "triangle", .08, .05);
+            playSound(760, "sine", .12, .035);
+            vibrate(24);
+        } else if(item.type === "magnet"){
+            playSound(520, "square", .06, .05);
+            playSound(880, "sine", .10, .035);
+            vibrate(22);
+        }
+    }
+
+    function endGame(reason){
+        const head = state.snake[0];
+        const p = cellCenter(head.x, head.y);
+
+        const killColor = reason === "danger" ? "#ff3a4e" : COLORS.red;
+        burst(p.x, p.y, killColor, 58);
+        burst(p.x, p.y, "#ffcaa8", 34);
+        wave(p.x, p.y, killColor, 155);
+        wave(p.x, p.y, "rgba(255,195,140,.84)", 118);
+        createBlast(p.x, p.y, cell * 5.8, killColor, "#ffb87d");
+        starBurst(p.x, p.y, COLORS.red, 10);
+        state.glow = .9;
+        state.shake = 12;
+        state.worldFlash = .9;
+
+        if(reason === "danger"){
+            playSound(110, "square", .18, .10);
+            playSound(70, "sawtooth", .20, .08);
+        } else {
+            playSound(135, "sawtooth", .24, .08);
+        }
+        vibrate([80, 40, 100]);
+
+        showGameOver();
+    }
+
+    function updateEffects(dt){
+        state.blinkTimer += dt;
+        if(state.blinkTimer > state.blinkAt){
+            state.blinkTimer = -120;
+            state.blinkAt = 1800 + Math.random() * 2600;
+        }
+
+        for(let i = state.particles.length - 1; i >= 0; i--){
+            const p = state.particles[i];
+            p.life -= dt;
+            p.x += p.vx * dt / 16;
+            p.y += p.vy * dt / 16;
+            p.vx *= .985;
+            p.vy *= .985;
+            if(p.life <= 0) state.particles.splice(i, 1);
+        }
+
+        for(let i = state.waves.length - 1; i >= 0; i--){
+            const w = state.waves[i];
+            w.life -= dt;
+            if(w.life <= 0) state.waves.splice(i, 1);
+        }
+
+        for(let i = state.texts.length - 1; i >= 0; i--){
+            const t = state.texts[i];
+            t.life -= dt;
+            t.y -= t.vy * dt / 16;
+            if(t.life <= 0) state.texts.splice(i, 1);
+        }
+
+        for(let i = state.trails.length - 1; i >= 0; i--){
+            const tr = state.trails[i];
+            tr.life -= dt;
+            if(tr.life <= 0) state.trails.splice(i, 1);
+        }
+
+        for(let i = state.sparkles.length - 1; i >= 0; i--){
+            const s = state.sparkles[i];
+            s.life -= dt;
+            s.rotation += s.rv * dt / 1000;
+            s.x += s.vx * dt / 16;
+            s.y += s.vy * dt / 16;
+            if(s.life <= 0) state.sparkles.splice(i, 1);
+        }
+
+        for(let i = state.blasts.length - 1; i >= 0; i--){
+            const b = state.blasts[i];
+            if(state.time - b.bornAt >= b.life) state.blasts.splice(i, 1);
+        }
+
+        if(state.particles.length > 220) state.particles.splice(0, state.particles.length - 220);
+        if(state.trails.length > 42) state.trails.splice(0, state.trails.length - 42);
+        if(state.sparkles.length > 60) state.sparkles.splice(0, state.sparkles.length - 60);
+
+        // Clean expired snake waves
+        for(let i = state.snakeWaves.length - 1; i >= 0; i--){
+            const w = state.snakeWaves[i];
+            if(state.time - w.startAt > w.duration) state.snakeWaves.splice(i, 1);
+        }
+
+        state.glow = Math.max(0, state.glow - dt * .0016);
+        state.shake = Math.max(0, state.shake - dt * .045);
+        state.worldFlash = Math.max(0, state.worldFlash - dt * .0018);
+    }
+
+    function burst(x, y, color, count){
+        for(let i=0;i<count;i++){
+            const a = Math.random() * Math.PI * 2;
+            const sp = 1.2 + Math.random() * 4.8;
+            state.particles.push({
+                x, y,
+                vx: Math.cos(a) * sp,
+                vy: Math.sin(a) * sp,
+                r: 1.6 + Math.random() * 3.3,
+                color,
+                life: 460 + Math.random() * 340,
+                max: 800
+            });
+        }
+    }
+
+    function wave(x, y, color, radius){
+        state.waves.push({ x, y, color, radius, life:430, max:430 });
+    }
+
+    function floatText(text, x, y, color){
+        state.texts.push({ text, x, y, color, vy:1.1, life:760, max:760 });
+    }
+
+    function starBurst(x, y, color, count){
+        for(let i=0;i<count;i++){
+            const a = Math.random() * Math.PI * 2;
+            const sp = 1 + Math.random() * 3.2;
+            state.sparkles.push({
+                x, y,
+                vx: Math.cos(a) * sp,
+                vy: Math.sin(a) * sp,
+                size: 5 + Math.random() * 6,
+                color,
+                life: 400 + Math.random() * 260,
+                max: 660,
+                rotation: Math.random() * Math.PI,
+                rv: (Math.random() - .5) * 8
+            });
+        }
+    }
+
+    function createBlast(x, y, radius, coreColor, rimColor){
+        state.blasts.push({
+            x, y,
+            radius: Math.max(28, radius),
+            coreColor: coreColor || "#ff5f6d",
+            rimColor: rimColor || "#ffb37a",
+            bornAt: state.time,
+            life: 760 + Math.random() * 220
+        });
+    }
+
+    function draw(alpha){
+        drawBackground();
+
+        // Apply shake to all game elements
+        const sx = state.shake ? (Math.random() - .5) * state.shake : 0;
+        const sy = state.shake ? (Math.random() - .5) * state.shake : 0;
+        ctx.save();
+        ctx.translate(sx, sy);
+
+        drawBoard();
+        drawDangerZones();
+        drawBlasts();
+        drawItems();
+        drawTrails();
+        drawSnake(alpha);
+        drawSparkles();
+        drawParticles();
+        drawWaves();
+        drawTexts();
+
+        ctx.restore();
+    }
+
+    function drawBackground(){
+        const bg = ctx.createLinearGradient(0, 0, 0, vh);
+        bg.addColorStop(0, "#0d2a1f");
+        bg.addColorStop(.48, "#123326");
+        bg.addColorStop(1, "#0d281d");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, vw, vh);
+
+        if(state.worldFlash > 0){
+            const alpha = Math.min(.45, state.worldFlash * .45);
+            const blast = ctx.createRadialGradient(vw * .5, vh * .5, 0, vw * .5, vh * .5, Math.max(vw, vh) * .62);
+            blast.addColorStop(0, `rgba(255,90,110,${alpha})`);
+            blast.addColorStop(1, "rgba(255,90,110,0)");
+            ctx.fillStyle = blast;
+            ctx.fillRect(0, 0, vw, vh);
+        }
+    }
+
+    function drawBoard(){
+        ctx.save();
+
+        const outer = ctx.createLinearGradient(boardX, boardY, boardX + boardW, boardY + boardH);
+        outer.addColorStop(0, "rgba(89,255,195,.14)");
+        outer.addColorStop(1, "rgba(98,215,255,.08)");
+
+        roundRect(boardX - 5, boardY - 5, boardW + 10, boardH + 10, 32);
+        ctx.fillStyle = outer;
+        ctx.fill();
+
+        const inner = ctx.createLinearGradient(boardX, boardY, boardX + boardW, boardY + boardH);
+        inner.addColorStop(0, "rgba(255,255,255,.075)");
+        inner.addColorStop(.55, "rgba(255,255,255,.04)");
+        inner.addColorStop(1, "rgba(255,255,255,.07)");
+
+        roundRect(boardX, boardY, boardW, boardH, 28);
+        ctx.fillStyle = inner;
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.085)";
+        ctx.lineWidth = 1;
+
+        for(let x=0;x<=cols;x++){
+            const px = boardX + x * cell;
+            ctx.beginPath();
+            ctx.moveTo(px, boardY);
+            ctx.lineTo(px, boardY + boardH);
+            ctx.stroke();
+        }
+
+        for(let y=0;y<=rows;y++){
+            const py = boardY + y * cell;
+            ctx.beginPath();
+            ctx.moveTo(boardX, py);
+            ctx.lineTo(boardX + boardW, py);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = "rgba(89,255,195,.42)";
+        ctx.lineWidth = 2;
+        roundRect(boardX + 1, boardY + 1, boardW - 2, boardH - 2, 28);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawDangerZones(){
+        for(const zone of state.dangerZones){
+            const x = boardX + zone.x * cell;
+            const y = boardY + zone.y * cell;
+            const sizePx = zone.size * cell;
+
+            if(zone.stage === "warning"){
+                const remain = Math.max(0, zone.warnUntil - state.time);
+                const total = Math.max(1, zone.warnUntil - zone.bornAt);
+                const progress = 1 - remain / total;
+                const blink = .35 + (Math.sin(state.time * .02 + zone.phase) * .5 + .5) * .45;
+                const a = Math.min(.85, .18 + progress * .40 + blink * .30);
+
+                ctx.save();
+                ctx.fillStyle = `rgba(255,70,90,${a * .22})`;
+                ctx.fillRect(x, y, sizePx, sizePx);
+                ctx.strokeStyle = `rgba(255,110,130,${a})`;
+                ctx.lineWidth = 2;
+                roundRect(x + 1, y + 1, sizePx - 2, sizePx - 2, Math.max(6, cell * .4));
+                ctx.stroke();
+
+                for(let i = 0; i < zone.size; i++){
+                    for(let j = 0; j < zone.size; j++){
+                        const pulse = (Math.sin(state.time * .03 + (i * 5 + j) * .35 + zone.phase) * .5 + .5);
+                        const cA = .08 + pulse * .14 + progress * .08;
+                        ctx.fillStyle = `rgba(255,65,85,${cA})`;
+                        ctx.fillRect(x + i * cell + 1, y + j * cell + 1, cell - 2, cell - 2);
+                    }
+                }
+                ctx.restore();
+            } else if(zone.stage === "exploding"){
+                const t = Math.min(1, (state.time - zone.explodeAt) / Math.max(1, zone.removeAt - zone.explodeAt));
+                const ring = (1 - t);
+                ctx.save();
+                ctx.globalAlpha = ring;
+                ctx.fillStyle = "rgba(255,70,90,.28)";
+                ctx.fillRect(x, y, sizePx, sizePx);
+
+                const c = cellCenter(zone.x + zone.size / 2 - .5, zone.y + zone.size / 2 - .5);
+                ctx.strokeStyle = `rgba(255,170,180,${ring})`;
+                ctx.lineWidth = 2 + t * 5;
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, sizePx * (.25 + t * 1.05), 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+    }
+
+    function drawBlasts(){
+        for(const b of state.blasts){
+            const age = state.time - b.bornAt;
+            const t = Math.max(0, Math.min(1, age / b.life));
+            const inv = 1 - t;
+            const r = b.radius * (0.24 + t * 1.08);
+
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, inv * 1.25);
+
+            const core = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+            core.addColorStop(0, "rgba(255,255,235,.92)");
+            core.addColorStop(.22, b.rimColor.replace(")", ",.95)").replace("rgb(", "rgba("));
+            core.addColorStop(.52, b.coreColor.replace(")", ",.66)").replace("rgb(", "rgba("));
+            core.addColorStop(1, "rgba(255,80,95,0)");
+            ctx.fillStyle = core;
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = `rgba(255,220,185,${inv * .88})`;
+            ctx.lineWidth = 2 + inv * 5;
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, r * (0.95 + t * .35), 0, Math.PI * 2);
+            ctx.stroke();
+
+            const rays = 14;
+            ctx.strokeStyle = `rgba(255,245,220,${inv * .82})`;
+            ctx.lineWidth = 1.6 + inv * 1.8;
+            for(let i = 0; i < rays; i++){
+                const a = (Math.PI * 2 * i / rays) + t * 2.8;
+                const inner = r * (.28 + (i % 3) * .08);
+                const outer = r * (1.08 + ((i + 1) % 4) * .06);
+                ctx.beginPath();
+                ctx.moveTo(b.x + Math.cos(a) * inner, b.y + Math.sin(a) * inner);
+                ctx.lineTo(b.x + Math.cos(a) * outer, b.y + Math.sin(a) * outer);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+    }
+
+
+    function drawItems(){
+        for(const item of state.items){
+            const p = cellCenter(item.x, item.y);
+            const age = state.time - item.born;
+            const pop = easeOut(Math.min(1, age / 260));
+            const pulse = 1 + Math.sin(state.time * .006 + item.phase) * .07;
+            const size = cell * .96 * pop * pulse;
+
+            // aura ring
+            ctx.save();
+            ctx.globalAlpha = .24 + Math.sin(state.time * .004 + item.phase) * .05;
+            ctx.strokeStyle = ITEM_TYPES[item.type].color;
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = ITEM_TYPES[item.type].color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size * .62 + Math.sin(state.time * .003 + item.phase) * 2, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            if(item.type === "coin") drawCoin(p.x, p.y, size, item.phase);
+            else if(item.type === "lightning") drawLightning(p.x, p.y, size, item.phase);
+            else if(item.type === "shield") drawShield(p.x, p.y, size, item.phase);
+            else if(item.type === "magnet") drawMagnet(p.x, p.y, size, item.phase);
+        }
+    }
+
+    function drawCoin(x, y, s, phase){
+        // Faster spin + bigger bob + orbiting sparkles
+        const spin = state.time * .007 + phase;
+        const flip = Math.cos(spin);          // -1 .. 1
+        const absF = Math.abs(flip);
+        const showFace = flip > 0;
+        const bob = Math.sin(state.time * .005 + phase) * 4;
+
+        // Orbiting sparkles around coin
+        ctx.save();
+        for(let i = 0; i < 3; i++){
+            const ang = state.time * .004 + phase + i * (Math.PI * 2 / 3);
+            const orbR = s * (.62 + Math.sin(state.time * .003 + i)*.04);
+            const sx = x + Math.cos(ang) * orbR;
+            const sy = y + bob * .4 + Math.sin(ang) * orbR * .55;
+            const sa = .35 + .55 * (Math.sin(state.time * .008 + i * 2) * .5 + .5);
+            ctx.fillStyle = `rgba(255,235,150,${sa})`;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = "rgba(255,200,80,.85)";
+            ctx.beginPath();
+            ctx.arc(sx, sy, 1.6 + Math.sin(state.time * .01 + i) * .5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(x, y + bob);
+
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = "rgba(255,215,80,.55)";
+
+        // Edge cylinder when nearly side-on
+        if(absF < 0.12){
+            ctx.fillStyle = "#a06a14";
+            roundRect(-s*.06, -s*.40, s*.12, s*.80, s*.06);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.restore();
+            return;
+        }
+
+        ctx.scale(absF, 1);
+
+        // Body gradient
+        const g = ctx.createRadialGradient(-s*.18, -s*.22, 1, 0, 0, s*.58);
+        g.addColorStop(0, "#fff6c8");
+        g.addColorStop(.30, "#ffd86b");
+        g.addColorStop(.74, "#c98a14");
+        g.addColorStop(1, "#6a3f04");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.44, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rim ring
+        ctx.strokeStyle = "rgba(255,240,170,.85)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.39, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner inset
+        ctx.strokeStyle = "rgba(120,70,10,.45)";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.30, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Highlight crescent
+        ctx.fillStyle = "rgba(255,255,255,.28)";
+        ctx.beginPath();
+        ctx.ellipse(-s*.14, -s*.16, s*.16, s*.09, -.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        // Symbol (mirrored on back side)
+        ctx.fillStyle = "#5a3402";
+        ctx.font = `900 ${Math.max(10, s*.46)}px Inter, Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        if(showFace){
+            ctx.fillText("G", 0, s*.02);
+        } else {
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.fillText("G", 0, s*.02);
+            ctx.restore();
+        }
+
+        ctx.restore();
+    }
+
+    function _unused_drawApple(x, y, s, phase){
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.sin(state.time * .003 + phase) * .03);
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = "rgba(255,96,110,.30)";
+
+        const g = ctx.createRadialGradient(-s*.18, -s*.18, 1, 0, 0, s*.62);
+        g.addColorStop(0, "#ffc0b3");
+        g.addColorStop(.35, "#ff6874");
+        g.addColorStop(1, "#b52642");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(0, -s*.18);
+        ctx.bezierCurveTo(-s*.34, -s*.36, -s*.54, -s*.02, -s*.28, s*.24);
+        ctx.bezierCurveTo(-s*.18, s*.40, -s*.02, s*.42, 0, s*.28);
+        ctx.bezierCurveTo(s*.02, s*.42, s*.18, s*.40, s*.28, s*.24);
+        ctx.bezierCurveTo(s*.54, -s*.02, s*.34, -s*.36, 0, -s*.18);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255,255,255,.24)";
+        ctx.beginPath();
+        ctx.ellipse(-s*.14, -s*.10, s*.08, s*.12, -.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "#6f4119";
+        ctx.lineWidth = Math.max(2, s*.08);
+        ctx.beginPath();
+        ctx.moveTo(0, -s*.18);
+        ctx.quadraticCurveTo(0, -s*.42, s*.04, -s*.52);
+        ctx.stroke();
+
+        const leafG = ctx.createLinearGradient(0, -s*.46, s*.22, -s*.22);
+        leafG.addColorStop(0, "#baffca");
+        leafG.addColorStop(1, "#39d87f");
+        ctx.fillStyle = leafG;
+        ctx.beginPath();
+        ctx.ellipse(s*.16, -s*.30, s*.16, s*.10, -.45, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.18)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(s*.09, -s*.31);
+        ctx.lineTo(s*.25, -s*.28);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawLightning(x, y, s, phase){
+        const t = state.time;
+        // Aggressive flicker + scale jitter
+        const flickerFast = (Math.sin(t * .045 + phase) * .5 + .5) * .35 + .65;
+        const flickerSlow = .9 + Math.sin(t * .003 + phase) * .1;
+        const scale = 1 + Math.sin(t * .010 + phase) * .08;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.sin(t * .002 + phase) * .06);
+        ctx.scale(scale, scale);
+
+        // Outer aura (pulsing)
+        const aura = ctx.createRadialGradient(0, 0, s*.10, 0, 0, s*.85);
+        aura.addColorStop(0, `rgba(200,235,255,${.45 * flickerFast})`);
+        aura.addColorStop(.5, `rgba(120,180,255,${.18 * flickerFast})`);
+        aura.addColorStop(1, "rgba(120,180,255,0)");
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.85, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 30 * flickerFast;
+        ctx.shadowColor = "rgba(140,200,255,.95)";
+
+        // Bolt shape (electric-blue)
+        const g = ctx.createLinearGradient(0, -s*.55, 0, s*.52);
+        g.addColorStop(0, "#ffffff");
+        g.addColorStop(.40, "#a8dcff");
+        g.addColorStop(1, "#3a8bff");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(-s*.05, -s*.55);
+        ctx.lineTo(s*.20, -s*.10);
+        ctx.lineTo(s*.03, -s*.10);
+        ctx.lineTo(s*.21, s*.10);
+        ctx.lineTo(-s*.07, s*.55);
+        ctx.lineTo(-s*.01, s*.13);
+        ctx.lineTo(-s*.22, s*.13);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.85)";
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+
+        // Multiple animated electric arcs around bolt
+        ctx.strokeStyle = `rgba(220,240,255,${.7 + .3 * Math.sin(t*.04 + phase)})`;
+        ctx.lineWidth = 1.6;
+        const arcs = 5;
+        for(let i = 0; i < arcs; i++){
+            const a = (t * .012 + i * Math.PI*2/arcs + phase) % (Math.PI * 2);
+            const r1 = s * (.55 + Math.sin(t*.025 + i*1.3)*.05);
+            const r2 = s * (.70 + Math.sin(t*.03 + i)*.06);
+            const jx = Math.sin(t*.05 + i*2) * s*.04;
+            const jy = Math.cos(t*.05 + i*2) * s*.04;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(a)*r1, Math.sin(a)*r1);
+            ctx.lineTo(Math.cos(a + .12)*r2 + jx, Math.sin(a + .12)*r2 + jy);
+            ctx.lineTo(Math.cos(a + .25)*r1, Math.sin(a + .25)*r1);
+            ctx.stroke();
+        }
+
+        // Pulsing spark dots
+        for(let i = 0; i < 6; i++){
+            const a = (t * .015 + i * 1.7 + phase);
+            const rad = s * (.48 + (Math.sin(t*.025 + i*2)*.5+.5)*.30);
+            const px = Math.cos(a) * rad;
+            const py = Math.sin(a) * rad;
+            const da = .4 + .6*Math.sin(t*.06 + i);
+            ctx.fillStyle = `rgba(255,255,255,${da})`;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = "rgba(180,225,255,.9)";
+            ctx.beginPath();
+            ctx.arc(px, py, 1.8 + Math.sin(t*.03 + i)*.6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
+    }
+
+    function _unused_drawCrystal(x, y, s, phase){
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.sin(state.time * .003 + phase) * .08);
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = "rgba(98,215,255,.38)";
+
+        const g = ctx.createLinearGradient(-s*.45, -s*.55, s*.45, s*.55);
+        g.addColorStop(0, "#dcfbff");
+        g.addColorStop(.40, "#7ce3ff");
+        g.addColorStop(1, "#328dff");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(0, -s*.55);
+        ctx.lineTo(s*.35, -s*.08);
+        ctx.lineTo(s*.15, s*.50);
+        ctx.lineTo(-s*.15, s*.50);
+        ctx.lineTo(-s*.35, -s*.08);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255,255,255,.32)";
+        ctx.beginPath();
+        ctx.moveTo(0, -s*.55);
+        ctx.lineTo(s*.08, -s*.08);
+        ctx.lineTo(0, s*.50);
+        ctx.lineTo(-s*.08, -s*.08);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.22)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, -s*.55);
+        ctx.lineTo(0, s*.50);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawShield(x, y, s, phase){
+        const t = state.time;
+        const pulse = 1 + Math.sin(t * .005 + phase) * .05;
+        ctx.save();
+        ctx.translate(x, y);
+
+        ctx.shadowBlur = 22;
+        ctx.shadowColor = "rgba(180,240,255,.55)";
+
+        // Outer hex shape
+        const r = s * .48 * pulse;
+        const g = ctx.createLinearGradient(0, -r, 0, r);
+        g.addColorStop(0, "#ffffff");
+        g.addColorStop(.5, "#b9eaff");
+        g.addColorStop(1, "#5cb6ff");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        for(let i = 0; i < 6; i++){
+            const a = -Math.PI / 2 + (i / 6) * Math.PI * 2;
+            const px = Math.cos(a) * r;
+            const py = Math.sin(a) * r;
+            if(i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        // Inner hex (darker)
+        const innerR = r * .68;
+        const ig = ctx.createLinearGradient(0, -innerR, 0, innerR);
+        ig.addColorStop(0, "rgba(120,210,255,.85)");
+        ig.addColorStop(1, "rgba(40,140,220,.95)");
+        ctx.fillStyle = ig;
+        ctx.beginPath();
+        for(let i = 0; i < 6; i++){
+            const a = -Math.PI / 2 + (i / 6) * Math.PI * 2;
+            const px = Math.cos(a) * innerR;
+            const py = Math.sin(a) * innerR;
+            if(i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // Rotating outer ring
+        ctx.save();
+        ctx.rotate(t * .002 + phase);
+        ctx.strokeStyle = "rgba(255,255,255,.7)";
+        ctx.lineWidth = 1.6;
+        for(let i = 0; i < 3; i++){
+            const a0 = (i / 3) * Math.PI * 2;
+            const a1 = a0 + Math.PI / 4;
+            ctx.beginPath();
+            ctx.arc(0, 0, r * 1.10, a0, a1);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Cross emblem
+        ctx.strokeStyle = "rgba(255,255,255,.92)";
+        ctx.lineWidth = Math.max(2, s*.07);
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(0, -r*.45);
+        ctx.lineTo(0, r*.45);
+        ctx.moveTo(-r*.36, 0);
+        ctx.lineTo(r*.36, 0);
+        ctx.stroke();
+
+        // Highlight
+        ctx.fillStyle = "rgba(255,255,255,.30)";
+        ctx.beginPath();
+        ctx.ellipse(-r*.25, -r*.30, r*.22, r*.10, -.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function drawMagnet(x, y, s, phase){
+        const t = state.time;
+        const wobble = Math.sin(t * .003 + phase) * .05;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(wobble);
+
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(255,90,150,.5)";
+
+        const w = s * .68;        // total magnet width
+        const h = s * .60;        // total magnet height
+        const arm = s * .20;      // arm thickness
+        const gap = s * .18;      // gap between poles
+
+        // U-shape outline (red top half, silver-gray bottom)
+        // Top half (red)
+        const rg = ctx.createLinearGradient(0, -h*.50, 0, 0);
+        rg.addColorStop(0, "#ff6b8e");
+        rg.addColorStop(1, "#c91b48");
+
+        // Bottom half (silver)
+        const sg = ctx.createLinearGradient(0, 0, 0, h*.50);
+        sg.addColorStop(0, "#dadce0");
+        sg.addColorStop(1, "#7a7e85");
+
+        // Build U-path: outer rect minus inner rect (gap between poles)
+        // We'll draw two separate horseshoe halves stacked.
+        // Easier: draw whole U as path and clip-fill in two passes.
+
+        const drawU = (fillTop, fillBot) => {
+            ctx.save();
+            // outer
+            ctx.beginPath();
+            ctx.moveTo(-w/2, h*.50);
+            ctx.lineTo(-w/2, -h*.20);
+            ctx.quadraticCurveTo(-w/2, -h*.50, -w/2 + arm + gap*.0, -h*.50);
+            ctx.lineTo( w/2 - arm - gap*.0, -h*.50);
+            ctx.quadraticCurveTo( w/2, -h*.50,  w/2, -h*.20);
+            ctx.lineTo( w/2,  h*.50);
+            ctx.lineTo( w/2 - arm,  h*.50);
+            ctx.lineTo( w/2 - arm, -h*.20);
+            ctx.quadraticCurveTo( w/2 - arm, -h*.30 + arm*.2, w/2 - arm - gap*.4, -h*.30);
+            ctx.lineTo(-w/2 + arm + gap*.4, -h*.30);
+            ctx.quadraticCurveTo(-w/2 + arm, -h*.30 + arm*.2, -w/2 + arm, -h*.20);
+            ctx.lineTo(-w/2 + arm,  h*.50);
+            ctx.closePath();
+
+            // Fill top half (clip to y < 0)
+            ctx.save();
+            ctx.clip();
+            ctx.fillStyle = fillTop;
+            ctx.fillRect(-w, -h, w*2, h);
+            ctx.fillStyle = fillBot;
+            ctx.fillRect(-w, 0, w*2, h);
+            ctx.restore();
+
+            // Stroke outline
+            ctx.strokeStyle = "rgba(20,8,12,.55)";
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        drawU(rg, sg);
+
+        // "N" / "S" pole labels
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#ffffff";
+        ctx.font = `900 ${Math.max(8, s*.20)}px Inter, Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("N", -w/2 + arm/2, h*.30);
+        ctx.fillText("S",  w/2 - arm/2, h*.30);
+
+        // Animated attraction field arcs (between poles)
+        const arcCount = 3;
+        for(let i = 0; i < arcCount; i++){
+            const prog = ((t * .002 + i / arcCount + phase) % 1);
+            const arcAlpha = Math.sin(prog * Math.PI);
+            if(arcAlpha <= 0) continue;
+            const yOff = h*.50 + s*.10 + prog * s*.45;
+            ctx.strokeStyle = `rgba(255,180,210,${arcAlpha * .85})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-w/2 + arm/2, yOff - s*.06);
+            ctx.quadraticCurveTo(0, yOff + s*.18, w/2 - arm/2, yOff - s*.06);
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+    function _unused_drawOrb(x, y, s, phase){
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.sin(state.time * .003 + phase) * .1);
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = "rgba(177,132,255,.38)";
+
+        const g = ctx.createRadialGradient(-s*.16, -s*.18, 1, 0, 0, s*.56);
+        g.addColorStop(0, "#f0dcff");
+        g.addColorStop(.40, "#be90ff");
+        g.addColorStop(1, "#7040d0");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.39, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,.20)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, s*.24, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawSnake(alpha){
+        const prev = state.prevSnake.length ? state.prevSnake : state.snake;
+        const fast = state.time < state.speedUntil;
+        const blink = state.blinkTimer > 0 && state.blinkTimer < 140;
+        const shielded = isShielded();
+        const snakeLen = state.snake.length;
+
+        for(let i = snakeLen - 1; i >= 0; i--){
+            const cur = state.snake[i];
+            const old = prev[i] || cur;
+
+            const gx = lerp(old.x, cur.x, alpha);
+            const gy = lerp(old.y, cur.y, alpha);
+
+            const x = boardX + gx * cell + cell / 2;
+            const y = boardY + gy * cell + cell / 2;
+
+            const isHead = i === 0;
+            const t = i / Math.max(1, snakeLen - 1);
+            let size = isHead ? cell * .92 : cell * (.84 - t * .18);
+
+            // Pop animation when grown
+            let popScale = 1;
+            if(cur.popAt && state.time - cur.popAt < 360){
+                const popT = easeOut(Math.min(1, (state.time - cur.popAt) / 360));
+                popScale = 0.30 + 0.70 * popT;
+                size *= popScale;
+            }
+
+            ctx.save();
+
+            // Body color shifts based on active buff
+            let bodyColor = "#2bbf80";
+            if(fast)             bodyColor = "#3a9eff";  // electric blue
+            else if(shielded)    bodyColor = "#9be3ff";  // bright cyan
+            else if(state.time < state.magnetUntil) bodyColor = "#ff8fbe"; // pink
+
+            ctx.fillStyle = bodyColor;
+            roundRect(x - size / 2, y - size / 2, size, size, isHead ? size*.36 : size*.31);
+            ctx.fill();
+
+            // Lightning: electric crackle lines on each segment while fast
+            if(fast){
+                const seed = i * 37 + Math.floor(state.time / 70);
+                const r1 = Math.sin(seed * 1.731) * .35;
+                const r2 = Math.cos(seed * 2.193) * .35;
+                ctx.strokeStyle = "rgba(255,255,255,.85)";
+                ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                ctx.moveTo(x - size*.30, y + size*r1);
+                ctx.lineTo(x + size*.10, y + size*(r1*.4 + r2*.3));
+                ctx.lineTo(x + size*.30, y + size*r2);
+                ctx.stroke();
+            }
+
+            // Shield: thin white outline on body
+            if(shielded && !isHead){
+                ctx.strokeStyle = "rgba(255,255,255,.55)";
+                ctx.lineWidth = 1.4;
+                roundRect(x - size / 2, y - size / 2, size, size, isHead ? size*.36 : size*.31);
+                ctx.stroke();
+            }
+
+            // Snake-wide waves traveling head -> tail (lightning, shield, growth pulse)
+            for(const sw of state.snakeWaves){
+                const age = state.time - sw.startAt;
+                if(age < 0 || age > sw.duration) continue;
+                const progress = age / sw.duration;
+                const waveIdx = progress * (snakeLen - 1 + 2) - 1;
+                const dist = Math.abs(i - waveIdx);
+                if(dist < 1.8){
+                    const intensity = (1 - dist / 1.8) * (1 - Math.abs(progress - .5) * .6);
+                    ctx.save();
+                    ctx.globalAlpha = intensity * .85;
+                    ctx.fillStyle = sw.color;
+                    roundRect(x - size / 2, y - size / 2, size, size, isHead ? size*.36 : size*.31);
+                    ctx.fill();
+                    ctx.strokeStyle = sw.glow;
+                    ctx.lineWidth = 2.4;
+                    ctx.globalAlpha = intensity;
+                    roundRect(x - size / 2 - 1.5, y - size / 2 - 1.5, size + 3, size + 3, isHead ? size*.40 : size*.34);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            if(isHead){
+                drawFace(x, y, size, blink);
+
+                if(shielded){
+                    drawShieldShell(x, y, size);
+                }
+
+                if(state.time < state.magnetUntil){
+                    drawMagnetAura(x, y, size);
+                }
+
+                if(fast){
+                    ctx.strokeStyle = "rgba(140,200,255,.85)";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    if(state.dir.x !== 0){
+                        ctx.moveTo(x - state.dir.x*size*.50, y - 6);
+                        ctx.lineTo(x - state.dir.x*size*.84, y - 2);
+                        ctx.moveTo(x - state.dir.x*size*.50, y + 6);
+                        ctx.lineTo(x - state.dir.x*size*.84, y + 2);
+                    }else{
+                        ctx.moveTo(x - 6, y - state.dir.y*size*.50);
+                        ctx.lineTo(x - 2, y - state.dir.y*size*.84);
+                        ctx.moveTo(x + 6, y - state.dir.y*size*.50);
+                        ctx.lineTo(x + 2, y - state.dir.y*size*.84);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            ctx.restore();
+        }
+    }
+
+    function drawMagnetAura(x, y, size){
+        const remain = Math.max(0, state.magnetUntil - state.time);
+        const fading = remain < 1100;
+        const alpha = fading ? remain / 1100 : 1;
+        const r = size * 1.5;
+        const t = state.time;
+
+        // Pulsing pink ring
+        ctx.save();
+        ctx.strokeStyle = `rgba(255,125,180,${.55 * alpha})`;
+        ctx.lineWidth = 1.6;
+        for(let i = 0; i < 3; i++){
+            const phase = (t * .002 + i / 3) % 1;
+            const ringR = r * (.5 + phase * .9);
+            const a = (1 - phase) * alpha * .8;
+            ctx.globalAlpha = a;
+            ctx.beginPath();
+            ctx.arc(x, y, ringR, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function drawShieldShell(x, y, size){
+        const remain = Math.max(0, state.shieldUntil - state.time);
+        const fading = remain < 1100;
+        const baseAlpha = fading ? remain / 1100 : 1;
+        const r = size * .94;
+        const t = state.time * .005;
+
+        ctx.save();
+
+        // Outer rotating segmented ring
+        ctx.translate(x, y);
+        ctx.rotate(t);
+        ctx.strokeStyle = `rgba(190,255,255,${.62 * baseAlpha})`;
+        ctx.lineWidth = 2.6;
+        for(let i = 0; i < 6; i++){
+            const a0 = (i / 6) * Math.PI * 2;
+            const a1 = a0 + Math.PI / 4.2;
+            ctx.beginPath();
+            ctx.arc(0, 0, r, a0, a1);
+            ctx.stroke();
+        }
+
+        // Hex tick markers
+        ctx.fillStyle = `rgba(255,255,255,${.85 * baseAlpha})`;
+        for(let i = 0; i < 6; i++){
+            const a = (i / 6) * Math.PI * 2 + Math.PI / 12;
+            const tx = Math.cos(a) * r;
+            const ty = Math.sin(a) * r;
+            ctx.beginPath();
+            ctx.arc(tx, ty, 2.4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+
+        // Inner counter-rotating ring
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-t * 1.45);
+        ctx.strokeStyle = `rgba(255,255,255,${.45 * baseAlpha})`;
+        ctx.lineWidth = 1.5;
+        for(let i = 0; i < 3; i++){
+            const a0 = (i / 3) * Math.PI * 2;
+            const a1 = a0 + Math.PI / 3.2;
+            ctx.beginPath();
+            ctx.arc(0, 0, r * .76, a0, a1);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Pulsing inner aura (filled radial)
+        const pulse = 1 + Math.sin(state.time * .009) * .07;
+        const aura = ctx.createRadialGradient(x, y, r * .35, x, y, r * pulse);
+        aura.addColorStop(0, `rgba(89,255,195,${.10 * baseAlpha})`);
+        aura.addColorStop(.6, `rgba(120,220,255,${.16 * baseAlpha})`);
+        aura.addColorStop(1, "rgba(120,220,255,0)");
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(x, y, r * pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sparkle dots orbiting the head
+        ctx.fillStyle = `rgba(255,255,255,${.9 * baseAlpha})`;
+        for(let i = 0; i < 4; i++){
+            const a = state.time * .003 + (i / 4) * Math.PI * 2;
+            const sx2 = x + Math.cos(a) * r * 1.04;
+            const sy2 = y + Math.sin(a) * r * 1.04;
+            ctx.beginPath();
+            ctx.arc(sx2, sy2, 1.8 + Math.sin(state.time * .01 + i) * .8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function drawFace(x, y, s, blink){
+        let eyes;
+        if(state.dir.x === 1) eyes = [[.18,-.18],[.18,.18]];
+        else if(state.dir.x === -1) eyes = [[-.18,-.18],[-.18,.18]];
+        else if(state.dir.y === -1) eyes = [[-.18,-.18],[.18,-.18]];
+        else eyes = [[-.18,.18],[.18,.18]];
+
+        ctx.fillStyle = "rgba(2,18,12,.82)";
+
+        if(blink){
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(2,18,12,.82)";
+            for(const e of eyes){
+                ctx.beginPath();
+                ctx.moveTo(x + e[0]*s - 3, y + e[1]*s);
+                ctx.lineTo(x + e[0]*s + 3, y + e[1]*s);
+                ctx.stroke();
+            }
+            return;
+        }
+
+        for(const e of eyes){
+            ctx.beginPath();
+            ctx.arc(x + e[0]*s, y + e[1]*s, Math.max(2.2, s*.09), 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function drawTrails(){
+        return; // disabled (removed glow trail behind snake)
+        for(const t of state.trails){
+            const a = t.life / t.max;
+            ctx.globalAlpha = a * .38;
+            ctx.fillStyle = t.color;
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = t.color;
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, 3 + (1 - a) * 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    function drawParticles(){
+        for(const p of state.particles){
+            const a = p.life / p.max;
+            ctx.globalAlpha = a;
+            ctx.fillStyle = p.color;
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * (.55 + a), 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    function drawWaves(){
+        for(const w of state.waves){
+            const t = 1 - w.life / w.max;
+            ctx.globalAlpha = 1 - t;
+            ctx.strokeStyle = w.color;
+            ctx.lineWidth = 2 + (1 - t) * 2;
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = w.color;
+            ctx.beginPath();
+            ctx.arc(w.x, w.y, w.radius * t, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    function drawTexts(){
+        for(const t of state.texts){
+            const a = t.life / t.max;
+            ctx.globalAlpha = a;
+            ctx.fillStyle = t.color;
+            ctx.shadowBlur = 14;
+            ctx.shadowColor = t.color;
+            ctx.font = `900 ${16 + (1 - a) * 7}px Inter, Arial`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(t.text, t.x, t.y);
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    function drawSparkles(){
+        for(const s of state.sparkles){
+            const a = s.life / s.max;
+            ctx.save();
+            ctx.translate(s.x, s.y);
+            ctx.rotate(s.rotation);
+            ctx.globalAlpha = a;
+            ctx.fillStyle = s.color;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = s.color;
+            drawStar(0, 0, s.size * .5, s.size, 4);
+            ctx.restore();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    function drawStar(x, y, inner, outer, points){
+        ctx.beginPath();
+        for(let i=0;i<points*2;i++){
+            const ang = (Math.PI / points) * i - Math.PI / 2;
+            const r = i % 2 === 0 ? outer : inner;
+            const px = x + Math.cos(ang) * r;
+            const py = y + Math.sin(ang) * r;
+            if(i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    let _errorCount = 0;
+    function loop(now){
+        try {
+            if(!state.last) state.last = now;
+            const dt = Math.min(34, now - state.last);
+            state.last = now;
+            state.time += dt;
+
+            updateEffects(dt);
+            updateStatuses();
+            updateDangerZones();
+
+            if(state.running){
+                state.acc += dt;
+                let _stepGuard = 8;
+                while(state.acc >= state.tick && _stepGuard-- > 0){
+                    state.acc -= state.tick;
+                    step();
+                    if(!state.running) break;
+                }
+                if(_stepGuard <= 0) state.acc = 0;
+            }
+
+            draw(state.running ? Math.min(1, state.acc / state.tick) : 0);
+        } catch(err) {
+            // Silent recovery: log once to console, never paint stack onto canvas
+            if(_errorCount < 3){
+                console.error("[snake loop]", err);
+                _errorCount++;
+            }
+            try { ctx.restore(); } catch(_){}
+        }
+        requestAnimationFrame(loop);
+    }
+
+    function roundRect(x, y, w, h, r){
+        const rr = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rr);
+        ctx.arcTo(x + w, y + h, x, y + h, rr);
+        ctx.arcTo(x, y + h, x, y, rr);
+        ctx.arcTo(x, y, x + w, y, rr);
+        ctx.closePath();
+    }
+
+    function lerp(a, b, t){
+        return a + (b - a) * Math.max(0, Math.min(1, t));
+    }
+
+    function easeOut(t){
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function randomInt(min, max){
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    async function sha256Hex(input){
+        if(!(window.crypto && window.crypto.subtle && window.TextEncoder)){
+            return "";
+        }
+        const bytes = new TextEncoder().encode(String(input));
+        const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+        const arr = Array.from(new Uint8Array(digest));
+        return arr.map(v => v.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function buildClaimPayload(){
+        const safeEarn = clampSnakePayout(state.gram);
+        const envelope = {
+            event: "snake_round_result",
+            action: "claim",
+            session_id: sessionCfg.sessionId,
+            user_id: sessionCfg.userId,
+            round_id: state.roundId,
+            earnings: safeEarn,
+            payout_gram: safeEarn,
+            currency: sessionCfg.currency,
+            started_at: state.roundStartedAt,
+            ended_at: state.roundEndedAt || Date.now(),
+            lock_owner: lockOwner
+        };
+        envelope.server_payout = sessionCfg.serverPayout;
+        envelope.max_payout = sessionCfg.maxPayout;
+        envelope.proof = await sha256Hex(JSON.stringify(envelope));
+        return envelope;
+    }
+
+    function buildSnakeDeepLink(){
+        const amount = clampSnakePayout(state.gram);
+        return `https://t.me/${sessionCfg.botUsername}?start=snakeclaim_${sessionCfg.sessionId}_${amount}_${encodeURIComponent(state.roundId)}`;
+    }
+
+    function scheduleAutoClaimFallback(action = "claim", delay = 1500){
+        const validBot = /^[A-Za-z0-9_]{5,64}$/.test(sessionCfg.botUsername);
+        if(!validBot || autoClaimFallbackOpened) return;
+        clearAutoClaimFallback();
+        autoClaimFallbackTimer = setTimeout(() => {
+            autoClaimFallbackTimer = null;
+            if(autoClaimFallbackOpened || !state.over) return;
+            autoClaimFallbackOpened = true;
+            setClaimStatus("Авто-резерв: открываем бота для подтверждения награды...", "");
+            const deepLink = buildSnakeDeepLink();
+            if(tg && typeof tg.openTelegramLink === "function"){
+                setTimeout(() => {
+                    try{ tg.openTelegramLink(deepLink); } catch(_){ window.location.href = deepLink; }
+                }, 0);
+            } else {
+                window.location.href = deepLink;
+            }
+            closeMiniAppAfterClaim();
+        }, Math.max(600, delay));
+    }
+
+    function closeMiniAppAfterClaim(){
+        if(!tg || typeof tg.close !== "function") return;
+        // Small delay lets Telegram finish dispatching the result first.
+        setTimeout(() => {
+            try{ tg.close(); } catch(_){}
+        }, 1200);
+    }
+
+    async function claimReward(){
+        if(claimInFlight || state.running || !state.over) return;
+        if(state.sessionBlocked){
+            setClaimStatus("Эта сессия уже закрыта.", "warn");
+            return;
+        }
+        if(state.claimSent || sessionConsumed){
+            setClaimStatus("Награда уже была получена.", "warn");
+            return;
+        }
+
+        claimInFlight = true;
+        claimBtn.disabled = true;
+        let claimLocked = false;
+        setClaimStatus("Отправляем результат...", "");
+
+        try{
+            const payload = await buildClaimPayload();
+            const canSendData = Boolean(tg && typeof tg.sendData === "function");
+            const validBot = /^[A-Za-z0-9_]{5,64}$/.test(sessionCfg.botUsername);
+            let sentViaTelegram = false;
+
+            if(!canSendData && !validBot){
+                setClaimStatus("Нужно открыть игру через Telegram, чтобы отправить результат.", "warn");
+                claimInFlight = false;
+                claimBtn.disabled = false;
+                return;
+            }
+
+            state.claimSent = true;
+            await markSessionAsConsumed();
+            claimLocked = true;
+
+            if(validBot){
+                const deepLink = buildSnakeDeepLink();
+                autoClaimFallbackOpened = true;
+                clearAutoClaimFallback();
+                setClaimStatus("Открываем бота для начисления награды...", "ok");
+                if(tg && typeof tg.openTelegramLink === "function"){
+                    setTimeout(() => {
+                        try{ tg.openTelegramLink(deepLink); } catch(_){ window.location.href = deepLink; }
+                    }, 0);
+                } else {
+                    window.location.href = deepLink;
+                }
+                closeMiniAppAfterClaim();
+            } else if(canSendData){
+                tg.sendData(JSON.stringify(payload));
+                setClaimStatus("Награда отправлена. Окно закрывается...", "ok");
+                closeMiniAppAfterClaim();
+            } else {
+                setClaimStatus("Не удалось отправить результат. Откройте игру через бота.", "warn");
+            }
+            claimBtn.classList.remove("hiddenAction");
+            claimBtn.textContent = "НАГРАДА ПОЛУЧЕНА";
+            claimBtn.disabled = true;
+        } catch(err){
+            console.error("[claim]", err);
+            if(claimLocked){
+                state.claimSent = false;
+                sessionConsumed = false;
+                autoClaimFallbackOpened = false;
+                clearAutoClaimFallback();
+                await releaseSessionLock(true);
+            }
+            setClaimStatus("Ошибка отправки. Нажмите кнопку ещё раз.", "warn");
+            claimBtn.disabled = false;
+        } finally {
+            claimInFlight = false;
+        }
+    }
+    function wakeAudio(){
+        try{
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === "suspended") audioCtx.resume();
+        } catch(e){}
+    }
+
+    function playSound(freq, type, duration, volume){
+        if(!audioCtx) return;
+        try{
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e){}
+    }
+
+    function vibrate(pattern){
+        if(navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    // ==== Status banners (СКОРОСТЬ ×2 / ЩИТ) ====
+    const statusBar = document.getElementById("statusBar");
+    const statusEls = {};
+
+    // Three slots in priority order: 1st active effect -> right, 2nd -> left, 3rd -> top
+    const SLOTS = ["slot-right", "slot-left", "slot-top"];
+
+    function ensureStatus(key, cls, label){
+        if(statusEls[key]) return statusEls[key];
+        const el = document.createElement("div");
+        el.className = "status " + cls;
+        el.style.display = "none";
+        el.innerHTML = `<div class="stLabel">${label}</div><div class="stTimer">5</div>`;
+        document.body.appendChild(el);
+        statusEls[key] = { el, timerEl: el.querySelector(".stTimer"), visible:false, removing:false, slot:null };
+        return statusEls[key];
+    }
+
+    function assignSlot(s){
+        if(s.slot) return;
+        const taken = new Set();
+        for(const k in statusEls){
+            const x = statusEls[k];
+            if(x !== s && x.slot && (x.visible || x.removing)) taken.add(x.slot);
+        }
+        for(const slot of SLOTS){
+            if(!taken.has(slot)){
+                s.slot = slot;
+                s.el.classList.add(slot);
+                return;
+            }
+        }
+    }
+
+    function releaseSlot(s){
+        if(s.slot){
+            s.el.classList.remove(s.slot);
+            s.slot = null;
+        }
+    }
+
+    function showStatus(s){
+        if(s.removing){
+            s.el.classList.remove("fadeOut");
+            s.removing = false;
+        }
+        if(!s.visible){
+            assignSlot(s);
+            s.el.style.display = "";
+            // Restart entry animation
+            s.el.style.animation = "none";
+            void s.el.offsetHeight;
+            s.el.style.animation = "";
+            s.visible = true;
+        }
+    }
+
+    function hideStatus(s){
+        if(s.visible && !s.removing){
+            s.removing = true;
+            s.el.classList.add("fadeOut");
+            setTimeout(() => {
+                if(s.removing){
+                    s.el.style.display = "none";
+                    s.el.classList.remove("fadeOut");
+                    s.visible = false;
+                    s.removing = false;
+                    releaseSlot(s);
+                }
+            }, 230);
+        }
+    }
+
+    const speedStatus = ensureStatus("speed", "speed", "СКОРОСТЬ ×2");
+    const shieldStatus = ensureStatus("shield", "shield", "ЩИТ");
+    const magnetStatus = ensureStatus("magnet", "magnet", "МАГНИТ");
+
+    function updateStatuses(){
+        const speedRem = state.speedUntil - state.time;
+        if(state.running && speedRem > 0){
+            showStatus(speedStatus);
+            const sec = Math.max(0, Math.ceil(speedRem / 1000));
+            if(speedStatus.timerEl.textContent !== String(sec)) speedStatus.timerEl.textContent = sec;
+        } else {
+            hideStatus(speedStatus);
+        }
+
+        const shieldRem = state.shieldUntil - state.time;
+        if(state.running && shieldRem > 0){
+            showStatus(shieldStatus);
+            const sec = Math.max(0, Math.ceil(shieldRem / 1000));
+            if(shieldStatus.timerEl.textContent !== String(sec)) shieldStatus.timerEl.textContent = sec;
+        } else {
+            hideStatus(shieldStatus);
+        }
+
+        const magnetRem = state.magnetUntil - state.time;
+        if(state.running && magnetRem > 0){
+            showStatus(magnetStatus);
+            const sec = Math.max(0, Math.ceil(magnetRem / 1000));
+            if(magnetStatus.timerEl.textContent !== String(sec)) magnetStatus.timerEl.textContent = sec;
+        } else {
+            hideStatus(magnetStatus);
+        }
+    }
+
+    let swipeStart = null;
+
+    window.addEventListener("pointerdown", e => {
+        wakeAudio();
+        if(overlay.contains(e.target)) return;
+        swipeStart = { x:e.clientX, y:e.clientY };
+    });
+
+    window.addEventListener("pointermove", e => {
+        if(!swipeStart || !state.running) return;
+
+        const dx = e.clientX - swipeStart.x;
+        const dy = e.clientY - swipeStart.y;
+
+        if(Math.hypot(dx, dy) > 32){
+            if(Math.abs(dx) > Math.abs(dy)) input(dx > 0 ? "right" : "left");
+            else input(dy > 0 ? "down" : "up");
+            swipeStart = { x:e.clientX, y:e.clientY };
+        }
+    });
+
+    window.addEventListener("pointerup", () => {
+        swipeStart = null;
+    });
+
+    startBtn.addEventListener("click", () => { void startGame(); });
+    claimBtn.addEventListener("click", () => {
+        if(state.claimSent && /^[A-Za-z0-9_]{5,64}$/.test(sessionCfg.botUsername)){
+            setClaimStatus("Открываем бота для резервного получения...", "");
+            const deepLink = buildSnakeDeepLink();
+            autoClaimFallbackOpened = true;
+            clearAutoClaimFallback();
+            if(tg && typeof tg.openTelegramLink === "function"){
+                setTimeout(() => {
+                    try{ tg.openTelegramLink(deepLink); } catch(_){ window.location.href = deepLink; }
+                }, 0);
+            } else {
+                window.location.href = deepLink;
+            }
+            closeMiniAppAfterClaim();
+            return;
+        }
+        void claimReward();
+    });
+    window.addEventListener("resize", resize);
+    window.addEventListener("orientationchange", () => setTimeout(resize, 100));
+    document.addEventListener("visibilitychange", () => {
+        if(!document.hidden) resize();
+    });
+    window.addEventListener("beforeunload", () => {
+        void releaseSessionLock(false);
+    });
+
+    document.addEventListener("touchmove", e => e.preventDefault(), { passive:false });
+    document.addEventListener("gesturestart", e => e.preventDefault());
+
+    updateSessionLabel();
+    try {
+        if(tg){
+            tg.ready();
+            tg.expand();
+        }
+    } catch(e){}
+
+    if(sessionCfg.sessionId > 0){
+        if(!await acquireSessionLock()){
+            blockSessionScreen(sessionConsumed ? "Награда по этой сессии уже получена." : "Эта сессия уже запущена на другом устройстве.");
+        } else {
+            setClaimStatus(`Сессия #${formatSessionId(sessionCfg.sessionId)} защищена.`, "");
+        }
+    } else {
+        setClaimStatus("Локальная сессия: тестовый режим без серверной валидации.", "warn");
+    }
+
+    resize();
+    updateHud();
+    requestAnimationFrame(loop);
+
+    // Safety re-resize in case viewport wasn't ready on initial load
+    setTimeout(resize, 60);
+    setTimeout(resize, 250);
+    window.addEventListener("load", resize);
+})().catch(err => {
+    console.error("[boot]", err);
+});
+</script>
+</body>
+</html>
+
+
