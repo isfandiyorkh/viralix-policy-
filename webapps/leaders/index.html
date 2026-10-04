@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>VORTEX LEADERBOARD</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --card: rgba(18, 18, 18, 0.8);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.28);
+      --text: #ffffff;
+      --text-dim: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 50% -20%, var(--accent-glow), transparent 70%),
+        radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.06), transparent 40%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 0;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -20% -10%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+      filter: blur(16px);
+    }
+
+    body::before {
+      background:
+        radial-gradient(420px 320px at 18% 12%, rgba(16, 185, 129, 0.18), transparent 76%),
+        radial-gradient(620px 460px at 86% 18%, rgba(255, 255, 255, 0.08), transparent 78%);
+      animation: glowMove 26s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transform: translateX(-40%);
+      animation: sweep 24s ease-in-out infinite alternate;
+      opacity: 0.24;
+      filter: blur(18px);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(30px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-140%) skewX(-16deg); opacity: 0; }
+      40% { opacity: 0.35; }
+      100% { transform: translateX(140%) skewX(-16deg); opacity: 0; }
+    }
+
+    @keyframes glowMove {
+      0% { transform: translate3d(-2%, -2%, 0) scale(1); opacity: 0.4; }
+      100% { transform: translate3d(2%, 2%, 0) scale(1.05); opacity: 0.55; }
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-50%); opacity: 0.2; }
+      100% { transform: translateX(50%); opacity: 0.32; }
+    }
+
+    header {
+      text-align: center;
+      animation: reveal 0.8s ease-out forwards;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 28px;
+      letter-spacing: -1px;
+      background: linear-gradient(to bottom, #fff, #64748b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      animation: reveal 0.8s ease-out 0.2s both;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,0.12), transparent);
+      animation: shimmer 10s ease-in-out infinite;
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .currency { color: var(--accent); font-size: 16px; opacity: 0.9; }
+
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .p-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      min-width: 0;
+    }
+
+    .avatar-box {
+      width: 68px;
+      height: 68px;
+      border-radius: 24px;
+      padding: 3px;
+      position: relative;
+      background: var(--border);
+      margin-bottom: 12px;
+    }
+
+    .avatar-box.first {
+      width: 90px;
+      height: 90px;
+      border-radius: 32px;
+      background: var(--accent);
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+      background: #0f1115;
+    }
+
+    .rank-badge {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #000;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 10px;
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+
+    .p-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+      max-width: 100%;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .p-score {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 800;
+      font-family: 'Unbounded', sans-serif;
+      white-space: nowrap;
+    }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+
+    .row {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      min-width: 0;
+    }
+
+    .row::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: shimmer 14s ease-in-out infinite;
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    .r-avatar { width: 36px; height: 36px; border-radius: 12px; object-fit: cover; background: #0f1115; z-index: 1; }
+    .r-rank { font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text-dim); width: 20px; z-index: 1; }
+    .r-name {
+      flex: 1;
+      min-width: 0;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .r-score { font-family: 'Unbounded', sans-serif; font-size: 12px; color: #fff; z-index: 1; white-space: nowrap; }
+
+    .footer-logo {
+      text-align: center;
+      opacity: 0;
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 4px;
+      animation: reveal 0.8s ease-out 1.2s both;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>LEADERBOARD</h1>
+    </header>
+
+    <div class="stat-card">
+      <div class="stat-label">Общий оборот топ 6</div>
+      <div class="stat-value">
+        <span id="totalCount">0</span>
+        <span class="currency" id="currencyLabel">GRAM</span>
+      </div>
+    </div>
+
+    <div class="podium">
+      <div class="p-item" style="animation-delay: 0.5s">
+        <div class="avatar-box">
+          <img id="p2-img" src="" alt="">
+          <div class="rank-badge">2</div>
+        </div>
+        <span class="p-name" id="p2-name">-</span>
+        <span class="p-score" id="p2-score">0</span>
+      </div>
+      <div class="p-item" style="animation-delay: 0.4s">
+        <div class="avatar-box first">
+          <img id="p1-img" src="" alt="">
+          <div class="rank-badge" style="background: var(--accent); color: white;">1</div>
+        </div>
+        <span class="p-name" id="p1-name" style="font-size: 15px;">-</span>
+        <span class="p-score" id="p1-score" style="font-size: 13px;">0</span>
+      </div>
+      <div class="p-item" style="animation-delay: 0.6s">
+        <div class="avatar-box">
+          <img id="p3-img" src="" alt="">
+          <div class="rank-badge">3</div>
+        </div>
+        <span class="p-name" id="p3-name">-</span>
+        <span class="p-score" id="p3-score">0</span>
+      </div>
+    </div>
+
+    <div class="list" id="listRows"></div>
+    
+    <div class="footer-logo">VORTEX</div>
+  </div>
+
+  <script>
+    const demo = {
+      currency: "GRAM",
+      players: [
+        { name: "Arclight", score: 1240500, avatar: "https://i.pravatar.cc/150?u=1" },
+        { name: "Nova", score: 980200, avatar: "https://i.pravatar.cc/150?u=2" },
+        { name: "Skylab", score: 850000, avatar: "https://i.pravatar.cc/150?u=3" },
+        { name: "Zenith", score: 620000, avatar: "https://i.pravatar.cc/150?u=4" },
+        { name: "Shadow", score: 450000, avatar: "https://i.pravatar.cc/150?u=5" },
+        { name: "Ghost", score: 310000, avatar: "https://i.pravatar.cc/150?u=6" }
+      ]
+    };
+
+    const fmt = new Intl.NumberFormat('ru-RU');
+
+    function safeNum(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function formatTurnoverShort(value) {
+      const n = Math.max(0, Math.floor(safeNum(value)));
+      const units = [
+        { v: 1e15, s: "КВАДРИЛЛИОН" },
+        { v: 1e12, s: "ТРИЛЛИАРД" },
+        { v: 1e9, s: "МЛРД" },
+        { v: 1e6, s: "МЛН" },
+        { v: 1e3, s: "ТЫС" }
+      ];
+      for (const u of units) {
+        if (n >= u.v) {
+          return `${Math.floor(n / u.v)}${u.s}`;
+        }
+      }
+      return fmt.format(n);
+    }
+
+    function avatarLetter(name) {
+      const src = String(name || "").trim().replace(/^@/, "");
+      for (const ch of src) {
+        if (/[0-9A-Za-zА-Яа-яЁё]/.test(ch)) {
+          return ch.toUpperCase();
+        }
+      }
+      return "U";
+    }
+
+    function hashSeed(value) {
+      const s = String(value || "user");
+      let h = 0;
+      for (let i = 0; i < s.length; i += 1) {
+        h = ((h << 5) - h) + s.charCodeAt(i);
+        h |= 0;
+      }
+      return Math.abs(h);
+    }
+
+    function initialsAvatar(name, seed) {
+      const palettes = [
+        ["#22d3ee", "#0ea5e9"],
+        ["#34d399", "#10b981"],
+        ["#f59e0b", "#f97316"],
+        ["#a78bfa", "#6366f1"],
+        ["#fb7185", "#ef4444"],
+        ["#2dd4bf", "#14b8a6"],
+        ["#60a5fa", "#2563eb"]
+      ];
+      const palette = palettes[hashSeed(seed || name) % palettes.length];
+      const letter = avatarLetter(name);
+      const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${palette[0]}"/>
+      <stop offset="100%" stop-color="${palette[1]}"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="44" fill="url(#g)"/>
+  <circle cx="80" cy="80" r="66" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="2"/>
+  <text x="80" y="98" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="74" font-weight="800" fill="#ffffff">${letter}</text>
+</svg>`;
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    }
+
+    function readPayload() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("data") || params.get("payload");
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function normalizePlayers(input) {
+      const list = Array.isArray(input) ? input : [];
+      return list.map((item, idx) => {
+        const raw = item || {};
+        const username = String(raw.username || "").trim().replace(/^@/, "").toLowerCase();
+        const name = String(raw.name || raw.username || "").trim() || `Player ${idx + 1}`;
+        const score = Math.max(0, safeNum(raw.score ?? raw.turnover ?? 0));
+        const avatar = String(raw.avatar || raw.photo || "").trim();
+        const uid = raw.tg_id || raw.id || "";
+        const candidates = [];
+        if (avatar) {
+          candidates.push(avatar);
+        }
+        if (username) {
+          const uname = encodeURIComponent(username);
+          candidates.push(`https://t.me/i/userpic/320/${uname}.jpg`);
+          candidates.push(`https://unavatar.io/telegram/${uname}`);
+          candidates.push(`https://unavatar.io/${uname}`);
+        }
+        if (uid) {
+          const sid = encodeURIComponent(String(uid));
+          candidates.push(`https://t.me/i/userpic/320/${sid}.jpg`);
+          candidates.push(`https://i.pravatar.cc/150?u=${sid}`);
+        }
+        const avatarCandidates = [...new Set(candidates.filter(Boolean))];
+        const fallback = initialsAvatar(name, raw.tg_id || raw.id || name || `player-${idx + 1}`);
+        return { name, score, avatarCandidates, fallback };
+      });
+    }
+
+    function normalizePayload(src) {
+      const payload = src && typeof src === "object" ? src : {};
+      const currency = String(payload.currency || "GRAM").trim() || "GRAM";
+      let players = normalizePlayers(payload.players);
+      if (!players.length && Array.isArray(payload.leaders)) {
+        players = normalizePlayers(payload.leaders);
+      }
+      return { currency, players };
+    }
+
+    function fillPlayers(players, count) {
+      const out = players.slice(0, count);
+      while (out.length < count) {
+        const idx = out.length + 1;
+        const fallback = initialsAvatar("-", `empty-${idx}`);
+        out.push({
+          name: "-",
+          score: 0,
+          avatarCandidates: [fallback],
+          fallback
+        });
+      }
+      return out;
+    }
+
+    function applyAvatar(imgEl, avatarCandidates, fallbackUrl) {
+      if (!imgEl) return;
+      const fallback = fallbackUrl || initialsAvatar("User", "User");
+      const queue = Array.isArray(avatarCandidates)
+        ? avatarCandidates.filter(Boolean)
+        : (avatarCandidates ? [String(avatarCandidates)] : []);
+      imgEl.referrerPolicy = "no-referrer";
+      imgEl.decoding = "async";
+      imgEl.loading = "lazy";
+      let idx = 0;
+      const setFallback = () => {
+        imgEl.onerror = null;
+        imgEl.src = fallback;
+      };
+      const loadNext = () => {
+        if (idx >= queue.length) {
+          setFallback();
+          return;
+        }
+        imgEl.src = queue[idx];
+        idx += 1;
+      };
+      imgEl.onerror = () => {
+        loadNext();
+      };
+      loadNext();
+    }
+
+    function initTelegramWebApp() {
+      const tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) return;
+      try {
+        tg.ready();
+        tg.expand();
+        if (typeof tg.disableVerticalSwipes === "function") {
+          tg.disableVerticalSwipes();
+        }
+      } catch (e) {
+      }
+    }
+
+    function init() {
+      initTelegramWebApp();
+      const payload = normalizePayload(readPayload() || demo);
+      const players = fillPlayers(payload.players, 6);
+      const total = players.reduce((s, p) => s + p.score, 0);
+
+      animateNum(document.getElementById('totalCount'), total);
+      const currencyEl = document.getElementById('currencyLabel');
+      if (currencyEl && payload.currency) {
+        currencyEl.textContent = payload.currency;
+      }
+
+      const mapping = { 'p1': players[0], 'p2': players[1], 'p3': players[2] };
+      Object.keys(mapping).forEach(id => {
+        const p = mapping[id];
+        document.getElementById(`${id}-name`).textContent = p.name;
+        document.getElementById(`${id}-score`).textContent = formatTurnoverShort(p.score);
+        applyAvatar(document.getElementById(`${id}-img`), p.avatarCandidates, p.fallback);
+      });
+
+      const listContainer = document.getElementById('listRows');
+      listContainer.innerHTML = "";
+      players.slice(3).forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.style.animation = `reveal 0.6s ease-out both ${0.8 + (i * 0.1)}s`;
+
+        const rank = document.createElement('div');
+        rank.className = 'r-rank';
+        rank.textContent = String(i + 4);
+
+        const avatar = document.createElement('img');
+        avatar.className = 'r-avatar';
+        applyAvatar(avatar, p.avatarCandidates, p.fallback);
+
+        const name = document.createElement('div');
+        name.className = 'r-name';
+        name.textContent = p.name;
+
+        const score = document.createElement('div');
+        score.className = 'r-score';
+        score.textContent = formatTurnoverShort(p.score);
+
+        row.appendChild(rank);
+        row.appendChild(avatar);
+        row.appendChild(name);
+        row.appendChild(score);
+        listContainer.appendChild(row);
+      });
+    }
+
+    function animateNum(el, target) {
+      let start = 0;
+      const duration = 1500;
+      const startTime = performance.now();
+      function update(t) {
+        const progress = Math.min((t - startTime) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 4);
+        el.textContent = formatTurnoverShort(Math.floor(target * ease));
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    init();
+  </script>
+</body>
+</html>
