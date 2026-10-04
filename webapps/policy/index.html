@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f3f0e8" />
+  <title>VORTEX BOT | Официальная политика сервиса</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --paper: #ffffff;
+      --paper-soft: #fbf8f1;
+      --ink: #151515;
+      --muted: #514d45;
+      --line: #d9d0bf;
+      --line-strong: #b9ad98;
+      --accent: #2f2a22;
+      --accent-2: #486254;
+      --warn: #755225;
+      --risk: #7a2f2f;
+      --ok: #2f6643;
+      --shadow: 0 18px 44px #00000012;
+      --shadow-soft: 0 8px 22px #0000000d;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --max: 1080px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffffcc 0%, #ffffff00 190px),
+        linear-gradient(90deg, #00000003 1px, transparent 1px) 0 0 / 40px 40px,
+        linear-gradient(180deg, #f6f2e9, var(--bg));
+      line-height: 1.68;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.34;
+      background:
+        radial-gradient(760px 300px at 96% 8%, #48625424, #00000000 73%),
+        radial-gradient(520px 250px at 5% 34%, #75522518, #00000000 76%),
+        radial-gradient(420px 230px at 72% 84%, #7a2f2f12, #00000000 78%);
+      animation: paperFloat 18s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 200;
+    }
+
+    .progress__bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #252019, #486254, #252019);
+      transition: width 120ms linear;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 20px 14px 52px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .masthead,
+    .section,
+    .footer {
+      background: linear-gradient(180deg, #ffffff, var(--paper-soft));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .masthead {
+      border-top: 3px solid var(--accent);
+      padding: 24px 20px 18px;
+      margin-bottom: 12px;
+    }
+
+    .masthead::before {
+      content: "VORTEX POLICY";
+      position: absolute;
+      right: 14px;
+      bottom: 8px;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(17px, 2.2vw, 24px);
+      letter-spacing: 1.6px;
+      color: #00000010;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .brandline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: #faf7ef;
+      color: #37342f;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+    }
+
+    .tag.alert {
+      border-color: #c8b18b;
+      background: #fff8eb;
+      color: #624624;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(30px, 4.8vw, 48px);
+      line-height: 1.1;
+      font-weight: 800;
+      color: #121212;
+      text-wrap: balance;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      max-width: 980px;
+      font-size: clamp(15px, 2.1vw, 18px);
+      color: #2f2e2a;
+    }
+
+    .decree {
+      margin-top: 14px;
+      border: 1px solid #d4cdbd;
+      border-left: 3px solid var(--accent-2);
+      border-radius: 9px;
+      background: #f7f4eb;
+      padding: 10px 11px;
+      font-size: 13px;
+      color: #2d2b28;
+    }
+
+    .stateline {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 8px;
+    }
+
+    .stateline span {
+      border: 1px solid #ddd6c8;
+      background: #fffefb;
+      border-radius: 9px;
+      padding: 7px 9px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #3f3a31;
+    }
+
+    .section {
+      padding: 15px 14px 13px;
+      margin-bottom: 10px;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent-2), #48625400 76%);
+    }
+
+    .section::after {
+      content: "§";
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: 26px;
+      color: #00000012;
+    }
+
+    .section h2 {
+      margin: 0 0 9px;
+      padding-right: 34px;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(21px, 2.85vw, 28px);
+      line-height: 1.25;
+      font-weight: 800;
+      color: #1a1a1a;
+      text-wrap: balance;
+    }
+
+    .section h2::after {
+      content: "";
+      display: block;
+      width: 72px;
+      height: 1px;
+      margin-top: 6px;
+      background: linear-gradient(90deg, var(--accent-2), #48625400);
+    }
+
+    .section p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #24231f;
+    }
+
+    .section ul,
+    .section ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .section li {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #282722;
+    }
+
+    strong {
+      color: #111;
+    }
+
+    code {
+      font-family: "Consolas", "SFMono-Regular", monospace;
+      font-size: 0.95em;
+      background: #f4f1e8;
+      border: 1px solid #ded6c7;
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .callout {
+      margin-top: 10px;
+      border: 1px solid #d6d0c2;
+      border-radius: var(--radius-md);
+      background: #faf8f1;
+      padding: 10px 11px;
+      font-size: 13px;
+      color: #36342f;
+      box-shadow: inset 0 1px 0 #ffffff;
+    }
+
+    .callout.ok {
+      border-color: #bad3c2;
+      background: #f4faf5;
+      color: var(--ok);
+    }
+
+    .callout.warn {
+      border-color: #dcc9b3;
+      background: #fdf7f1;
+      color: var(--warn);
+    }
+
+    .callout.risk {
+      border-color: #d9bfbf;
+      background: #fdf4f4;
+      color: var(--risk);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e8e5dd;
+      padding: 8px 9px;
+      color: #2f2e2a;
+    }
+
+    th {
+      background: #f4f1e8;
+      color: #1c1c1c;
+      font-weight: 800;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .appendix {
+      border-style: dashed;
+      background: linear-gradient(180deg, #fffefb, #fbf8f1);
+    }
+
+    .footer {
+      margin-top: 12px;
+      padding: 16px 14px 14px;
+      color: #2f2f2f;
+      font-size: 13px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .footer strong {
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(20px, 2.5vw, 28px);
+      line-height: 1.1;
+    }
+
+    .edition-badge {
+      border: 1px solid #c7bcaa;
+      border-radius: 999px;
+      background: #f8f4ea;
+      color: #4f4739;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.55px;
+    }
+
+    .footer-text {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: #2f2c28;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 9px;
+      margin-bottom: 10px;
+    }
+
+    .footer-card {
+      border: 1px solid #d9d2c4;
+      border-radius: 10px;
+      background: #fffefb;
+      padding: 10px 11px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .footer-card h3 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.55px;
+      color: #40392f;
+    }
+
+    .footer-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #3a372f;
+    }
+
+    .footer-sign {
+      border-top: 1px dashed #cbc2b1;
+      padding-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #5a5448;
+    }
+
+    .legal-strip {
+      margin-top: 10px;
+      border-top: 1px solid #d8d0c2;
+      padding: 11px 6px 0;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.65;
+      color: #6a6458;
+      letter-spacing: 0.15px;
+    }
+
+    .legal-strip small {
+      display: block;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #8a8275;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .to-top {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid #bfb7a7;
+      background: conic-gradient(#2d2821 var(--scroll-ratio, 0%), #e9e2d4 0);
+      color: #1f1c17;
+      font-size: 19px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 24px #00000012;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 220ms ease, transform 220ms ease;
+      z-index: 220;
+    }
+
+    .to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px) scale(0.995);
+      filter: blur(2px);
+      transition:
+        opacity 560ms ease,
+        transform 560ms cubic-bezier(0.2, 0.85, 0.2, 1),
+        filter 560ms ease;
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    @keyframes paperFloat {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-10px, 8px, 0); }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        padding: 13px 10px 40px;
+      }
+
+      .masthead {
+        padding: 18px 12px 14px;
+      }
+
+      .section {
+        padding: 13px 10px 11px;
+      }
+
+      .section p,
+      .section li {
+        font-size: 14px;
+      }
+
+      .footer {
+        padding: 13px 11px 12px;
+      }
+
+      .footer strong {
+        font-size: clamp(18px, 7vw, 24px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+
+  <div class="shell">
+    <header class="masthead reveal">
+      <div class="brandline">
+        <span class="tag">Официальный документ</span>
+        <span class="tag">VORTEX BOT</span>
+        <span class="tag">Редакция 4.0</span>
+        <span class="tag alert">Обязательно для пользователей и администрации</span>
+      </div>
+      <h1>Политика и правила использования VORTEX BOT</h1>
+      <p class="intro">
+        Этот документ описывает правила работы VORTEX BOT, функции сервиса, порядок игр, пополнений,
+        выводов, бонусов, поддержки, модерации и разборов конфликтов. Использование бота означает,
+        что пользователь принимает эти условия и соглашается с тем, что решения по спорным ситуациям
+        принимаются на основании системных данных.
+      </p>
+      <div class="decree">
+        Официальным источником правил является страница, открываемая через кнопку «📄 Политика».
+        При конфликте между словами пользователя, скриншотами и внутренними записями приоритет имеют
+        база данных, транзакции, статусы заявок, игровые логи, тикеты и журналы действий администраторов.
+      </div>
+      <div class="stateline">
+        <span><strong>Сервис:</strong> VORTEX BOT.</span>
+        <span><strong>Валюта:</strong> GRAM — внутренняя учетная единица сервиса.</span>
+        <span><strong>Контакт:</strong> обращения принимаются через кнопку «🆘 Поддержка».</span>
+      </div>
+    </header>
+
+    <section class="section reveal">
+      <h2>1. Принятие правил</h2>
+      <ul>
+        <li>Пользователь принимает правила при запуске бота, отправке сообщения, нажатии кнопок, участии в игре, пополнении, выводе или обращении в поддержку.</li>
+        <li>Администрация вправе обновлять политику без отдельного персонального уведомления. Новая редакция действует с момента публикации в WebApp.</li>
+        <li>Незнание правил не освобождает пользователя от ограничений, отказов, отмены начислений или блокировки.</li>
+        <li>Если пользователь не согласен с правилами, он обязан прекратить использование бота.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>2. Что делает бот</h2>
+      <p>VORTEX BOT предоставляет игровой и сервисный функционал внутри Telegram:</p>
+      <ul>
+        <li>личный кабинет с Telegram ID, балансом, кэшбэк-копилкой, оборотом, титулом, рефералами и историей операций;</li>
+        <li>игры: «💎 Мины», «🎲 Кубы 3x3», «☄️ Астероиды», «🐍 Змейка», «🎰 Кейсы», «🏀 Баскетбол», «⚽ Футбол»;</li>
+        <li>пополнение GRAM через чек-ссылки и через Telegram Stars по курсу, установленному администрацией;</li>
+        <li>вывод GRAM с основного баланса или из кэшбэк-копилки, если доступ к источнику открыт системой;</li>
+        <li>кэшбэк, титулы, реферальную программу, реферальный лидерборд, общий лидерборд, промокоды, стейкинг и ускорители выигрышей;</li>
+        <li>поддержку через тикеты, обязательные подписки на каналы, системные уведомления и административную модерацию.</li>
+      </ul>
+      <div class="callout">
+        Функции могут включаться, отключаться, ограничиваться или менять параметры в зависимости от технического состояния, риска казны и решений администрации.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>3. Статус GRAM и баланса</h2>
+      <ul>
+        <li>GRAM используется как внутренняя учетная единица VORTEX BOT для игр, бонусов, заявок, стейкинга и отображения баланса.</li>
+        <li>Баланс, кэшбэк-копилка, бонусы, промокоды, реферальные начисления, выигрыши и стейкинг существуют только в рамках базы данных сервиса.</li>
+        <li>Официальным состоянием баланса считается состояние, зафиксированное в системе, а не сообщение пользователя, скриншот или локальное отображение Telegram.</li>
+        <li>Администрация вправе корректировать ошибочные, дублированные, мошеннические или технически неверные начисления.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>4. Аккаунт и доступ</h2>
+      <ul>
+        <li>Один Telegram ID соответствует одному профилю пользователя в боте.</li>
+        <li>Пользователь отвечает за все действия, совершенные с его Telegram-аккаунта.</li>
+        <li>Передача аккаунта, совместное использование, продажа доступа, регистрация дублей и обход блокировок запрещены.</li>
+        <li>При подозрении на мультиаккаунтинг, передачу аккаунта или обход ограничений администрация может ограничить игры, выводы, бонусы, поддержку или полностью заблокировать профиль.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>5. Игровые правила</h2>
+      <ul>
+        <li>Ставка списывается при запуске игровой сессии или подтверждении ставки.</li>
+        <li>Результат игры фиксируется только после серверной обработки: запись раунда, сессии, ставки, выплаты и статуса в базе имеет приоритет.</li>
+        <li>В Telegram-играх результат зависит от механики Telegram dice и правил выплат, установленных сервером.</li>
+        <li>В WebApp-играх результат, приз, лимит выплаты и возможность получения выигрыша подтверждаются сервером. Данные, отправленные браузером пользователя, не имеют силы без серверной проверки.</li>
+        <li>Если игра не может быть безопасно завершена из-за технической ошибки, система может вернуть ставку, зафиксировать нулевой результат или отправить сессию на ручную проверку.</li>
+      </ul>
+      <div class="callout risk">
+        Подмена WebApp-данных, попытка изменить выплату, повторно получить приз, отправить чужую сессию или обойти кнопку «Забрать приз» считается нарушением.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>6. Игры VORTEX BOT</h2>
+      <ul>
+        <li><strong>Мины:</strong> пользователь выбирает сложность, ставку, клетки и может забрать выигрыш до попадания на мину; итог определяется серверной картой и статусом сессии.</li>
+        <li><strong>Кубы 3x3:</strong> WebApp-игра с фиксированной стоимостью запуска и серверной проверкой приза; повторный первый приз по одному устройству или профилю может быть заблокирован.</li>
+        <li><strong>Астероиды:</strong> WebApp-игра с серверным лимитом выплаты; заявленные клиентом очки проверяются и могут быть ограничены.</li>
+        <li><strong>Змейка:</strong> WebApp-игра с серверным лимитом выплаты; клиентская сумма не считается окончательной без проверки.</li>
+        <li><strong>Кейсы:</strong> WebApp-игра, где пользователь выбирает кейс и количество открытий, а стоимость списывается при запуске сессии. Приз фиксируется сервером по оплаченной сессии и начисляется после нажатия кнопки получения приза; повторная выдача по одной и той же сессии не выполняется.</li>
+        <li><strong>Баскетбол и Футбол:</strong> игры на основе Telegram dice, где ставка, коэффициент и результат фиксируются сервером.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>7. Пополнение</h2>
+      <ul>
+        <li>Пополнение выполняется через заявку в боте: пользователь вводит сумму и отправляет чек-ссылку установленного формата.</li>
+        <li>Минимальные, максимальные суммы и формат чека определяются текущими настройками сервиса.</li>
+        <li>Один чек может использоваться только один раз. Повторная, измененная, чужая, недействительная или уже активированная ссылка может быть отклонена.</li>
+        <li>Пополнение получает статус <code>pending</code>, <code>approved</code> или <code>rejected</code>.</li>
+        <li>Зачисление GRAM происходит только после подтверждения системой или администратором.</li>
+        <li>Пополнение через Telegram Stars выполняется по текущему курсу Stars → GRAM; курс может меняться администрацией.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Статус</th>
+              <th>Значение</th>
+              <th>Итог</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>pending</code></td>
+              <td>Заявка создана и ожидает проверки</td>
+              <td>GRAM еще не зачислены</td>
+            </tr>
+            <tr>
+              <td><code>approved</code></td>
+              <td>Чек подтвержден</td>
+              <td>GRAM зачислены на баланс</td>
+            </tr>
+            <tr>
+              <td><code>rejected</code></td>
+              <td>Заявка отклонена</td>
+              <td>Зачисление не выполняется</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>8. Вывод</h2>
+      <ul>
+        <li>Вывод создается через личный кабинет или кнопку вывода и проходит проверку администрацией или автоматическим контуром заявок.</li>
+        <li>Вывод возможен с основного баланса. Вывод из кэшбэк-копилки доступен только после выполнения условий титула и оборота, установленных системой.</li>
+        <li>Минимальная, максимальная сумма, доступные источники и приоритет обработки определяются текущими настройками и титулом пользователя.</li>
+        <li>При создании заявки сумма резервируется. При отклонении вывода резерв возвращается в исходный источник.</li>
+        <li>Администрация вправе отклонить вывод при подозрении на нарушение, техническом несоответствии, недостатке данных, фейковых действиях, накрутке или риске для сервиса.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Статус</th>
+              <th>Значение</th>
+              <th>Итог</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>pending</code></td>
+              <td>Заявка ожидает первичной проверки</td>
+              <td>Средства зарезервированы</td>
+            </tr>
+            <tr>
+              <td><code>awaiting_check</code></td>
+              <td>Заявка принята, готовится чек</td>
+              <td>Пользователь ожидает выдачу чека</td>
+            </tr>
+            <tr>
+              <td><code>approved</code></td>
+              <td>Вывод завершен</td>
+              <td>Чек отправлен пользователю</td>
+            </tr>
+            <tr>
+              <td><code>rejected</code></td>
+              <td>Вывод отклонен</td>
+              <td>Резерв возвращается по регламенту</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>9. Кэшбэк, титулы и приоритеты</h2>
+      <ul>
+        <li>Кэшбэк начисляется по ставкам и условиям, установленным в боте, и отображается отдельно от основного баланса.</li>
+        <li>Титулы выдаются по обороту и могут открывать бонусы, приоритет вывода, повышенный кэшбэк, дополнительные лимиты или доступ к выводу копилки.</li>
+        <li>Доступные титулы включают «Тактик», «Стратег», «Доминион», «Профессионал», «Эмиссар» и «Оверлорд».</li>
+        <li>Бонус титула, дополнительный подарок или секретный подарок начисляются только если система зафиксировала достижение условий.</li>
+        <li>Администрация вправе отменить титул, бонус или начисление, если оборот, игры или действия были получены нарушением правил.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>10. Рефералы и лидерборды</h2>
+      <ul>
+        <li>Реферальная ссылка находится в личном кабинете и привязывает нового пользователя к пригласившему, если система корректно зафиксировала переход.</li>
+        <li>Реферальный бонус за первый депозит и процент от выигрышей начисляются только после выполнения условий депозита, оборота и активности реферала.</li>
+        <li>Реферальные очки и лидерборд могут учитывать приглашения, игры, депозиты и оборот по правилам текущего конкурса.</li>
+        <li>Накрутка рефералов, обмен фейковыми переходами, массовая регистрация аккаунтов и использование сервисов накрутки запрещены.</li>
+        <li>Администрация может скрыть, сбросить, завершить лидерборд, отменить призы или пересчитать результаты при подозрительной активности.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>11. Промокоды</h2>
+      <ul>
+        <li>Промокод может иметь сумму, лимит активаций, срок действия и статус активности.</li>
+        <li>Один пользователь не может активировать один и тот же промокод повторно, если администрация явно не установила другое правило.</li>
+        <li>Промокоды не гарантируют право на вывод без выполнения общих условий сервиса.</li>
+        <li>Промокод может быть удален, деактивирован или признан недействительным при ошибке, злоупотреблении или решении администрации.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>12. Стейкинг</h2>
+      <ul>
+        <li>Стейкинг — временная заморозка GRAM на выбранный срок с выплатой по тарифу, установленному системой.</li>
+        <li>После создания позиции сумма списывается с баланса и недоступна для игр, вывода или других операций до окончания срока.</li>
+        <li>Досрочное снятие не предусмотрено, если администрация отдельно не запустила аварийное закрытие сезона.</li>
+        <li>Ставки доходности, доступность стейкинга, лимиты и сроки могут меняться или отключаться администрацией.</li>
+        <li>Выплата считается завершенной только после статуса <code>claimed</code> или другой подтвержденной записи в системе.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>13. Ускорители</h2>
+      <ul>
+        <li>Ускоритель дает временный процентный бонус к выигрышам на условиях выбранного варианта.</li>
+        <li>Бонус применяется только к подходящим выигрышам и только в период действия ускорителя.</li>
+        <li>Покупка ускорителя списывает GRAM с баланса; если ускорители отключаются администрацией по технической причине, возможен системный возврат активных покупок.</li>
+        <li>Попытки использовать ускоритель после окончания срока, подменить процент или получить бонус повторно считаются нарушением.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>14. Обязательные подписки</h2>
+      <ul>
+        <li>Администрация может включить обязательную подписку на официальные каналы для доступа к функциям бота.</li>
+        <li>Если пользователь не подписан или бот не может подтвердить подписку, игры, выводы или другие функции могут быть недоступны.</li>
+        <li>Проверка подписки выполняется техническими средствами Telegram и внутренней системы; пользователь обязан повторить проверку после подписки.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>15. Поддержка и тикеты</h2>
+      <ul>
+        <li>Официальный канал обращения — кнопка «🆘 Поддержка» в боте.</li>
+        <li>Пользователь обязан описывать проблему конкретно: ID заявки, сумма, время, игра, чек, скриншот или файл при необходимости.</li>
+        <li>Фото, видео и документы принимаются в пределах технических лимитов. Превышение лимитов, поток одинаковых сообщений и массовые вложения могут быть расценены как спам.</li>
+        <li>Администратор может ответить, закрыть, повторно открыть или удалить тикет, если вопрос решен, неактуален, дублируется или нарушает правила общения.</li>
+        <li>Оскорбления, угрозы, давление, шантаж, спам и попытки вынудить решение вне регламента могут привести к блокировке поддержки или аккаунта.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>16. Права администрации</h2>
+      <ul>
+        <li>Администрация имеет право проверять операции, тикеты, балансы, игры, сессии, рефералов, промокоды, стейкинг и действия пользователя.</li>
+        <li>Администратор может одобрять или отклонять пополнения и выводы, отправлять чеки, возвращать резерв, блокировать пользователя, ограничивать поддержку и отменять спорные начисления.</li>
+        <li>При конфликте между пользователем и администрацией финальное решение принимается на основании системных записей и настоящей политики.</li>
+        <li>Администрация не обязана раскрывать внутренние антифрод-методы, точные алгоритмы риск-оценки, приватные логи и данные других пользователей.</li>
+        <li>Если ситуация не описана напрямую, администрация применяет ближайший по смыслу пункт политики и принцип защиты сервиса от злоупотреблений.</li>
+      </ul>
+      <div class="callout warn">
+        Решение администрации считается действительным, если оно опирается на записи системы, статус операции, логи, тикет или подтвержденное нарушение.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>17. Запрещенные действия</h2>
+      <ul>
+        <li>использование багов, технических ошибок, расхождений интерфейса и задержек обработки;</li>
+        <li>мультиаккаунты, регистрация фейков, обход бана, передача аккаунта, накрутка рефералов и лидербордов;</li>
+        <li>автокликеры, скрипты, боты, макросы, модифицированные клиенты и любые средства автоматизации;</li>
+        <li>подмена WebApp-данных, ссылок, чеков, session ID, device ID, сумм, статусов или callback-действий;</li>
+        <li>фейковые чеки, повторное использование чеков, попытка выдать чужой чек за свой;</li>
+        <li>использование бота как обменника без нормальной игровой активности или с целью обхода правил финансового контура;</li>
+        <li>оскорбления, угрозы, спам, дискриминация, фишинг, выдача себя за администратора или представителя проекта.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>18. Санкции</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Нарушение</th>
+              <th>Возможные меры</th>
+              <th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Спам, грубость, дубли тикетов</td>
+              <td>Предупреждение, мут, блокировка поддержки</td>
+              <td>Может применяться автоматически</td>
+            </tr>
+            <tr>
+              <td>Ошибочные или сомнительные заявки</td>
+              <td>Отклонение, ручная проверка, временная задержка</td>
+              <td>Решение принимается по данным заявки</td>
+            </tr>
+            <tr>
+              <td>Бонусные и реферальные злоупотребления</td>
+              <td>Отмена бонусов, пересчет очков, запрет вывода</td>
+              <td>Затрагивает все связанные аккаунты</td>
+            </tr>
+            <tr>
+              <td>Баги, подмена данных, мультиаккаунты, фейковые чеки</td>
+              <td>Обнуление нечестных начислений, бан, отказ в выводе</td>
+              <td>Мера может применяться без предупреждения</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout risk">
+        При серьезном нарушении администрация может сразу применить максимальную меру: постоянную блокировку, отмену спорных операций и запрет вывода.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>19. Разбор конфликтов</h2>
+      <p>Спорные ситуации разбираются по иерархии доказательств:</p>
+      <ol>
+        <li>записи базы данных: баланс, транзакции, игры, сессии, заявки, промокоды, стейкинг, статусы;</li>
+        <li>системные логи: игровые события, финансовые операции, ошибки, антифрод-события;</li>
+        <li>административные журналы: кто и когда одобрил, отклонил, заблокировал, изменил или отправил чек;</li>
+        <li>тикеты поддержки и сообщения между пользователем и администрацией;</li>
+        <li>скриншоты, видео и объяснения пользователя как вспомогательные материалы.</li>
+      </ol>
+      <div class="callout risk">
+        Скриншот не отменяет системный статус операции. Если база показывает завершенную, отклоненную или уже обработанную операцию, именно этот статус является основой решения.
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <h2>20. Технические сбои</h2>
+      <ul>
+        <li>Сбой признается только после проверки по логам, базе данных, статусам операций и техническим следам.</li>
+        <li>Если ставка была списана, но игра не получила корректный финальный статус по технической причине, возможен возврат ставки или ручное решение по сессии.</li>
+        <li>Если операция корректно зафиксирована системой, она считается действительной даже при несогласии пользователя с результатом.</li>
+        <li>Администрация не отвечает за сбои Telegram, интернет-соединение пользователя, задержки доставки сообщений, работу устройства, браузера WebApp или сторонних сервисов.</li>
+        <li>На время инцидентов администрация может отключить игры, выводы, стейкинг, ускорители, промокоды, лидерборды или отдельные функции.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>21. Данные и аудит</h2>
+      <ul>
+        <li>Бот может хранить Telegram ID, username, имя, язык, дату регистрации, баланс, копилку, оборот, игры, выигрыши, ставки, транзакции, заявки, чеки, тикеты, вложения, промокоды, рефералов, стейкинг, ускорители, подписки, баны и служебные статусы.</li>
+        <li>Данные используются для работы функций, поддержки, антифрода, финансового учета, восстановления после ошибок и защиты администрации в спорных ситуациях.</li>
+        <li>Доступ к служебным данным имеют администраторы и технические процессы, которым эти данные нужны для работы сервиса.</li>
+        <li>Данные других пользователей не раскрываются при споре, если это не требуется по внутреннему решению администрации или обязательному требованию закона.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>22. Коммуникация и официальные ответы</h2>
+      <ul>
+        <li>Официальным ответом считается ответ администратора в боте, статус заявки, системное уведомление или опубликованная редакция политики.</li>
+        <li>Обещания, сделанные вне официального канала, не имеют силы, если они противоречат базе, логам, статусам или этой политике.</li>
+        <li>Администратор вправе использовать краткую формулировку решения: статус операции, основание, примененная мера и ссылка на пункт политики.</li>
+        <li>Повторное открытие закрытого вопроса без новых данных может быть отклонено без повторного полного разбора.</li>
+      </ul>
+    </section>
+
+    <section class="section reveal">
+      <h2>23. Обновление правил</h2>
+      <ul>
+        <li>Администрация может менять правила, лимиты, комиссии, названия, функции, тарифы, коэффициенты, стоимость игр, курс Stars, условия вывода и бонусов.</li>
+        <li>Продолжение использования бота после обновления означает согласие с новой редакцией.</li>
+        <li>Если новая редакция уточняет порядок разбора спора, администрация может применять ее к активным обращениям, если это не ухудшает уже завершенный статус операции без отдельного основания.</li>
+      </ul>
+    </section>
+
+    <footer class="footer reveal">
+      <div class="footer-top">
+        <strong>VORTEX BOT | Официальная политика сервиса</strong>
+        <span class="edition-badge">Редакция 4.0</span>
+      </div>
+      <p class="footer-text">
+        Документ предназначен для публичного ознакомления пользователей и практической работы администрации
+        при проверке игр, заявок, бонусов, тикетов, блокировок и конфликтных ситуаций.
+      </p>
+      <div class="footer-grid">
+        <article class="footer-card">
+          <h3>Статус документа</h3>
+          <p>Действующая обязательная редакция. Применяется ко всем пользователям VORTEX BOT.</p>
+        </article>
+        <article class="footer-card">
+          <h3>Основа решений</h3>
+          <p>Приоритет имеют база данных, транзакции, статусы заявок, игровые сессии, тикеты и логи.</p>
+        </article>
+        <article class="footer-card">
+          <h3>Позиция администрации</h3>
+          <p>Администрация принимает финальное решение по спору, если оно подтверждено системными данными.</p>
+        </article>
+      </div>
+      <div class="footer-sign">
+        <span>Утверждено администрацией VORTEX BOT</span>
+        <span>Публикация через кнопку «📄 Политика» является официальным каналом документа</span>
+      </div>
+    </footer>
+
+    <div class="legal-strip reveal">
+      VORTEX BOT оставляет за собой право защищать сервис, пользователей и администрацию от технических ошибок,
+      мошенничества, накрутки, давления и злоупотреблений. Все спорные решения принимаются по подтвержденным
+      системным данным и настоящей редакции политики.
+      <small>VORTEX BOT Policy • All Rights Reserved</small>
+    </div>
+  </div>
+
+  <button class="to-top" id="toTopBtn" aria-label="Наверх">↑</button>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function () {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (tg) {
+        tg.ready();
+        tg.expand();
+      }
+
+      var reveals = document.querySelectorAll(".reveal");
+      var bar = document.getElementById("progressBar");
+      var topBtn = document.getElementById("toTopBtn");
+
+      if ("IntersectionObserver" in window) {
+        var revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("show");
+            revealObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.1 });
+
+        reveals.forEach(function (el, idx) {
+          el.style.setProperty("--reveal-delay", ((idx % 8) * 45) + "ms");
+          revealObserver.observe(el);
+        });
+      } else {
+        reveals.forEach(function (el) {
+          el.classList.add("show");
+        });
+      }
+
+      function refreshProgress() {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        var ratio = docH > 0 ? Math.min(1, Math.max(0, scrollTop / docH)) : 0;
+        bar.style.width = (ratio * 100).toFixed(2) + "%";
+        topBtn.style.setProperty("--scroll-ratio", (ratio * 100).toFixed(2) + "%");
+        if (scrollTop > 380) {
+          topBtn.classList.add("show");
+        } else {
+          topBtn.classList.remove("show");
+        }
+      }
+
+      window.addEventListener("scroll", refreshProgress, { passive: true });
+      window.addEventListener("resize", refreshProgress);
+      refreshProgress();
+
+      topBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>
