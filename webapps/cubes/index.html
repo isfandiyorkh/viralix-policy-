@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Куб Удачи 3x3</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-a: #04111f;
+      --bg-b: #0e2236;
+      --panel: rgba(255, 255, 255, 0.08);
+      --card-front-1: #f8fafc;
+      --card-front-2: #e2e8f0;
+      --card-back-1: #0f172a;
+      --card-back-2: #1e293b;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.28);
+      --text: #f1f5f9;
+      --muted: #cbd5e1;
+      --gap: 12px;
+      --move-duration: 750ms;
+      --flip-duration: 720ms;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "Segoe UI Variable", "Segoe UI", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 15%, #1d4ed8 0%, transparent 42%),
+        radial-gradient(circle at 80% 85%, #0ea5e9 0%, transparent 38%),
+        linear-gradient(135deg, var(--bg-a), var(--bg-b));
+      overflow: hidden;
+    }
+
+    body {
+      height: var(--tg-viewport-height, 100vh);
+      min-height: 100%;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .bg-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      background-image:
+        linear-gradient(transparent 49%, rgba(255, 255, 255, 0.08) 50%),
+        linear-gradient(90deg, transparent 49%, rgba(255, 255, 255, 0.06) 50%);
+      background-size: 2px 2px, 3px 3px;
+      mix-blend-mode: soft-light;
+    }
+
+    main {
+      position: relative;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      height: var(--tg-viewport-height, 100vh);
+      min-height: var(--tg-viewport-height, 100vh);
+      display: grid;
+      place-items: center;
+      padding: clamp(8px, 2.2vh, 16px) clamp(10px, 3vw, 16px);
+    }
+
+    .panel {
+      width: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      display: flex;
+      flex-direction: column;
+      border-radius: 28px;
+      padding: clamp(16px, 2.6vh, 26px) clamp(14px, 3vw, 24px) clamp(14px, 2.4vh, 22px);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 18px 60px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(9px);
+    }
+
+    .panel::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .title-wrap h1 {
+      margin: 0;
+      font-size: clamp(1.3rem, 2.3vw, 2rem);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .stage-wrap {
+      position: relative;
+      margin: 8px auto 0;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.12));
+    }
+
+    .stage {
+      position: relative;
+      width: min(86vw, 520px, max(220px, calc(var(--tg-viewport-height, 100vh) - 340px)));
+      max-width: 100%;
+      margin: 0 auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.58), rgba(2, 6, 23, 0.85));
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-style: preserve-3d;
+      transition: transform var(--move-duration) cubic-bezier(0.28, 0.8, 0.28, 1);
+      cursor: default;
+      user-select: none;
+    }
+
+    .card.selectable {
+      cursor: pointer;
+    }
+
+    .card.selectable:not(.is-flipped):hover .card-inner {
+      transform: rotateY(0deg) translateY(-2px);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.34);
+    }
+
+    .stage.pick-ready .card-inner {
+      animation: pick-ready-glow 1100ms ease-in-out infinite;
+      animation-delay: 0s;
+      box-shadow:
+        0 0 0 1px rgba(134, 239, 172, 0.5),
+        0 0 24px rgba(34, 197, 94, 0.65),
+        0 12px 22px rgba(6, 78, 59, 0.46);
+    }
+
+    .stage.pick-ready .card.selectable:not(.is-flipped):hover .card-inner {
+      transform: none;
+      box-shadow:
+        0 0 0 1px rgba(134, 239, 172, 0.5),
+        0 0 24px rgba(34, 197, 94, 0.65),
+        0 12px 22px rgba(6, 78, 59, 0.46);
+    }
+
+    .card.is-flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius);
+      transform-style: preserve-3d;
+      transition: transform var(--flip-duration) cubic-bezier(0.2, 0.85, 0.28, 1);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      font-weight: 800;
+    }
+
+    .card-front {
+      color: #0f172a;
+      background: linear-gradient(145deg, var(--card-front-1), var(--card-front-2));
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      font-size: clamp(1.2rem, 4.1vw, 2rem);
+      letter-spacing: 0.02em;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      color: #f0fdf4;
+      background: linear-gradient(150deg, var(--card-back-1), var(--card-back-2));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: clamp(1.25rem, 4.2vw, 2rem);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .status-bar {
+      margin-top: 14px;
+      padding-inline: 2px;
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .status {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      min-height: 1.4em;
+      text-align: center;
+    }
+
+    .status.pulse {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    .status.error-blink {
+      animation: unpaid-blink 300ms ease-in-out 5;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; text-shadow: 0 0 0 transparent; }
+      50% { opacity: 0.82; text-shadow: 0 0 18px var(--accent-soft); }
+      100% { opacity: 1; text-shadow: 0 0 0 transparent; }
+    }
+
+    @keyframes unpaid-blink {
+      0%, 100% {
+        opacity: 1;
+        color: #fecaca;
+        text-shadow: 0 0 0 rgba(239, 68, 68, 0);
+      }
+      50% {
+        opacity: 0.22;
+        color: #ef4444;
+        text-shadow: 0 0 18px rgba(239, 68, 68, 0.78);
+      }
+    }
+
+    @keyframes pick-ready-glow {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(134, 239, 172, 0.48),
+          0 0 18px rgba(34, 197, 94, 0.48),
+          0 12px 22px rgba(6, 78, 59, 0.42);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(134, 239, 172, 0.78),
+          0 0 34px rgba(74, 222, 128, 0.95),
+          0 16px 28px rgba(6, 95, 70, 0.56);
+      }
+    }
+
+    .action-btn {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 12;
+      width: min(76vw, 360px, calc(100% - 20px));
+      min-height: clamp(66px, 10vh, 94px);
+      transform: translate(-50%, -50%);
+      border: none;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: clamp(1.08rem, 3.1vw, 1.7rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #04110c;
+      background: linear-gradient(140deg, #d9f99d, #4ade80 46%, #22c55e);
+      box-shadow:
+        0 20px 42px rgba(34, 197, 94, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: transform 240ms ease, filter 240ms ease, opacity 220ms ease;
+    }
+
+    .action-btn:hover {
+      transform: translate(-50%, -53%) scale(1.01);
+      filter: brightness(1.08);
+    }
+
+    .action-btn:disabled {
+      opacity: 0;
+      pointer-events: none;
+      cursor: default;
+      transform: translate(-50%, -45%) scale(0.95);
+      filter: none;
+    }
+
+    .result-overlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(1, 7, 19, 0.74);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 320ms ease;
+    }
+
+    .result-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #fireworks {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .result-panel {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 24px 22px;
+      width: min(92vw, 660px);
+    }
+
+    .result-sub {
+      margin: 0;
+      font-size: clamp(1rem, 2.1vw, 1.25rem);
+      color: #ecfeff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .result-value {
+      margin: 8px 0 14px;
+      font-size: clamp(2.2rem, 8.4vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: 0.03em;
+      color: #22c55e;
+      text-shadow:
+        0 0 20px rgba(34, 197, 94, 0.6),
+        0 0 70px rgba(34, 197, 94, 0.24);
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .result-btn {
+      border: none;
+      border-radius: 14px;
+      min-width: min(86vw, 390px);
+      padding: 16px 26px;
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: #0f172a;
+      background: linear-gradient(130deg, #bbf7d0, #4ade80);
+      cursor: pointer;
+      box-shadow: 0 14px 32px rgba(34, 197, 94, 0.3);
+    }
+
+    .result-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .session-expired {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.28), transparent 42%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.24), transparent 40%),
+        linear-gradient(160deg, #03100a, #052e1b 52%, #02140c);
+      z-index: 35;
+    }
+
+    .session-expired[hidden] {
+      display: none;
+    }
+
+    .session-expired-card {
+      width: min(92vw, 680px);
+      border-radius: 24px;
+      padding: clamp(20px, 5vw, 36px);
+      border: 1px solid rgba(134, 239, 172, 0.34);
+      text-align: center;
+      background: linear-gradient(165deg, rgba(15, 23, 42, 0.88), rgba(6, 24, 16, 0.86));
+      box-shadow:
+        inset 0 1px 0 rgba(187, 247, 208, 0.22),
+        0 24px 54px rgba(0, 0, 0, 0.45),
+        0 0 38px rgba(34, 197, 94, 0.2);
+    }
+
+    .session-expired-title {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 4.6vw, 2.4rem);
+      font-weight: 900;
+      color: #86efac;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      text-shadow: 0 0 22px rgba(34, 197, 94, 0.35);
+    }
+
+    .session-expired-text {
+      margin: 0;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      line-height: 1.55;
+      color: #dcfce7;
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --gap: 8px;
+        --radius: 16px;
+      }
+
+      main {
+        padding: 8px 10px;
+      }
+
+      .panel {
+        padding: 14px 12px;
+        border-radius: 20px;
+      }
+
+      .header {
+        align-items: flex-start;
+        flex-direction: row;
+      }
+
+      .stage-wrap {
+        padding: 8px;
+      }
+
+      .stage {
+        width: min(88vw, max(214px, calc(var(--tg-viewport-height, 100vh) - 320px)));
+      }
+
+      .action-btn {
+        width: min(82vw, 320px, calc(100% - 16px));
+        min-height: clamp(62px, 9.6vh, 84px);
+        font-size: clamp(1rem, 4.6vw, 1.4rem);
+        letter-spacing: 0.09em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grain"></div>
+
+  <main>
+    <section class="panel">
+      <div class="header">
+        <div class="title-wrap">
+          <h1>Куб Удачи 3x3</h1>
+        </div>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="stage" id="stage"></div>
+        <button class="action-btn" id="startBtn" type="button">START</button>
+      </div>
+
+      <div class="status-bar">
+        <div class="status" id="statusText">Нажми «Старт», чтобы запустить раунд.</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="result-overlay" id="resultOverlay" aria-hidden="true">
+    <canvas id="fireworks"></canvas>
+    <div class="result-panel">
+      <p class="result-sub">Твой приз</p>
+      <p class="result-value" id="resultValue">0 GRAM</p>
+      <div class="result-actions">
+        <button class="result-btn" id="claimPrizeBtn" type="button">Получить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="session-expired" id="sessionExpiredScreen" hidden>
+    <div class="session-expired-card">
+      <p class="session-expired-title">Сессия завершена</p>
+      <p class="session-expired-text">
+        Вы уже сыграли эту серию. Сессия сгорела.<br>
+        Оплатите новую серию в боте и повторите попытку.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const VALUES = ["7K", "4K", "12K", "4K", "17K", "13K", "8K", "19K", "3K"];
+    const FIREWORK_SPEED_FACTOR = 0.85;
+    const CUBE_CAMPAIGN_VERSION = "free-random-v1";
+    const DEVICE_ID_STORAGE_KEY = "cube_device_fingerprint_v1";
+    const DEVICE_FIRST_PLAY_USED_KEY = "cube_first_play_used_v1";
+
+    const params = new URLSearchParams(window.location.search);
+    const rawSessionId = Number.parseInt(params.get("sid") || "", 10);
+    const sessionId = Number.isFinite(rawSessionId) && rawSessionId > 0 ? rawSessionId : 0;
+    const isFreeRound = params.get("free") === "1";
+    const rawPrice = Number.parseInt(params.get("price") || "", 10);
+    const roundPrice = isFreeRound ? 0 : (Number.isFinite(rawPrice) && rawPrice > 0 ? Math.min(rawPrice, 1_000_000_000) : 10000);
+    const rawPayout = Number.parseInt(params.get("payout") || "", 10);
+    const allowedPayouts = new Set([3000, 4000, 7000, 8000, 12000, 13000, 17000, 19000]);
+    const forcedPayoutGram = Number.isFinite(rawPayout) && allowedPayouts.has(rawPayout) ? rawPayout : 0;
+    const rawCurrency = String(params.get("currency") || "GRAM").toUpperCase();
+    const currency = /^[A-Z0-9]{2,10}$/.test(rawCurrency) ? rawCurrency : "GRAM";
+    const rawBotUsername = String(params.get("bot") || "").replace(/^@/, "").trim();
+    const botUsername = /^[A-Za-z0-9_]{5,64}$/.test(rawBotUsername) ? rawBotUsername : "";
+
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    function setViewportVars() {
+      const root = document.documentElement;
+      if (tg && typeof tg.viewportHeight === "number") {
+        root.style.setProperty("--tg-viewport-height", `${tg.viewportHeight}px`);
+      } else {
+        root.style.setProperty("--tg-viewport-height", `${window.innerHeight}px`);
+      }
+      if (tg && typeof tg.viewportStableHeight === "number") {
+        root.style.setProperty("--tg-viewport-stable-height", `${tg.viewportStableHeight}px`);
+      }
+    }
+    if (tg) {
+      try {
+        tg.ready();
+        tg.expand();
+        setViewportVars();
+        if (typeof tg.onEvent === "function") {
+          tg.onEvent("viewportChanged", () => {
+            setViewportVars();
+            layoutCards(true);
+          });
+        }
+      } catch (_) {
+        // ignore
+      }
+    } else {
+      setViewportVars();
+    }
+
+    const stage = document.getElementById("stage");
+    const statusText = document.getElementById("statusText");
+    const startBtn = document.getElementById("startBtn");
+    const resultOverlay = document.getElementById("resultOverlay");
+    const resultValue = document.getElementById("resultValue");
+    const claimPrizeBtn = document.getElementById("claimPrizeBtn");
+    const sessionExpiredScreen = document.getElementById("sessionExpiredScreen");
+
+    const fireworksCanvas = document.getElementById("fireworks");
+    const fwCtx = fireworksCanvas.getContext("2d");
+
+    let cards = [];
+    let positions = [];
+    let gameState = "idle";
+    let runningRound = null;
+
+    let fwActive = false;
+    let particles = [];
+    let fwLast = 0;
+    let burstTicker = 0;
+    let animationId = null;
+
+    let pickedCardId = -1;
+    let pickedPrizeGram = 0;
+    let resultSent = false;
+    let sessionConsumed = false;
+    let isSessionExpired = false;
+    let autoClaimFallbackTimer = null;
+    let autoClaimFallbackOpened = false;
+    let statusBlinkTimer = null;
+    let deviceFingerprint = "";
+    let deviceFingerprintSource = "";
+    let deviceFingerprintPromise = null;
+    const SESSION_LOCK_KEY = "cube_active_session_lock_v1";
+    const lockOwner = `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    let lockOwned = false;
+
+    function formatInt(value) {
+      return new Intl.NumberFormat("ru-RU").format(Math.max(0, Number.parseInt(value || 0, 10) || 0));
+    }
+
+    function formatPrize(value) {
+      return `${formatInt(value)} ${currency}`;
+    }
+
+    function toGramInt(valueText) {
+      const numeric = Number.parseInt(String(valueText || "").replace("K", ""), 10);
+      return Number.isFinite(numeric) ? numeric * 1000 : 0;
+    }
+
+    function gramToLabel(value) {
+      const gram = Math.max(0, Number.parseInt(value || 0, 10) || 0);
+      if (gram % 1000 === 0 && gram > 0) {
+        return `${gram / 1000}K`;
+      }
+      return "1K";
+    }
+
+    function normalizeDeviceToken(value, maxLen = 32) {
+      const cleaned = String(value || "").toLowerCase().replace(/[^a-z0-9_-]/g, "");
+      if (!cleaned) return "";
+      return cleaned.slice(0, Math.max(8, maxLen));
+    }
+
+    function localStorageAvailable() {
+      try {
+        const key = "__cube_ls_test__";
+        window.localStorage.setItem(key, "1");
+        window.localStorage.removeItem(key);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function localGet(key) {
+      if (!localStorageAvailable()) return "";
+      try {
+        return String(window.localStorage.getItem(key) || "");
+      } catch (_) {
+        return "";
+      }
+    }
+
+    function localSet(key, value) {
+      if (!localStorageAvailable()) return false;
+      try {
+        window.localStorage.setItem(key, String(value || ""));
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function isFirstLocalDevicePlay() {
+      if (!localStorageAvailable()) return false;
+      return localGet(DEVICE_FIRST_PLAY_USED_KEY) !== "1";
+    }
+
+    function markLocalDevicePlayUsed() {
+      if (!localStorageAvailable()) return;
+      localSet(DEVICE_FIRST_PLAY_USED_KEY, "1");
+    }
+
+    async function sha256Hex(input) {
+      if (!(window.crypto && window.crypto.subtle && window.TextEncoder)) {
+        return "";
+      }
+      const bytes = new TextEncoder().encode(String(input || ""));
+      const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+      const arr = Array.from(new Uint8Array(digest));
+      return arr.map((v) => v.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function initBiometricDeviceToken() {
+      const manager = tg && tg.BiometricManager ? tg.BiometricManager : null;
+      if (!manager) return "";
+      try {
+        if (typeof manager.init === "function") {
+          await new Promise((resolve) => {
+            try {
+              manager.init(() => resolve(true));
+            } catch (_) {
+              resolve(false);
+            }
+          });
+        }
+      } catch (_) {
+        // ignore
+      }
+      return normalizeDeviceToken(manager.deviceId || "", 24);
+    }
+
+    async function initFallbackDeviceToken() {
+      const saved = normalizeDeviceToken(localGet(DEVICE_ID_STORAGE_KEY), 24);
+      if (saved.length >= 8) {
+        return saved;
+      }
+      const seedParts = [
+        navigator.userAgent || "",
+        navigator.platform || "",
+        navigator.language || "",
+        String(navigator.hardwareConcurrency || ""),
+        `${screen.width}x${screen.height}x${screen.colorDepth}`,
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+        tg && tg.platform ? tg.platform : "",
+        String(Date.now()),
+        String(Math.random())
+      ];
+      const seedHash = normalizeDeviceToken(await sha256Hex(seedParts.join("|")), 24);
+      const token = seedHash.length >= 8
+        ? seedHash
+        : `dev${Math.random().toString(36).slice(2, 12)}`;
+      localSet(DEVICE_ID_STORAGE_KEY, token);
+      return normalizeDeviceToken(token, 24);
+    }
+
+    async function ensureDeviceFingerprint() {
+      if (deviceFingerprint) return deviceFingerprint;
+      if (!deviceFingerprintPromise) {
+        deviceFingerprintPromise = (async () => {
+          const biometric = await initBiometricDeviceToken();
+          if (biometric.length >= 8) {
+            deviceFingerprintSource = "tg_biometric";
+            return `bm_${biometric}`;
+          }
+          const fallback = await initFallbackDeviceToken();
+          deviceFingerprintSource = "local_fallback";
+          return fallback.length >= 8 ? `lc_${fallback}` : "";
+        })()
+          .then((value) => {
+            deviceFingerprint = normalizeDeviceToken(value, 24);
+            return deviceFingerprint;
+          })
+          .catch(() => {
+            deviceFingerprint = "";
+            return "";
+          })
+          .finally(() => {
+            deviceFingerprintPromise = null;
+          });
+      }
+      return deviceFingerprintPromise;
+    }
+
+    function shuffleArray(source) {
+      const arr = [...source];
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function setStatus(text, pulse = false) {
+      statusText.textContent = text;
+      statusText.classList.remove("error-blink");
+      statusText.classList.toggle("pulse", pulse);
+      if (statusBlinkTimer) {
+        clearTimeout(statusBlinkTimer);
+        statusBlinkTimer = null;
+      }
+    }
+
+    function flashUnpaidStatus(text) {
+      setStatus(text, false);
+      statusText.classList.remove("error-blink");
+      void statusText.offsetWidth;
+      statusText.classList.add("error-blink");
+      statusBlinkTimer = setTimeout(() => {
+        statusText.classList.remove("error-blink");
+        statusBlinkTimer = null;
+      }, 1500);
+    }
+
+    function cloudStorageAvailable() {
+      return Boolean(
+        tg &&
+        tg.CloudStorage &&
+        typeof tg.CloudStorage.getItem === "function" &&
+        typeof tg.CloudStorage.setItem === "function" &&
+        typeof tg.CloudStorage.removeItem === "function"
+      );
+    }
+
+    function cloudGetItem(key) {
+      return new Promise((resolve) => {
+        if (!cloudStorageAvailable()) {
+          resolve("");
+          return;
+        }
+        tg.CloudStorage.getItem(key, (err, value) => {
+          if (err) {
+            resolve("");
+            return;
+          }
+          resolve(String(value || ""));
+        });
+      });
+    }
+
+    function cloudSetItem(key, value) {
+      return new Promise((resolve) => {
+        if (!cloudStorageAvailable()) {
+          resolve(false);
+          return;
+        }
+        tg.CloudStorage.setItem(key, value, (err) => {
+          resolve(!err);
+        });
+      });
+    }
+
+    function cloudRemoveItem(key) {
+      return new Promise((resolve) => {
+        if (!cloudStorageAvailable()) {
+          resolve(false);
+          return;
+        }
+        tg.CloudStorage.removeItem(key, (err) => {
+          resolve(!err);
+        });
+      });
+    }
+
+    function parseLock(raw) {
+      if (!raw) return null;
+      try {
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return null;
+        return {
+          sid: Number.parseInt(String(data.sid || ""), 10) || 0,
+          owner: String(data.owner || ""),
+          ts: Number.parseInt(String(data.ts || ""), 10) || 0,
+          consumed: Boolean(data.consumed)
+        };
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function markSessionAsConsumed() {
+      if (sessionId <= 0) return;
+      if (!cloudStorageAvailable()) return;
+      const payload = JSON.stringify({
+        sid: sessionId,
+        owner: lockOwner,
+        ts: Date.now(),
+        consumed: true
+      });
+      await cloudSetItem(SESSION_LOCK_KEY, payload);
+      lockOwned = true;
+    }
+
+    async function acquireSessionLock() {
+      if (sessionId <= 0) return true;
+      if (!cloudStorageAvailable()) {
+        lockOwned = true;
+        return true;
+      }
+
+      const now = Date.now();
+      const current = parseLock(await cloudGetItem(SESSION_LOCK_KEY));
+      const lockFreshMs = 20 * 60 * 1000;
+      if (
+        current &&
+        current.sid === sessionId &&
+        current.owner &&
+        current.owner !== lockOwner
+      ) {
+        if (current.consumed) {
+          return false;
+        }
+        if (now - current.ts <= lockFreshMs) {
+          return false;
+        }
+      }
+
+      const payload = JSON.stringify({ sid: sessionId, owner: lockOwner, ts: now });
+      await cloudSetItem(SESSION_LOCK_KEY, payload);
+      const verify = parseLock(await cloudGetItem(SESSION_LOCK_KEY));
+      lockOwned = Boolean(verify && verify.sid === sessionId && verify.owner === lockOwner);
+      return lockOwned;
+    }
+
+    async function releaseSessionLock(force = false) {
+      if (!force && sessionConsumed) return;
+      if (!lockOwned || sessionId <= 0) return;
+      if (!cloudStorageAvailable()) {
+        lockOwned = false;
+        return;
+      }
+      const current = parseLock(await cloudGetItem(SESSION_LOCK_KEY));
+      if (current && current.sid === sessionId && current.owner === lockOwner) {
+        await cloudRemoveItem(SESSION_LOCK_KEY);
+      }
+      lockOwned = false;
+    }
+
+    function setupBoard() {
+      cards = [];
+      stage.innerHTML = "";
+
+      const values = shuffleArray(VALUES);
+      for (let i = 0; i < 9; i += 1) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.id = String(i);
+        card.dataset.value = values[i];
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-face card-front">?</div>
+            <div class="card-face card-back">${values[i]}</div>
+          </div>
+        `;
+        card.slot = i;
+        card.addEventListener("click", () => onCardClick(card));
+        stage.appendChild(card);
+        cards.push(card);
+      }
+
+      layoutCards(true);
+      setCardsSelectable(false);
+      setPickHighlight(false);
+    }
+
+    function getGeometry() {
+      const stageSize = stage.clientWidth;
+      const gap = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gap"));
+      const cell = (stageSize - gap * 4) / 3;
+      const start = gap;
+
+      const coords = [];
+      for (let row = 0; row < 3; row += 1) {
+        for (let col = 0; col < 3; col += 1) {
+          coords.push({
+            x: start + col * (cell + gap),
+            y: start + row * (cell + gap),
+            size: cell
+          });
+        }
+      }
+      return coords;
+    }
+
+    function layoutCards(immediate = false) {
+      positions = getGeometry();
+      cards.forEach((card) => {
+        const pos = positions[card.slot];
+        if (!pos) return;
+
+        if (immediate) {
+          const prev = card.style.transition;
+          card.style.transition = "none";
+          card.style.width = `${pos.size}px`;
+          card.style.height = `${pos.size}px`;
+          card.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+          card.offsetHeight;
+          card.style.transition = prev || "";
+          return;
+        }
+
+        card.style.width = `${pos.size}px`;
+        card.style.height = `${pos.size}px`;
+        card.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+      });
+    }
+
+    function setCardsSelectable(on) {
+      cards.forEach((card) => {
+        card.classList.toggle("selectable", on);
+      });
+    }
+
+    function setPickHighlight(on) {
+      stage.classList.toggle("pick-ready", on);
+    }
+
+    function flipAll(isFlipped) {
+      cards.forEach((card) => {
+        card.classList.toggle("is-flipped", isFlipped);
+      });
+    }
+
+    function randomReposition() {
+      const slots = shuffleArray([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      cards.forEach((card, idx) => {
+        card.slot = slots[idx];
+      });
+      layoutCards();
+    }
+
+    function randomizeCardValues() {
+      const values = shuffleArray(VALUES);
+      cards.forEach((card, idx) => {
+        const value = values[idx];
+        card.dataset.value = value;
+        const backFace = card.querySelector(".card-back");
+        if (backFace) {
+          backFace.textContent = value;
+        }
+      });
+    }
+
+    async function runShufflePhase(totalMs, moveDuration, pauseAfter) {
+      const startedAt = performance.now();
+      document.documentElement.style.setProperty("--move-duration", `${moveDuration}ms`);
+      while (performance.now() - startedAt < totalMs) {
+        randomReposition();
+        await sleep(moveDuration + pauseAfter);
+      }
+    }
+
+    async function runRound() {
+      gameState = "preview";
+      setStatus("Запоминай значения...", true);
+      flipAll(true);
+      await sleep(3000);
+
+      flipAll(false);
+      setStatus("Готовься к перемешиванию...");
+      await sleep(850);
+
+      gameState = "shuffle";
+      setStatus("Кубики перемешиваются...", true);
+
+      await runShufflePhase(4000, 950, 40);
+      await runShufflePhase(2200, 180, 12);
+      randomizeCardValues();
+
+      gameState = "pick";
+      setCardsSelectable(true);
+      setPickHighlight(true);
+      setStatus("Выбирай!", true);
+    }
+
+    function onCardClick(card) {
+      if (gameState !== "pick" || sessionConsumed) return;
+      sessionConsumed = true;
+      void markSessionAsConsumed();
+
+      gameState = "result";
+      setCardsSelectable(false);
+      setPickHighlight(false);
+      setStatus("Смотрим результат...");
+
+      pickedCardId = Number.parseInt(card.dataset.id || "-1", 10);
+      const localPrize = toGramInt(card.dataset.value);
+      pickedPrizeGram = forcedPayoutGram > 0 ? forcedPayoutGram : localPrize;
+      const visiblePrize = forcedPayoutGram;
+
+      if (visiblePrize > 0) {
+        const forcedLabel = gramToLabel(visiblePrize);
+        if (card.dataset.value !== forcedLabel) {
+          // Find another card that has the forcedLabel
+          const otherCard = cards.find(c => c !== card && c.dataset.value === forcedLabel);
+          if (otherCard) {
+            // Swap values and backFace content between clicked card and otherCard
+            const tempVal = card.dataset.value;
+            card.dataset.value = forcedLabel;
+            otherCard.dataset.value = tempVal;
+
+            const cardBack = card.querySelector(".card-back");
+            const otherBack = otherCard.querySelector(".card-back");
+            if (cardBack && otherBack) {
+              const tempText = cardBack.textContent;
+              cardBack.textContent = forcedLabel;
+              otherBack.textContent = tempText;
+            }
+          } else {
+            // Fallback just in case
+            card.dataset.value = forcedLabel;
+            const backFace = card.querySelector(".card-back");
+            if (backFace) {
+              backFace.textContent = forcedLabel;
+            }
+          }
+        }
+      }
+
+      card.classList.add("is-flipped");
+
+      setTimeout(() => {
+        showResult(formatPrize(pickedPrizeGram));
+      }, 820);
+    }
+
+    function resetResultControls() {
+      resultSent = false;
+      autoClaimFallbackOpened = false;
+      clearAutoClaimFallback();
+      claimPrizeBtn.disabled = false;
+      claimPrizeBtn.textContent = 'Получить';
+    }
+
+    async function startGame() {
+      if (runningRound) return;
+      if (isSessionExpired) return;
+      if (sessionId <= 0) {
+        flashUnpaidStatus(`Сессия не оплачена. Оплатите ${formatInt(roundPrice)} ${currency} в боте.`);
+        return;
+      }
+      if (sessionConsumed) {
+        showSessionExpiredScreen();
+        return;
+      }
+      if (!lockOwned) {
+        const okLock = await acquireSessionLock();
+        if (!okLock) {
+          showSessionExpiredScreen();
+          return;
+        }
+      }
+
+      stopFireworks();
+      resultOverlay.classList.remove("show");
+      resultOverlay.setAttribute("aria-hidden", "true");
+      resetResultControls();
+      pickedCardId = -1;
+      pickedPrizeGram = 0;
+
+      startBtn.disabled = true;
+      setStatus("Подготовка поля...");
+      setupBoard();
+
+      runningRound = runRound()
+        .catch(() => {
+          setStatus("Ошибка раунда. Нажми START снова.");
+          gameState = "idle";
+        })
+        .finally(() => {
+          runningRound = null;
+          if (gameState === "pick") {
+            startBtn.disabled = true;
+          } else if (gameState !== "result") {
+            startBtn.disabled = false;
+          }
+        });
+    }
+
+    function showResult(value) {
+      resultValue.textContent = value;
+      resultOverlay.classList.add("show");
+      resultOverlay.setAttribute("aria-hidden", "false");
+      startFireworks();
+      startBtn.disabled = true;
+      setStatus("Нажмите «Получить», чтобы забрать награду.", false);
+    }
+
+    function resizeFireworksCanvas() {
+      fireworksCanvas.width = window.innerWidth * window.devicePixelRatio;
+      fireworksCanvas.height = window.innerHeight * window.devicePixelRatio;
+      fireworksCanvas.style.width = `${window.innerWidth}px`;
+      fireworksCanvas.style.height = `${window.innerHeight}px`;
+      fwCtx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+    }
+
+    function spawnBurst(x, y) {
+      const colorSet = ["#22c55e", "#4ade80", "#86efac", "#bbf7d0", "#facc15"];
+      const count = 48 + Math.floor(Math.random() * 28);
+      for (let i = 0; i < count; i += 1) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.4 + Math.random() * 5.2;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 60 + Math.random() * 40,
+          radius: 1.6 + Math.random() * 2.6,
+          color: colorSet[Math.floor(Math.random() * colorSet.length)]
+        });
+      }
+    }
+
+    function fireworkFrame(ts) {
+      if (!fwActive) return;
+      const prev = fwLast || ts;
+      const elapsedMs = ts - prev;
+      const delta = (elapsedMs / 16.67) * FIREWORK_SPEED_FACTOR;
+      fwLast = ts;
+
+      fwCtx.fillStyle = "rgba(2, 6, 23, 0.18)";
+      fwCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+      burstTicker += elapsedMs * FIREWORK_SPEED_FACTOR;
+      if (burstTicker > 220) {
+        burstTicker = 0;
+        const x = 90 + Math.random() * (window.innerWidth - 180);
+        const y = 80 + Math.random() * (window.innerHeight * 0.5);
+        spawnBurst(x, y);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i -= 1) {
+        const p = particles[i];
+        p.x += p.vx * delta;
+        p.y += p.vy * delta;
+        p.vy += 0.06 * delta;
+        p.life -= 1.2 * delta;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        fwCtx.globalAlpha = Math.max(0, p.life / 100);
+        fwCtx.fillStyle = p.color;
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        fwCtx.fill();
+      }
+      fwCtx.globalAlpha = 1;
+
+      animationId = requestAnimationFrame(fireworkFrame);
+    }
+
+    function startFireworks() {
+      resizeFireworksCanvas();
+      particles = [];
+      fwLast = 0;
+      burstTicker = 0;
+      fwActive = true;
+
+      for (let i = 0; i < 3; i += 1) {
+        const x = 120 + Math.random() * (window.innerWidth - 240);
+        const y = 110 + Math.random() * (window.innerHeight * 0.45);
+        spawnBurst(x, y);
+      }
+      animationId = requestAnimationFrame(fireworkFrame);
+    }
+
+    function stopFireworks() {
+      fwActive = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      animationId = null;
+      particles = [];
+      fwCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+    }
+
+    function showSessionExpiredScreen() {
+      if (isSessionExpired) return;
+      isSessionExpired = true;
+      autoClaimFallbackOpened = true;
+      clearAutoClaimFallback();
+      void releaseSessionLock(false);
+      stopFireworks();
+      resultOverlay.classList.remove("show");
+      resultOverlay.setAttribute("aria-hidden", "true");
+      sessionExpiredScreen.hidden = false;
+      gameState = "expired";
+      setCardsSelectable(false);
+      setPickHighlight(false);
+      startBtn.disabled = true;
+    }
+
+    function closeWebAppSoon(delay = 700) {
+      if (!tg || typeof tg.close !== "function") return;
+      setTimeout(() => {
+        try {
+          tg.close();
+        } catch (_) {}
+      }, delay);
+    }
+
+    function clearAutoClaimFallback() {
+      if (autoClaimFallbackTimer) {
+        clearTimeout(autoClaimFallbackTimer);
+        autoClaimFallbackTimer = null;
+      }
+    }
+
+    function scheduleAutoClaimFallback(action = "claim", delay = 1500) {
+      const canOpenBot = /^[A-Za-z0-9_]{5,64}$/.test(botUsername);
+      if (!canOpenBot || autoClaimFallbackOpened) return;
+      clearAutoClaimFallback();
+      autoClaimFallbackTimer = setTimeout(() => {
+        autoClaimFallbackTimer = null;
+        if (autoClaimFallbackOpened || gameState !== "result") return;
+        autoClaimFallbackOpened = true;
+        setStatus("Авто-резерв: открываем бота для подтверждения награды...", true);
+        openBotDeepLink(buildCubeDeepLink(action));
+      }, Math.max(600, delay));
+    }
+
+    function openBotDeepLink(deepLink) {
+      autoClaimFallbackOpened = true;
+      clearAutoClaimFallback();
+      if (tg && typeof tg.openTelegramLink === "function") {
+        setTimeout(() => {
+          try {
+            tg.openTelegramLink(deepLink);
+          } catch (_) {
+            window.location.href = deepLink;
+          }
+          closeWebAppSoon(450);
+        }, 0);
+      } else {
+        window.location.href = deepLink;
+      }
+      closeWebAppSoon(1300);
+    }
+
+    function buildCubeDeepLink(action, explicitDeviceToken = "") {
+      const deepAction = action === "replay_yes" ? "cubereplay" : "cubeclaim";
+      // Do not request the legacy first-device bonus: the server-selected prize is final.
+      return `https://t.me/${botUsername}?start=${deepAction}_${sessionId}_${pickedPrizeGram}`;
+    }
+
+    async function sendResultToBot(action) {
+      if (resultSent) return;
+      if (sessionId <= 0) {
+        setStatus("Нет оплаченной сессии. Открой игру из бота.", false);
+        return;
+      }
+      const canSend = Boolean(tg && typeof tg.sendData === "function");
+      const canOpenBot = /^[A-Za-z0-9_]{5,64}$/.test(botUsername);
+      if (!canOpenBot && !canSend) {
+        setStatus("Нужно открыть игру через Telegram, чтобы отправить результат.", false);
+        return;
+      }
+
+      const deviceId = "";
+
+      const payload = {
+        event: "cube_round_result",
+        action,
+        session_id: sessionId,
+        price: roundPrice,
+        payout_gram: pickedPrizeGram,
+        card_id: pickedCardId,
+        currency,
+        device_id: deviceId,
+        device_source: deviceFingerprintSource || "",
+        ts: Date.now()
+      };
+
+      try {
+        resultSent = true;
+        autoClaimFallbackOpened = false;
+        clearAutoClaimFallback();
+        claimPrizeBtn.disabled = true;
+        claimPrizeBtn.textContent = "Отправлено";
+        void releaseSessionLock(false);
+        if (canOpenBot) {
+          const deepLink = buildCubeDeepLink(action, deviceId);
+          setStatus("Открываем бота для начисления награды...", false);
+          claimPrizeBtn.disabled = true;
+          claimPrizeBtn.textContent = "НАГРАДА ПОЛУЧЕНА";
+          openBotDeepLink(deepLink);
+          return;
+        }
+        if (canSend) {
+          tg.sendData(JSON.stringify(payload));
+          setStatus("Награда отправлена. Окно закрывается...", false);
+          claimPrizeBtn.disabled = true;
+          claimPrizeBtn.textContent = "НАГРАДА ПОЛУЧЕНА";
+          closeWebAppSoon(600);
+          return;
+        }
+        setStatus("Не удалось отправить результат. Откройте игру через бота.", true);
+      } catch (_) {
+        resultSent = false;
+        claimPrizeBtn.disabled = false;
+        claimPrizeBtn.textContent = "Получить";
+        setStatus("Ошибка отправки. Нажмите «Получить».", false);
+      }
+    }
+    startBtn.addEventListener("click", () => {
+      void startGame();
+    });
+    claimPrizeBtn.addEventListener("click", async () => {
+      if (resultSent) {
+        if (/^[A-Za-z0-9_]{5,64}$/.test(botUsername)) {
+          setStatus("Открываем бот для резервного получения...", true);
+          const deviceId = normalizeDeviceToken(await ensureDeviceFingerprint(), 24);
+          openBotDeepLink(buildCubeDeepLink("claim", deviceId));
+          return;
+        }
+      }
+      setStatus("Повторно отправляем результат в бота...", true);
+      void sendResultToBot("claim");
+    });
+
+    window.addEventListener("resize", () => {
+      setViewportVars();
+      layoutCards(true);
+      if (fwActive) {
+        resizeFireworksCanvas();
+      }
+    });
+    window.addEventListener("beforeunload", () => {
+      void releaseSessionLock();
+    });
+
+    async function initGame() {
+      void ensureDeviceFingerprint();
+      if (sessionId > 0) {
+        const okLock = await acquireSessionLock();
+        if (!okLock) {
+          showSessionExpiredScreen();
+          return;
+        }
+        setStatus(isFreeRound
+          ? `Бесплатная игра #${sessionId}.`
+          : `Сессия #${sessionId} оплачена. Цена игры: ${formatInt(roundPrice)} ${currency}.`, false);
+      } else {
+        setStatus(`Сессия не оплачена. Открой игру из бота и оплати ${formatInt(roundPrice)} ${currency}.`, false);
+      }
+      setupBoard();
+    }
+
+    void initGame();
+  </script>
+</body>
+</html>
