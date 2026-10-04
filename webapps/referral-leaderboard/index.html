@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VORTEX Elite Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;900&family=Inter:wght@400;700;900&display=swap');
+        
+        :root {
+            --accent: #00ffa3;
+            --bg: #05070a;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 50% -20%, #1a3a2f 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, #0d1a15 0%, transparent 30%);
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding-bottom: 140px;
+        }
+
+        .unbounded { font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; }
+
+        .premium-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-150%) skewX(-25deg); }
+            100% { transform: translateX(150%) skewX(-25deg); }
+        }
+        .shimmer-card { position: relative; overflow: hidden; }
+        .shimmer-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 80%, transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(4px); }
+        }
+        .scroll-arrow { animation: arrowBounce 1.2s infinite ease-in-out; }
+
+        .prizes-container { position: relative; margin: 0 -20px; padding: 0 20px; }
+        .prizes-fade-area {
+            position: absolute;
+            right: 0; top: 0; bottom: 0;
+            width: 50px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to left, rgba(5,7,10,0.6), transparent);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes pulse-gold-gentle {
+            0%, 100% { transform: scale(1.02); filter: brightness(1.1) drop-shadow(0 0 10px rgba(0, 255, 163, 0.25)); }
+            50% { transform: scale(1.05); filter: brightness(1.2) drop-shadow(0 0 20px rgba(0, 255, 163, 0.4)); }
+        }
+        .first-place-anim { animation: pulse-gold-gentle 4s infinite ease-in-out; }
+
+        .avatar-container {
+            border-radius: 1.5rem;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .rule-row { background: #121417; border-radius: 18px; padding: 14px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+        .rule-row.last { border: 1px solid rgba(0, 255, 163, 0.3); }
+
+        .gram-label { color: rgba(255, 255, 255, 0.6); font-size: 8px; font-weight: 900; }
+        .bright-text { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        
+        /* Стили для разделения числа и слова */
+        .pts-value { display: block; line-height: 1; }
+        .pts-label { display: block; font-size: 8px; opacity: 0.6; text-transform: uppercase; margin-top: 2px; }
+        .pts-value-inline { font-size: 14px; }
+        .pts-label-inline { font-size: 9px; opacity: 0.6; margin-left: 6px; text-transform: uppercase; }
+    </style>
+</head>
+<body class="p-5">
+
+    <div class="fixed top-4 right-4 z-[60]">
+        <button onclick="openRules()" class="w-10 h-10 premium-glass rounded-full flex items-center justify-center border-emerald-500/60 text-emerald-400 font-serif italic text-xl shadow-[0_0_15px_rgba(0,255,163,0.2)]">
+            i
+        </button>
+    </div>
+
+    <div id="rules-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 hidden">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-md"></div>
+        <div class="relative w-full max-w-sm rounded-[45px] p-8 text-center" style="background: #090b0e; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="text-3xl mb-4">📄</div>
+            <h2 class="unbounded text-[22px] text-[#00ffa3] mb-8 leading-tight">СИСТЕМА<br>НАЧИСЛЕНИЯ</h2>
+            
+            <div class="space-y-2 text-left mb-10">
+                <div class="rule-row">
+                    <span class="unbounded text-[#00ffa3] text-2xl">+3</span>
+                    <p class="text-[12px] font-bold leading-tight text-white">За каждого приглашенного реферала</p>
+                </div>
+                <div class="rule-row">
+                    <span class="unbounded text-[#00ffa3] text-2xl">+2</span>
+                    <p class="text-[12px] font-bold leading-tight text-white">Если реферал сыграл > 20 игр</p>
+                </div>
+                <div class="rule-row">
+                    <span class="unbounded text-[#00ffa3] text-2xl">+2</span>
+                    <p class="text-[12px] font-bold leading-tight text-white">За пополнение от 5 000 до 10 000 <span class="text-[#00ffa3]">вашим реф.</span></p>
+                </div>
+                <div class="rule-row">
+                    <span class="unbounded text-[#00ffa3] text-2xl">+5</span>
+                    <p class="text-[12px] font-bold leading-tight text-white">За оборот реферала более 50 000</p>
+                </div>
+                <div class="rule-row last">
+                    <span class="unbounded text-[#00ffa3] text-2xl">+7</span>
+                    <p class="text-[12px] font-bold leading-tight text-white">За оборот реферала более 100 000</p>
+                </div>
+            </div>
+
+            <button onclick="closeRules()" class="w-full bg-[#00ffa3] text-black font-black py-6 rounded-[28px] text-sm tracking-tighter active:scale-95 transition-transform uppercase">
+                ПОНЯТНО, ПОЕХАЛИ!
+            </button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div class="text-center mb-10 mt-4">
+            <h1 class="unbounded text-2xl text-white italic">LEADERBOARD</h1>
+            <div class="h-[2px] w-12 bg-emerald-500 mx-auto mt-2"></div>
+        </div>
+
+        <div class="prizes-container mb-12">
+            <div id="prize-scroll-hint" class="prizes-fade-area" onclick="scrollPrizes()">
+                <svg class="scroll-arrow w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <div id="prizes-list" class="flex gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
+                <div class="min-w-[145px] premium-glass p-4 rounded-[28px] border-b-4 border-emerald-500 shimmer-card">
+                    <p class="text-[9px] text-emerald-400 font-black mb-1">1 МЕСТО</p>
+                    <p class="unbounded text-sm italic bright-text">200k <span class="gram-label">GRAM</span></p>
+                </div>
+                <div class="min-w-[145px] premium-glass p-4 rounded-[28px] border-b-4 border-slate-400 shimmer-card">
+                    <p class="text-[9px] text-slate-300 font-black mb-1">2 МЕСТО</p>
+                    <p class="unbounded text-sm italic bright-text">100k <span class="gram-label">GRAM</span></p>
+                </div>
+                <div class="min-w-[145px] premium-glass p-4 rounded-[28px] border-b-4 border-orange-500 shimmer-card">
+                    <p class="text-[9px] text-orange-400 font-black mb-1">3 МЕСТО</p>
+                    <p class="unbounded text-sm italic bright-text">70k <span class="gram-label">GRAM</span></p>
+                </div>
+                <div class="min-w-[145px] premium-glass p-4 rounded-[28px] border-b-4 border-zinc-700 shimmer-card">
+                    <p class="text-[9px] text-zinc-500 font-black mb-1">4 МЕСТО</p>
+                    <p class="unbounded text-sm italic bright-text">50k <span class="gram-label">GRAM</span></p>
+                </div>
+                <div class="min-w-[145px] premium-glass p-4 rounded-[28px] border-b-4 border-zinc-700 shimmer-card">
+                    <p class="text-[9px] text-zinc-500 font-black mb-1">5 МЕСТО</p>
+                    <p class="unbounded text-sm italic bright-text">40k <span class="gram-label">GRAM</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-end gap-6 mb-16 px-1 h-52">
+            <div class="flex flex-col items-center w-1/3 text-center">
+                <div class="relative w-20 h-20 mb-3">
+                    <div class="avatar-container w-full h-full border-2 border-slate-400/50"><img id="p2-img" class="w-full h-full object-cover"></div>
+                </div>
+                <p id="p2-name" class="font-bold text-[11px] mb-1 truncate w-full text-white">—</p>
+                <div id="p2-val" class="unbounded text-slate-300">
+                    <span class="pts-value text-base">0</span>
+                    <span class="pts-label">очков</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center w-1/3 first-place-anim text-center">
+                <div class="relative w-32 h-32 mb-4">
+                    <div class="avatar-container w-full h-full border-4 border-emerald-500 shadow-lg shadow-emerald-500/20"><img id="p1-img" class="w-full h-full object-cover"></div>
+                </div>
+                <p id="p1-name" class="unbounded text-[14px] mb-1 truncate w-full text-white">—</p>
+                <div id="p1-val" class="unbounded text-emerald-400">
+                    <span class="pts-value text-4xl">0</span>
+                    <span class="pts-label text-[10px]">очков</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center w-1/3 text-center">
+                <div class="relative w-20 h-20 mb-3">
+                    <div class="avatar-container w-full h-full border-2 border-orange-500/50"><img id="p3-img" class="w-full h-full object-cover"></div>
+                </div>
+                <p id="p3-name" class="font-bold text-[11px] mb-1 truncate w-full text-white">—</p>
+                <div id="p3-val" class="unbounded text-orange-400">
+                    <span class="pts-value text-base">0</span>
+                    <span class="pts-label">очков</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4 mb-36">
+            <div class="premium-glass !bg-white/[0.06] p-5 rounded-[32px] flex items-center justify-between border-white/10">
+                <div class="flex items-center gap-4">
+                    <span class="unbounded text-white/20 text-xl italic">04</span>
+                    <div class="w-14 h-14 avatar-container border border-white/10"><img id="p4-img" class="w-full h-full object-cover"></div>
+                    <div><p id="p4-name" class="font-bold text-sm text-white">—</p><p class="text-[9px] text-emerald-400 font-black uppercase tracking-widest italic">Prize: 50k GRAM</p></div>
+                </div>
+                <p id="p4-val" class="unbounded text-white text-sm italic">0 очков</p>
+            </div>
+            <div class="premium-glass !bg-white/[0.06] p-5 rounded-[32px] flex items-center justify-between border-white/10">
+                <div class="flex items-center gap-4">
+                    <span class="unbounded text-white/20 text-xl italic">05</span>
+                    <div class="w-14 h-14 avatar-container border border-white/10"><img id="p5-img" class="w-full h-full object-cover"></div>
+                    <div><p id="p5-name" class="font-bold text-sm text-white">—</p><p class="text-[9px] text-emerald-400 font-black uppercase tracking-widest italic">Prize: 40k GRAM</p></div>
+                </div>
+                <p id="p5-val" class="unbounded text-white text-sm italic">0 очков</p>
+            </div>
+        </div>
+
+        <div class="fixed bottom-6 left-0 right-0 z-50 px-5">
+            <div class="premium-glass !bg-emerald-500 rounded-[35px] p-4 flex items-center justify-between border-none shadow-[0_15px_40px_rgba(16,185,129,0.4)] text-black">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <div class="w-14 h-14 avatar-container bg-black/20 border border-white/40 shadow-inner"><img id="me-img" class="w-full h-full object-cover"></div>
+                        <div id="me-rank" class="absolute -top-1 -left-1 bg-black text-white font-black text-[10px] w-6 h-6 flex items-center justify-center rounded-full italic">0</div>
+                    </div>
+                    <div>
+                        <p class="unbounded text-[9px] opacity-60 mb-0.5">Ваш статус</p>
+                        <p id="me-hint" class="font-black text-[12px] italic uppercase tracking-tighter leading-tight">Загрузка...</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p id="me-points" class="unbounded text-3xl leading-none italic">0</p>
+                    <p id="me-points-label" class="font-black text-[8px] opacity-60 uppercase">ОЧКОВ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg) {
+            try {
+                tg.ready();
+                tg.expand();
+            } catch (_) {}
+        }
+
+        const MAX_WEBAPP_DATA_AGE_MS = 2 * 60 * 1000;
+
+        function createEmptyPayload() {
+            return {
+                players: Array.from({ length: 5 }, () => ({ username: "—", pts: 0, photo: "", username_raw: "" })),
+                me: { rank: 0, pts: 0, photo: "", points_to_next: 0 }
+            };
+        }
+
+        function openRules() { document.getElementById('rules-modal').classList.remove('hidden'); }
+        function closeRules() { document.getElementById('rules-modal').classList.add('hidden'); }
+
+        const prizeScroll = document.getElementById('prizes-list');
+        const hint = document.getElementById('prize-scroll-hint');
+        
+        function scrollPrizes() {
+            prizeScroll.scrollBy({ left: 160, behavior: 'smooth' });
+        }
+
+        prizeScroll.addEventListener('scroll', () => {
+            const maxScroll = prizeScroll.scrollWidth - prizeScroll.clientWidth;
+            hint.style.opacity = (prizeScroll.scrollLeft >= maxScroll - 20) ? '0' : '1';
+        });
+
+        function getPointsWord(num) {
+            let n = Math.abs(num) % 100, n1 = n % 10;
+            if (n > 10 && n < 20) return 'очков';
+            if (n1 > 1 && n1 < 5) return 'очка';
+            if (n1 === 1) return 'очко';
+            return 'очков';
+        }
+
+        function normalizePayload(raw) {
+            const empty = createEmptyPayload();
+            if (!raw || typeof raw !== 'object') return empty;
+
+            const safePlayers = Array.isArray(raw.players) ? raw.players : [];
+            const players = empty.players.map((item, idx) => {
+                const src = safePlayers[idx] && typeof safePlayers[idx] === 'object' ? safePlayers[idx] : {};
+                const pts = Number.isFinite(Number(src.pts)) ? Number(src.pts) : 0;
+                return {
+                    username: (src.username || src.first_name || item.username || 'Игрок'),
+                    username_raw: String(src.username_raw || '').trim(),
+                    pts: pts > 0 ? Math.floor(pts) : 0,
+                    photo: typeof src.photo === 'string' ? src.photo : ''
+                };
+            });
+
+            const meRaw = raw.me && typeof raw.me === 'object' ? raw.me : {};
+            const mePts = Number.isFinite(Number(meRaw.pts)) ? Number(meRaw.pts) : 0;
+            const meRank = Number.isFinite(Number(meRaw.rank)) ? Number(meRaw.rank) : 0;
+            const pointsToNext = Number.isFinite(Number(meRaw.points_to_next)) ? Number(meRaw.points_to_next) : 0;
+
+            return {
+                players,
+                me: {
+                    rank: meRank > 0 ? Math.floor(meRank) : 0,
+                    pts: mePts > 0 ? Math.floor(mePts) : 0,
+                    photo: typeof meRaw.photo === 'string' ? meRaw.photo : '',
+                    points_to_next: pointsToNext > 0 ? Math.floor(pointsToNext) : 0
+                }
+            };
+        }
+
+        function isPayloadFresh(raw) {
+            if (!raw || typeof raw !== 'object') return false;
+            const generatedAt = typeof raw.generated_at === 'string' ? raw.generated_at : '';
+            if (!generatedAt) return true;
+            const ts = Date.parse(generatedAt);
+            if (!Number.isFinite(ts)) return true;
+            return (Date.now() - ts) <= MAX_WEBAPP_DATA_AGE_MS;
+        }
+
+        function requestFreshBoard() {
+            if (!tg || typeof tg.sendData !== 'function') return;
+            try {
+                tg.sendData(JSON.stringify({ event: 'ref_points_request', source: 'leaderboard_webapp' }));
+            } catch (_) {
+                // Ignore transport errors: user can reopen leaderboard from the bot message.
+            }
+        }
+
+        function setHint(text) {
+            const hintEl = document.getElementById('me-hint');
+            if (hintEl) hintEl.innerText = text;
+        }
+
+        function updateUI(players, me) {
+            const defaultSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#3a3a3a"/></svg>';
+            const DEFAULT_AVATAR = `data:image/svg+xml;utf8,${encodeURIComponent(defaultSvg)}`;
+            const normalizedPlayers = Array.isArray(players) ? players.slice(0, 5) : [];
+            while (normalizedPlayers.length < 5) {
+                normalizedPlayers.push({ username: '—', pts: 0, photo: '', username_raw: '' });
+            }
+
+            normalizedPlayers.forEach((p, i) => {
+                const r = i + 1;
+                const nameEl = document.getElementById(`p${r}-name`);
+                const valEl = document.getElementById(`p${r}-val`);
+                const imgEl = document.getElementById(`p${r}-img`);
+                
+                let name = p.username || p.first_name || 'Игрок';
+                if(nameEl) nameEl.innerText = name;
+                
+                if(valEl) {
+                    if (r <= 3) {
+                        // Для ТОП-3 разделяем число и слово
+                        valEl.querySelector('.pts-value').innerText = p.pts;
+                        valEl.querySelector('.pts-label').innerText = getPointsWord(p.pts);
+                    } else {
+                        // Для списка ниже
+                        valEl.innerHTML = `<span class="pts-value-inline">${p.pts}</span><span class="pts-label-inline">${getPointsWord(p.pts)}</span>`;
+                    }
+                }
+                const usernameRaw = (p.username_raw || '').replace(/^@/, '');
+                const tgPhoto = usernameRaw ? `https://t.me/i/userpic/320/${usernameRaw}.jpg` : '';
+                const photo = (p.photo && p.photo.length > 5) ? p.photo : tgPhoto;
+                if(imgEl) {
+                    imgEl.onerror = () => {
+                        imgEl.onerror = null;
+                        imgEl.src = DEFAULT_AVATAR;
+                    };
+                    imgEl.src = photo ? photo : DEFAULT_AVATAR;
+                }
+            });
+
+            document.getElementById('me-rank').innerText = me.rank || 0;
+            document.getElementById('me-points').innerText = me.pts || 0;
+            document.getElementById('me-points-label').innerText = getPointsWord(me.pts || 0).toUpperCase();
+            
+            let hintText = (me.rank === 1 && (me.pts || 0) > 0) ? 'Вы на вершине!' : `Нужно еще +${me.points_to_next || 0} ${getPointsWord(me.points_to_next || 0)}`;
+            document.getElementById('me-hint').innerText = hintText;
+            
+            const meImg = document.getElementById('me-img');
+            if(meImg) {
+                meImg.onerror = () => {
+                    meImg.onerror = null;
+                    meImg.src = DEFAULT_AVATAR;
+                };
+                meImg.src = (me.photo && me.photo.length > 5) ? me.photo : DEFAULT_AVATAR;
+            }
+        }
+
+        function parseDataFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const rawData = params.get('data');
+            if (!rawData) return null;
+            try {
+                let decoded = rawData;
+                try {
+                    decoded = decodeURIComponent(rawData);
+                } catch (_) {}
+                const parsed = JSON.parse(decoded);
+                return parsed && typeof parsed === 'object' ? parsed : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        window.onload = () => {
+            const parsed = parseDataFromQuery();
+            if (!parsed) {
+                const empty = createEmptyPayload();
+                updateUI(empty.players, empty.me);
+                setHint('Данные запрошены у бота. Откройте новую кнопку лидерборда из чата.');
+                requestFreshBoard();
+                return;
+            }
+
+            if (!isPayloadFresh(parsed)) {
+                const empty = createEmptyPayload();
+                updateUI(empty.players, empty.me);
+                setHint('Данные устарели. Запрошено обновление у бота.');
+                requestFreshBoard();
+                return;
+            }
+
+            const normalized = normalizePayload(parsed);
+            updateUI(normalized.players, normalized.me);
+        };
+    </script>
+</body>
+</html>
