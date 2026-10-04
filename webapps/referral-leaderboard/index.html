@@ -258,8 +258,6 @@
             } catch (_) {}
         }
 
-        const MAX_WEBAPP_DATA_AGE_MS = 2 * 60 * 1000;
-
         function createEmptyPayload() {
             return {
                 players: Array.from({ length: 5 }, () => ({ username: "—", pts: 0, photo: "", username_raw: "" })),
@@ -320,15 +318,6 @@
                     points_to_next: pointsToNext > 0 ? Math.floor(pointsToNext) : 0
                 }
             };
-        }
-
-        function isPayloadFresh(raw) {
-            if (!raw || typeof raw !== 'object') return false;
-            const generatedAt = typeof raw.generated_at === 'string' ? raw.generated_at : '';
-            if (!generatedAt) return true;
-            const ts = Date.parse(generatedAt);
-            if (!Number.isFinite(ts)) return true;
-            return (Date.now() - ts) <= MAX_WEBAPP_DATA_AGE_MS;
         }
 
         function requestFreshBoard() {
@@ -423,14 +412,6 @@
                 const empty = createEmptyPayload();
                 updateUI(empty.players, empty.me);
                 setHint('Данные запрошены у бота. Откройте новую кнопку лидерборда из чата.');
-                requestFreshBoard();
-                return;
-            }
-
-            if (!isPayloadFresh(parsed)) {
-                const empty = createEmptyPayload();
-                updateUI(empty.players, empty.me);
-                setHint('Данные устарели. Запрошено обновление у бота.');
                 requestFreshBoard();
                 return;
             }
