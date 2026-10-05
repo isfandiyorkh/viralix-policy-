@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -112,7 +112,7 @@
             
             <div class="space-y-2 text-left mb-10">
                 <div class="rule-row">
-                    <span class="unbounded text-[#00ffa3] text-2xl">+3</span>
+                    <span class="unbounded text-[#00ffa3] text-2xl">+1</span>
                     <p class="text-[12px] font-bold leading-tight text-white">За каждого приглашенного реферала</p>
                 </div>
                 <div class="rule-row">
@@ -261,7 +261,7 @@
         function createEmptyPayload() {
             return {
                 players: Array.from({ length: 5 }, () => ({ username: "—", pts: 0, photo: "", username_raw: "" })),
-                me: { rank: 0, pts: 0, photo: "", points_to_next: 0 }
+                me: { rank: 0, pts: 0, photo: "", points_to_next: 0, eligible: true }
             };
         }
 
@@ -312,6 +312,7 @@
             return {
                 players,
                 me: {
+                    eligible: meRaw.eligible !== false,
                     rank: meRank > 0 ? Math.floor(meRank) : 0,
                     pts: mePts > 0 ? Math.floor(mePts) : 0,
                     photo: typeof meRaw.photo === 'string' ? meRaw.photo : '',
@@ -377,7 +378,10 @@
             document.getElementById('me-points').innerText = me.pts || 0;
             document.getElementById('me-points-label').innerText = getPointsWord(me.pts || 0).toUpperCase();
             
-            let hintText = (me.rank === 1 && (me.pts || 0) > 0) ? 'Вы на вершине!' : `Нужно еще +${me.points_to_next || 0} ${getPointsWord(me.points_to_next || 0)}`;
+            const hintText = me.eligible === false ? 'Вы не участвуете в конкурсе'
+                : me.rank === 1 && (me.pts || 0) > 0 ? 'Вы на вершине!'
+                : (me.pts || 0) === 0 && (me.points_to_next || 0) === 0 ? 'Пригласите первого реферала'
+                : `Нужно еще +${me.points_to_next || 0} ${getPointsWord(me.points_to_next || 0)}`;
             document.getElementById('me-hint').innerText = hintText;
             
             const meImg = document.getElementById('me-img');
@@ -395,11 +399,13 @@
             const rawData = params.get('data');
             if (!rawData) return null;
             try {
-                let decoded = rawData;
+                // URLSearchParams already decodes the query; preserve % in names.
+                let parsed;
                 try {
-                    decoded = decodeURIComponent(rawData);
-                } catch (_) {}
-                const parsed = JSON.parse(decoded);
+                    parsed = JSON.parse(rawData);
+                } catch (_) {
+                    parsed = JSON.parse(decodeURIComponent(rawData));
+                }
                 return parsed && typeof parsed === 'object' ? parsed : null;
             } catch (_) {
                 return null;
