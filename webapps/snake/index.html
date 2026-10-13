@@ -589,17 +589,10 @@
         const raw = parseInt(urlParams.get(name) || "", 10);
         return Number.isFinite(raw) ? Math.max(0, raw) : fallback;
     }
-    const snakeMaxPayout = readNonNegativeIntParam("max", 999999);
-    const snakeServerPayout = Math.min(
-        snakeMaxPayout,
-        readNonNegativeIntParam("payout", snakeMaxPayout)
-    );
     const sessionCfg = {
         sessionId: parseInt(urlParams.get("sid") || "0", 10) || 0,
         userId: parseInt(urlParams.get("uid") || "0", 10) || 0,
         ticketPrice: Math.max(0, readNonNegativeIntParam("price", 0)),
-        maxPayout: snakeMaxPayout,
-        serverPayout: snakeServerPayout,
         currency: String(urlParams.get("currency") || "GRAM"),
         botUsername: String(urlParams.get("bot") || "").replace(/^@/, "").trim()
     };
@@ -614,14 +607,8 @@
     let autoClaimFallbackOpened = false;
 
 
-    function clampSnakePayout(rawValue){
-        const parsed = Number.isFinite(rawValue) ? Math.floor(rawValue) : 0;
-        const safe = Math.max(0, parsed);
-        if(sessionCfg.serverPayout > 0){
-            const capped = Math.min(sessionCfg.serverPayout, safe);
-            return capped;
-        }
-        return safe;
+    function normalizeSnakeEarnings(rawValue){
+        return Number.isFinite(rawValue) ? Math.max(0, Math.floor(rawValue)) : 0;
     }
 
     function clearAutoClaimFallback(){
@@ -1063,7 +1050,7 @@
         state.running = false;
         state.over = true;
         state.roundEndedAt = Date.now();
-        state.gram = clampSnakePayout(state.gram);
+        state.gram = normalizeSnakeEarnings(state.gram);
         updateHud();
 
         finalScoreEl.textContent = state.gram;
@@ -1412,7 +1399,7 @@
         state.items.splice(index, 1);
 
         const before = state.gram;
-        state.gram = Math.min(sessionCfg.serverPayout, state.gram + gain);
+        state.gram += gain;
         const actualGain = state.gram - before;
         if(actualGain <= 0){
             updateHud();
@@ -2716,7 +2703,7 @@
     }
 
     async function buildClaimPayload(){
-        const safeEarn = clampSnakePayout(state.gram);
+        const safeEarn = normalizeSnakeEarnings(state.gram);
         const envelope = {
             event: "snake_round_result",
             action: "claim",
@@ -2730,14 +2717,12 @@
             ended_at: state.roundEndedAt || Date.now(),
             lock_owner: lockOwner
         };
-        envelope.server_payout = sessionCfg.serverPayout;
-        envelope.max_payout = sessionCfg.maxPayout;
         envelope.proof = await sha256Hex(JSON.stringify(envelope));
         return envelope;
     }
 
     function buildSnakeDeepLink(){
-        const amount = clampSnakePayout(state.gram);
+        const amount = normalizeSnakeEarnings(state.gram);
         return `https://t.me/${sessionCfg.botUsername}?start=snakeclaim_${sessionCfg.sessionId}_${amount}_${encodeURIComponent(state.roundId)}`;
     }
 
