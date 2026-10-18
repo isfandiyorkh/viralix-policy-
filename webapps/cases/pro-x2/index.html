@@ -205,7 +205,7 @@ window.CASE_DESIGN={"key": "pro", "count": 2, "prizes": [{"amount": 30000, "weig
       if (link && tg && typeof tg.openTelegramLink === 'function') {
         try { tg.openTelegramLink(link); } catch {}
       }
-      note.textContent = 'Вернитесь к сообщению бота и нажмите «Забрать приз без анимации». Награда сохранена.';
+      note.textContent = 'Не удалось передать результат. Нажмите «ЗАБРАТЬ ПРИЗ» ещё раз или вернитесь в бот. Награда сохранена.';
     } finally {
       later(() => { sending = false; claim.disabled = false; }, 1800);
     }
