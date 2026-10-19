@@ -1,999 +1,144 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f3f0e8" />
-  <title>VORTEX BOT | Официальная политика сервиса</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f0e8">
+  <meta name="description" content="VORTEX BOT: короткая инструкция по играм, правила виртуальных GRAM, штрафы, переводы, возвраты и конфиденциальность.">
+  <meta name="policy-version" content="5.0-2026-10-19">
+  <title>VORTEX BOT — игры, GRAM и правила сервиса</title>
   <style>
-    :root {
-      --bg: #f3f0e8;
-      --paper: #ffffff;
-      --paper-soft: #fbf8f1;
-      --ink: #151515;
-      --muted: #514d45;
-      --line: #d9d0bf;
-      --line-strong: #b9ad98;
-      --accent: #2f2a22;
-      --accent-2: #486254;
-      --warn: #755225;
-      --risk: #7a2f2f;
-      --ok: #2f6643;
-      --shadow: 0 18px 44px #00000012;
-      --shadow-soft: 0 8px 22px #0000000d;
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --max: 1080px;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Manrope", "Segoe UI", sans-serif;
-      color: var(--ink);
-      background:
-        linear-gradient(180deg, #ffffffcc 0%, #ffffff00 190px),
-        linear-gradient(90deg, #00000003 1px, transparent 1px) 0 0 / 40px 40px,
-        linear-gradient(180deg, #f6f2e9, var(--bg));
-      line-height: 1.68;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.34;
-      background:
-        radial-gradient(760px 300px at 96% 8%, #48625424, #00000000 73%),
-        radial-gradient(520px 250px at 5% 34%, #75522518, #00000000 76%),
-        radial-gradient(420px 230px at 72% 84%, #7a2f2f12, #00000000 78%);
-      animation: paperFloat 18s ease-in-out infinite alternate;
-      z-index: 0;
-    }
-
-    .progress {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 3px;
-      background: transparent;
-      z-index: 200;
-    }
-
-    .progress__bar {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, #252019, #486254, #252019);
-      transition: width 120ms linear;
-    }
-
-    .shell {
-      width: 100%;
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 20px 14px 52px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .masthead,
-    .section,
-    .footer {
-      background: linear-gradient(180deg, #ffffff, var(--paper-soft));
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .masthead {
-      border-top: 3px solid var(--accent);
-      padding: 24px 20px 18px;
-      margin-bottom: 12px;
-    }
-
-    .masthead::before {
-      content: "VORTEX POLICY";
-      position: absolute;
-      right: 14px;
-      bottom: 8px;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(17px, 2.2vw, 24px);
-      letter-spacing: 1.6px;
-      color: #00000010;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    .brandline {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .tag {
-      border: 1px solid var(--line-strong);
-      border-radius: 999px;
-      background: #faf7ef;
-      color: #37342f;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.55px;
-      text-transform: uppercase;
-    }
-
-    .tag.alert {
-      border-color: #c8b18b;
-      background: #fff8eb;
-      color: #624624;
-    }
-
-    h1 {
-      margin: 0;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(30px, 4.8vw, 48px);
-      line-height: 1.1;
-      font-weight: 800;
-      color: #121212;
-      text-wrap: balance;
-    }
-
-    .intro {
-      margin: 14px 0 0;
-      max-width: 980px;
-      font-size: clamp(15px, 2.1vw, 18px);
-      color: #2f2e2a;
-    }
-
-    .decree {
-      margin-top: 14px;
-      border: 1px solid #d4cdbd;
-      border-left: 3px solid var(--accent-2);
-      border-radius: 9px;
-      background: #f7f4eb;
-      padding: 10px 11px;
-      font-size: 13px;
-      color: #2d2b28;
-    }
-
-    .stateline {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 8px;
-    }
-
-    .stateline span {
-      border: 1px solid #ddd6c8;
-      background: #fffefb;
-      border-radius: 9px;
-      padding: 7px 9px;
-      font-size: 12px;
-      line-height: 1.45;
-      color: #3f3a31;
-    }
-
-    .section {
-      padding: 15px 14px 13px;
-      margin-bottom: 10px;
-    }
-
-    .section::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, var(--accent-2), #48625400 76%);
-    }
-
-    .section::after {
-      content: "§";
-      position: absolute;
-      right: 10px;
-      top: 8px;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: 26px;
-      color: #00000012;
-    }
-
-    .section h2 {
-      margin: 0 0 9px;
-      padding-right: 34px;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(21px, 2.85vw, 28px);
-      line-height: 1.25;
-      font-weight: 800;
-      color: #1a1a1a;
-      text-wrap: balance;
-    }
-
-    .section h2::after {
-      content: "";
-      display: block;
-      width: 72px;
-      height: 1px;
-      margin-top: 6px;
-      background: linear-gradient(90deg, var(--accent-2), #48625400);
-    }
-
-    .section p {
-      margin: 0 0 8px;
-      font-size: 15px;
-      color: #24231f;
-    }
-
-    .section ul,
-    .section ol {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .section li {
-      margin: 0 0 8px;
-      font-size: 15px;
-      color: #282722;
-    }
-
-    strong {
-      color: #111;
-    }
-
-    code {
-      font-family: "Consolas", "SFMono-Regular", monospace;
-      font-size: 0.95em;
-      background: #f4f1e8;
-      border: 1px solid #ded6c7;
-      border-radius: 5px;
-      padding: 1px 5px;
-    }
-
-    .callout {
-      margin-top: 10px;
-      border: 1px solid #d6d0c2;
-      border-radius: var(--radius-md);
-      background: #faf8f1;
-      padding: 10px 11px;
-      font-size: 13px;
-      color: #36342f;
-      box-shadow: inset 0 1px 0 #ffffff;
-    }
-
-    .callout.ok {
-      border-color: #bad3c2;
-      background: #f4faf5;
-      color: var(--ok);
-    }
-
-    .callout.warn {
-      border-color: #dcc9b3;
-      background: #fdf7f1;
-      color: var(--warn);
-    }
-
-    .callout.risk {
-      border-color: #d9bfbf;
-      background: #fdf4f4;
-      color: var(--risk);
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      background: #ffffff;
-    }
-
-    table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    th,
-    td {
-      text-align: left;
-      vertical-align: top;
-      border-bottom: 1px solid #e8e5dd;
-      padding: 8px 9px;
-      color: #2f2e2a;
-    }
-
-    th {
-      background: #f4f1e8;
-      color: #1c1c1c;
-      font-weight: 800;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .appendix {
-      border-style: dashed;
-      background: linear-gradient(180deg, #fffefb, #fbf8f1);
-    }
-
-    .footer {
-      margin-top: 12px;
-      padding: 16px 14px 14px;
-      color: #2f2f2f;
-      font-size: 13px;
-    }
-
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .footer strong {
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(20px, 2.5vw, 28px);
-      line-height: 1.1;
-    }
-
-    .edition-badge {
-      border: 1px solid #c7bcaa;
-      border-radius: 999px;
-      background: #f8f4ea;
-      color: #4f4739;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.55px;
-    }
-
-    .footer-text {
-      margin: 0 0 12px;
-      font-size: 14px;
-      color: #2f2c28;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 9px;
-      margin-bottom: 10px;
-    }
-
-    .footer-card {
-      border: 1px solid #d9d2c4;
-      border-radius: 10px;
-      background: #fffefb;
-      padding: 10px 11px;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .footer-card h3 {
-      margin: 0 0 6px;
-      font-size: 12px;
-      line-height: 1.2;
-      text-transform: uppercase;
-      letter-spacing: 0.55px;
-      color: #40392f;
-    }
-
-    .footer-card p {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.55;
-      color: #3a372f;
-    }
-
-    .footer-sign {
-      border-top: 1px dashed #cbc2b1;
-      padding-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 14px;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #5a5448;
-    }
-
-    .legal-strip {
-      margin-top: 10px;
-      border-top: 1px solid #d8d0c2;
-      padding: 11px 6px 0;
-      text-align: center;
-      font-size: 11px;
-      line-height: 1.65;
-      color: #6a6458;
-      letter-spacing: 0.15px;
-    }
-
-    .legal-strip small {
-      display: block;
-      margin-top: 6px;
-      font-size: 10px;
-      color: #8a8275;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    .to-top {
-      position: fixed;
-      right: 12px;
-      bottom: 12px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 1px solid #bfb7a7;
-      background: conic-gradient(#2d2821 var(--scroll-ratio, 0%), #e9e2d4 0);
-      color: #1f1c17;
-      font-size: 19px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 12px 24px #00000012;
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 220ms ease, transform 220ms ease;
-      z-index: 220;
-    }
-
-    .to-top.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px) scale(0.995);
-      filter: blur(2px);
-      transition:
-        opacity 560ms ease,
-        transform 560ms cubic-bezier(0.2, 0.85, 0.2, 1),
-        filter 560ms ease;
-      transition-delay: var(--reveal-delay, 0ms);
-    }
-
-    .reveal.show {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-
-    @keyframes paperFloat {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(-10px, 8px, 0); }
-    }
-
-    @media (max-width: 720px) {
-      .shell {
-        padding: 13px 10px 40px;
-      }
-
-      .masthead {
-        padding: 18px 12px 14px;
-      }
-
-      .section {
-        padding: 13px 10px 11px;
-      }
-
-      .section p,
-      .section li {
-        font-size: 14px;
-      }
-
-      .footer {
-        padding: 13px 11px 12px;
-      }
-
-      .footer strong {
-        font-size: clamp(18px, 7vw, 24px);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 1ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 1ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
+    :root{color-scheme:light;--paper:#fffdf8;--bg:#f3f0e8;--ink:#202921;--muted:#61695f;--green:#235c45;--line:#dcded2;--warn:#805017;--soft:#edf3e9}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:20px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Segoe UI",Arial,sans-serif}a{color:var(--green);text-underline-offset:3px}a:hover{color:#103f2b}button,a,summary{-webkit-tap-highlight-color:transparent}:focus-visible{outline:3px solid #b2762f;outline-offset:4px}button{font:inherit;cursor:pointer}main{max-width:1080px;margin:auto;padding:28px 24px 64px}.topline,.meta,.actions,.section-head,.footer-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.topline{justify-content:space-between;margin-bottom:22px}.brand{font-size:14px;font-weight:800;letter-spacing:2px}.edition{font-size:12px;color:var(--muted)}.hero{position:relative;background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--green);border-radius:20px;padding:40px 44px}.eyebrow{font-size:12px;color:var(--green);letter-spacing:1.5px;font-weight:800;text-transform:uppercase}h1{font:500 clamp(32px,5.5vw,58px)/1.12 Georgia,"Times New Roman",serif;margin:16px 0 20px;max-width:780px;letter-spacing:-1px}h2{font:500 clamp(25px,3vw,34px)/1.2 Georgia,"Times New Roman",serif;margin:0}h3{font-size:17px;line-height:1.35;margin:0 0 8px}p{margin:12px 0}.lead{max-width:750px;font-size:18px;color:var(--muted)}.unit{margin:24px 0 0;background:var(--soft);border-left:3px solid var(--green);padding:15px 18px;border-radius:0 10px 10px 0}.actions{margin-top:22px;gap:10px}.actions a,.expand{display:inline-block;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:9px 14px;font-size:14px;font-weight:600;text-decoration:none}.actions .primary{color:white;background:var(--green);border-color:var(--green)}.block{margin-top:36px}.section-head{justify-content:space-between;margin-bottom:18px}.caption{font-size:13px;color:var(--muted);margin:7px 0 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px}.card p,.card li{font-size:15px}.card .number{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--green);display:block;margin-bottom:8px}.wide{grid-column:1/-1}.notice{border:1px solid #dfc9a2;background:#fff7e7;color:#614319;border-radius:12px;padding:18px 22px}.notice strong{color:#624018}code{font:0.91em/1.5 Consolas,"Courier New",monospace;background:#f0f0e8;padding:2px 6px;border-radius:4px;overflow-wrap:anywhere;white-space:normal}ul,ol{padding-left:22px;margin:12px 0}li+li{margin-top:6px}.commands{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.mini{color:var(--muted);font-size:14px}.table-wrap{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:15px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:12px 14px;vertical-align:top;text-align:left;border-bottom:1px solid var(--line);min-width:120px}th{background:#f0f2e9;font-weight:700}tr:last-child td{border-bottom:0}.toc{display:flex;flex-wrap:wrap;gap:8px 16px;border-block:1px solid var(--line);padding:16px 0;margin-bottom:18px;font-size:14px}.terms{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}details+details{border-top:1px solid var(--line)}summary{cursor:pointer;font-weight:700;padding:18px 24px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:baseline}summary::-webkit-details-marker{display:none}summary::after{content:"+";font:24px/1 Georgia,serif;color:var(--green);flex:none}details[open]>summary::after{content:"−"}details[open]>summary{background:#f4f6ee}.term-body{padding:0 24px 20px;font-size:15px}.term-body p:first-child{margin-top:16px}.term-body h3{margin-top:20px}.term-body a{overflow-wrap:anywhere}.footer{margin-top:32px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:13px}.footer-line{justify-content:space-between}.footer p{max-width:840px}.version-note{font-size:12px}.anchor{scroll-margin-top:20px}.plain-list{list-style:none;padding:0}.plain-list li{padding:7px 0;border-bottom:1px solid var(--line)}.plain-list li:last-child{border-bottom:0}.pill{font-size:12px;padding:3px 9px;background:var(--soft);border-radius:99px;color:var(--green);white-space:nowrap}
+    @media(max-width:640px){main{padding:18px 14px 42px}.topline{margin-bottom:16px}.hero{padding:26px 22px;border-radius:14px}h1{letter-spacing:-.5px}.lead{font-size:16px}.grid{grid-template-columns:1fr}.card{padding:20px}.block{margin-top:28px}.actions a{font-size:13px;padding:8px 11px}summary{padding:17px 18px;font-size:15px}.term-body{padding:0 18px 18px}.section-head{align-items:flex-start;gap:14px}.notice{padding:17px 18px}.edition{font-size:11px}.brand{font-size:12px}.table-wrap{margin-inline:0}th,td{padding:10px;min-width:110px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    @media print{body{background:#fff;font-size:11pt}main{max-width:none;padding:0}.hero,.card,.terms{box-shadow:none;border-color:#aaa}.actions,.expand,.toc{display:none}.grid{display:block}.card{margin:12px 0;break-inside:avoid}details{break-inside:avoid}details>.term-body{display:block!important}summary::after{display:none}.footer a{color:inherit}a{color:inherit}h1{font-size:32pt}.block{margin-top:24px}}
   </style>
 </head>
 <body>
-  <div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+<main>
+  <div class="topline"><a class="brand" href="https://t.me/vortex_prgrambot">VORTEX BOT</a><span class="edition">Редакция 5.0 · 19 октября 2026</span></div>
+  <header class="hero">
+    <div class="eyebrow">Инструкция · Правила · Конфиденциальность</div>
+    <h1>Игры, GRAM<br>и правила сервиса</h1>
+    <p class="lead">Как играть в Telegram-чатах, получать виртуальные GRAM и разбирать спорные операции — без длинных инструкций в каждом сообщении.</p>
+    <div class="unit"><strong>GRAM — виртуальные единицы сервиса <a href="https://t.me/gram_piarbot">@gram_piarbot</a>.</strong> VORTEX BOT ведёт собственный игровой учёт и начисляет вознаграждения в GRAM. Баланс не является банковским счётом, а участие не гарантирует заработок.</div>
+    <nav class="actions" aria-label="Главные разделы"><a class="primary" href="#quickstart">Как начать</a><a href="#penalties">Штрафы и возвраты</a><a href="#terms">Все правила</a><a href="#privacy">Ваши данные</a></nav>
+  </header>
 
-  <div class="shell">
-    <header class="masthead reveal">
-      <div class="brandline">
-        <span class="tag">Официальный документ</span>
-        <span class="tag">VORTEX BOT</span>
-        <span class="tag">Редакция 4.0</span>
-        <span class="tag alert">Обязательно для пользователей и администрации</span>
-      </div>
-      <h1>Политика и правила использования VORTEX BOT</h1>
-      <p class="intro">
-        Этот документ описывает правила работы VORTEX BOT, функции сервиса, порядок игр, пополнений,
-        выводов, бонусов, поддержки, модерации и разборов конфликтов. Использование бота означает,
-        что пользователь принимает эти условия и соглашается с тем, что решения по спорным ситуациям
-        принимаются на основании системных данных.
-      </p>
-      <div class="decree">
-        Официальным источником правил является страница, открываемая через кнопку «📄 Политика».
-        При конфликте между словами пользователя, скриншотами и внутренними записями приоритет имеют
-        база данных, транзакции, статусы заявок, игровые логи, тикеты и журналы действий администраторов.
-      </div>
-      <div class="stateline">
-        <span><strong>Сервис:</strong> VORTEX BOT.</span>
-        <span><strong>Валюта:</strong> GRAM — внутренняя учетная единица сервиса.</span>
-        <span><strong>Контакт:</strong> обращения принимаются через кнопку «🆘 Поддержка».</span>
-      </div>
-    </header>
-
-    <section class="section reveal">
-      <h2>1. Принятие правил</h2>
-      <ul>
-        <li>Пользователь принимает правила при запуске бота, отправке сообщения, нажатии кнопок, участии в игре, пополнении, выводе или обращении в поддержку.</li>
-        <li>Администрация вправе обновлять политику без отдельного персонального уведомления. Новая редакция действует с момента публикации в WebApp.</li>
-        <li>Незнание правил не освобождает пользователя от ограничений, отказов, отмены начислений или блокировки.</li>
-        <li>Если пользователь не согласен с правилами, он обязан прекратить использование бота.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>2. Что делает бот</h2>
-      <p>VORTEX BOT предоставляет игровой и сервисный функционал внутри Telegram:</p>
-      <ul>
-        <li>личный кабинет с Telegram ID, балансом, кэшбэк-копилкой, оборотом, титулом, рефералами и историей операций;</li>
-        <li>игры: «💎 Мины», «🎲 Кубы 3x3», «☄️ Астероиды», «🐍 Змейка», «🎰 Кейсы», «🏀 Баскетбол», «⚽ Футбол»;</li>
-        <li>пополнение GRAM через чек-ссылки и через Telegram Stars по курсу, установленному администрацией;</li>
-        <li>вывод GRAM с основного баланса или из кэшбэк-копилки, если доступ к источнику открыт системой;</li>
-        <li>кэшбэк, титулы, реферальную программу, реферальный лидерборд, общий лидерборд, промокоды, стейкинг и ускорители выигрышей;</li>
-        <li>поддержку через тикеты, обязательные подписки на каналы, системные уведомления и административную модерацию.</li>
-      </ul>
-      <div class="callout">
-        Функции могут включаться, отключаться, ограничиваться или менять параметры в зависимости от технического состояния, риска казны и решений администрации.
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>3. Статус GRAM и баланса</h2>
-      <ul>
-        <li>GRAM используется как внутренняя учетная единица VORTEX BOT для игр, бонусов, заявок, стейкинга и отображения баланса.</li>
-        <li>Баланс, кэшбэк-копилка, бонусы, промокоды, реферальные начисления, выигрыши и стейкинг существуют только в рамках базы данных сервиса.</li>
-        <li>Официальным состоянием баланса считается состояние, зафиксированное в системе, а не сообщение пользователя, скриншот или локальное отображение Telegram.</li>
-        <li>Администрация вправе корректировать ошибочные, дублированные, мошеннические или технически неверные начисления.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>4. Аккаунт и доступ</h2>
-      <ul>
-        <li>Один Telegram ID соответствует одному профилю пользователя в боте.</li>
-        <li>Пользователь отвечает за все действия, совершенные с его Telegram-аккаунта.</li>
-        <li>Передача аккаунта, совместное использование, продажа доступа, регистрация дублей и обход блокировок запрещены.</li>
-        <li>При подозрении на мультиаккаунтинг, передачу аккаунта или обход ограничений администрация может ограничить игры, выводы, бонусы, поддержку или полностью заблокировать профиль.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>5. Игровые правила</h2>
-      <ul>
-        <li>Ставка списывается при запуске игровой сессии или подтверждении ставки.</li>
-        <li>Результат игры фиксируется только после серверной обработки: запись раунда, сессии, ставки, выплаты и статуса в базе имеет приоритет.</li>
-        <li>В Telegram-играх результат зависит от механики Telegram dice и правил выплат, установленных сервером.</li>
-        <li>В WebApp-играх результат, приз, лимит выплаты и возможность получения выигрыша подтверждаются сервером. Данные, отправленные браузером пользователя, не имеют силы без серверной проверки.</li>
-        <li>Если игра не может быть безопасно завершена из-за технической ошибки, система может вернуть ставку, зафиксировать нулевой результат или отправить сессию на ручную проверку.</li>
-      </ul>
-      <div class="callout risk">
-        Подмена WebApp-данных, попытка изменить выплату, повторно получить приз, отправить чужую сессию или обойти кнопку «Забрать приз» считается нарушением.
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>6. Игры VORTEX BOT</h2>
-      <ul>
-        <li><strong>Мины:</strong> пользователь выбирает сложность, ставку, клетки и может забрать выигрыш до попадания на мину; итог определяется серверной картой и статусом сессии.</li>
-        <li><strong>Кубы 3x3:</strong> WebApp-игра с фиксированной стоимостью запуска и серверной проверкой приза; повторный первый приз по одному устройству или профилю может быть заблокирован.</li>
-        <li><strong>Астероиды:</strong> WebApp-игра с серверным лимитом выплаты; заявленные клиентом очки проверяются и могут быть ограничены.</li>
-        <li><strong>Змейка:</strong> WebApp-игра с серверным лимитом выплаты; клиентская сумма не считается окончательной без проверки.</li>
-        <li><strong>Кейсы:</strong> WebApp-игра, где пользователь выбирает кейс и количество открытий, а стоимость списывается при запуске сессии. Приз фиксируется сервером по оплаченной сессии и начисляется после нажатия кнопки получения приза; повторная выдача по одной и той же сессии не выполняется.</li>
-        <li><strong>Баскетбол и Футбол:</strong> игры на основе Telegram dice, где ставка, коэффициент и результат фиксируются сервером.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>7. Пополнение</h2>
-      <ul>
-        <li>Пополнение выполняется через заявку в боте: пользователь вводит сумму и отправляет чек-ссылку установленного формата.</li>
-        <li>Минимальные, максимальные суммы и формат чека определяются текущими настройками сервиса.</li>
-        <li>Один чек может использоваться только один раз. Повторная, измененная, чужая, недействительная или уже активированная ссылка может быть отклонена.</li>
-        <li>Пополнение получает статус <code>pending</code>, <code>approved</code> или <code>rejected</code>.</li>
-        <li>Зачисление GRAM происходит только после подтверждения системой или администратором.</li>
-        <li>Пополнение через Telegram Stars выполняется по текущему курсу Stars → GRAM; курс может меняться администрацией.</li>
-      </ul>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Статус</th>
-              <th>Значение</th>
-              <th>Итог</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>pending</code></td>
-              <td>Заявка создана и ожидает проверки</td>
-              <td>GRAM еще не зачислены</td>
-            </tr>
-            <tr>
-              <td><code>approved</code></td>
-              <td>Чек подтвержден</td>
-              <td>GRAM зачислены на баланс</td>
-            </tr>
-            <tr>
-              <td><code>rejected</code></td>
-              <td>Заявка отклонена</td>
-              <td>Зачисление не выполняется</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>8. Вывод</h2>
-      <ul>
-        <li>Вывод создается через личный кабинет или кнопку вывода и проходит проверку администрацией или автоматическим контуром заявок.</li>
-        <li>Вывод возможен с основного баланса. Вывод из кэшбэк-копилки доступен только после выполнения условий титула и оборота, установленных системой.</li>
-        <li>Минимальная, максимальная сумма, доступные источники и приоритет обработки определяются текущими настройками и титулом пользователя.</li>
-        <li>При создании заявки сумма резервируется. При отклонении вывода резерв возвращается в исходный источник.</li>
-        <li>Администрация вправе отклонить вывод при подозрении на нарушение, техническом несоответствии, недостатке данных, фейковых действиях, накрутке или риске для сервиса.</li>
-      </ul>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Статус</th>
-              <th>Значение</th>
-              <th>Итог</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>pending</code></td>
-              <td>Заявка ожидает первичной проверки</td>
-              <td>Средства зарезервированы</td>
-            </tr>
-            <tr>
-              <td><code>awaiting_check</code></td>
-              <td>Заявка принята, готовится чек</td>
-              <td>Пользователь ожидает выдачу чека</td>
-            </tr>
-            <tr>
-              <td><code>approved</code></td>
-              <td>Вывод завершен</td>
-              <td>Чек отправлен пользователю</td>
-            </tr>
-            <tr>
-              <td><code>rejected</code></td>
-              <td>Вывод отклонен</td>
-              <td>Резерв возвращается по регламенту</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>9. Кэшбэк, титулы и приоритеты</h2>
-      <ul>
-        <li>Кэшбэк начисляется по ставкам и условиям, установленным в боте, и отображается отдельно от основного баланса.</li>
-        <li>Титулы выдаются по обороту и могут открывать бонусы, приоритет вывода, повышенный кэшбэк, дополнительные лимиты или доступ к выводу копилки.</li>
-        <li>Доступные титулы включают «Тактик», «Стратег», «Доминион», «Профессионал», «Эмиссар» и «Оверлорд».</li>
-        <li>Бонус титула, дополнительный подарок или секретный подарок начисляются только если система зафиксировала достижение условий.</li>
-        <li>Администрация вправе отменить титул, бонус или начисление, если оборот, игры или действия были получены нарушением правил.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>10. Рефералы и лидерборды</h2>
-      <ul>
-        <li>Реферальная ссылка находится в личном кабинете и привязывает нового пользователя к пригласившему, если система корректно зафиксировала переход.</li>
-        <li>Реферальный бонус за первый депозит и процент от выигрышей начисляются только после выполнения условий депозита, оборота и активности реферала.</li>
-        <li>Реферальные очки и лидерборд могут учитывать приглашения, игры, депозиты и оборот по правилам текущего конкурса.</li>
-        <li>Накрутка рефералов, обмен фейковыми переходами, массовая регистрация аккаунтов и использование сервисов накрутки запрещены.</li>
-        <li>Администрация может скрыть, сбросить, завершить лидерборд, отменить призы или пересчитать результаты при подозрительной активности.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>11. Промокоды</h2>
-      <ul>
-        <li>Промокод может иметь сумму, лимит активаций, срок действия и статус активности.</li>
-        <li>Один пользователь не может активировать один и тот же промокод повторно, если администрация явно не установила другое правило.</li>
-        <li>Промокоды не гарантируют право на вывод без выполнения общих условий сервиса.</li>
-        <li>Промокод может быть удален, деактивирован или признан недействительным при ошибке, злоупотреблении или решении администрации.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>12. Стейкинг</h2>
-      <ul>
-        <li>Стейкинг — временная заморозка GRAM на выбранный срок с выплатой по тарифу, установленному системой.</li>
-        <li>После создания позиции сумма списывается с баланса и недоступна для игр, вывода или других операций до окончания срока.</li>
-        <li>Досрочное снятие не предусмотрено, если администрация отдельно не запустила аварийное закрытие сезона.</li>
-        <li>Ставки доходности, доступность стейкинга, лимиты и сроки могут меняться или отключаться администрацией.</li>
-        <li>Выплата считается завершенной только после статуса <code>claimed</code> или другой подтвержденной записи в системе.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>13. Ускорители</h2>
-      <ul>
-        <li>Ускоритель дает временный процентный бонус к выигрышам на условиях выбранного варианта.</li>
-        <li>Бонус применяется только к подходящим выигрышам и только в период действия ускорителя.</li>
-        <li>Покупка ускорителя списывает GRAM с баланса; если ускорители отключаются администрацией по технической причине, возможен системный возврат активных покупок.</li>
-        <li>Попытки использовать ускоритель после окончания срока, подменить процент или получить бонус повторно считаются нарушением.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>14. Обязательные подписки</h2>
-      <ul>
-        <li>Администрация может включить обязательную подписку на официальные каналы для доступа к функциям бота.</li>
-        <li>Если пользователь не подписан или бот не может подтвердить подписку, игры, выводы или другие функции могут быть недоступны.</li>
-        <li>Проверка подписки выполняется техническими средствами Telegram и внутренней системы; пользователь обязан повторить проверку после подписки.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>15. Поддержка и тикеты</h2>
-      <ul>
-        <li>Официальный канал обращения — кнопка «🆘 Поддержка» в боте.</li>
-        <li>Пользователь обязан описывать проблему конкретно: ID заявки, сумма, время, игра, чек, скриншот или файл при необходимости.</li>
-        <li>Фото, видео и документы принимаются в пределах технических лимитов. Превышение лимитов, поток одинаковых сообщений и массовые вложения могут быть расценены как спам.</li>
-        <li>Администратор может ответить, закрыть, повторно открыть или удалить тикет, если вопрос решен, неактуален, дублируется или нарушает правила общения.</li>
-        <li>Оскорбления, угрозы, давление, шантаж, спам и попытки вынудить решение вне регламента могут привести к блокировке поддержки или аккаунта.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>16. Права администрации</h2>
-      <ul>
-        <li>Администрация имеет право проверять операции, тикеты, балансы, игры, сессии, рефералов, промокоды, стейкинг и действия пользователя.</li>
-        <li>Администратор может одобрять или отклонять пополнения и выводы, отправлять чеки, возвращать резерв, блокировать пользователя, ограничивать поддержку и отменять спорные начисления.</li>
-        <li>При конфликте между пользователем и администрацией финальное решение принимается на основании системных записей и настоящей политики.</li>
-        <li>Администрация не обязана раскрывать внутренние антифрод-методы, точные алгоритмы риск-оценки, приватные логи и данные других пользователей.</li>
-        <li>Если ситуация не описана напрямую, администрация применяет ближайший по смыслу пункт политики и принцип защиты сервиса от злоупотреблений.</li>
-      </ul>
-      <div class="callout warn">
-        Решение администрации считается действительным, если оно опирается на записи системы, статус операции, логи, тикет или подтвержденное нарушение.
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>17. Запрещенные действия</h2>
-      <ul>
-        <li>использование багов, технических ошибок, расхождений интерфейса и задержек обработки;</li>
-        <li>мультиаккаунты, регистрация фейков, обход бана, передача аккаунта, накрутка рефералов и лидербордов;</li>
-        <li>автокликеры, скрипты, боты, макросы, модифицированные клиенты и любые средства автоматизации;</li>
-        <li>подмена WebApp-данных, ссылок, чеков, session ID, device ID, сумм, статусов или callback-действий;</li>
-        <li>фейковые чеки, повторное использование чеков, попытка выдать чужой чек за свой;</li>
-        <li>использование бота как обменника без нормальной игровой активности или с целью обхода правил финансового контура;</li>
-        <li>оскорбления, угрозы, спам, дискриминация, фишинг, выдача себя за администратора или представителя проекта.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>18. Санкции</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Нарушение</th>
-              <th>Возможные меры</th>
-              <th>Примечание</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Спам, грубость, дубли тикетов</td>
-              <td>Предупреждение, мут, блокировка поддержки</td>
-              <td>Может применяться автоматически</td>
-            </tr>
-            <tr>
-              <td>Ошибочные или сомнительные заявки</td>
-              <td>Отклонение, ручная проверка, временная задержка</td>
-              <td>Решение принимается по данным заявки</td>
-            </tr>
-            <tr>
-              <td>Бонусные и реферальные злоупотребления</td>
-              <td>Отмена бонусов, пересчет очков, запрет вывода</td>
-              <td>Затрагивает все связанные аккаунты</td>
-            </tr>
-            <tr>
-              <td>Баги, подмена данных, мультиаккаунты, фейковые чеки</td>
-              <td>Обнуление нечестных начислений, бан, отказ в выводе</td>
-              <td>Мера может применяться без предупреждения</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout risk">
-        При серьезном нарушении администрация может сразу применить максимальную меру: постоянную блокировку, отмену спорных операций и запрет вывода.
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>19. Разбор конфликтов</h2>
-      <p>Спорные ситуации разбираются по иерархии доказательств:</p>
-      <ol>
-        <li>записи базы данных: баланс, транзакции, игры, сессии, заявки, промокоды, стейкинг, статусы;</li>
-        <li>системные логи: игровые события, финансовые операции, ошибки, антифрод-события;</li>
-        <li>административные журналы: кто и когда одобрил, отклонил, заблокировал, изменил или отправил чек;</li>
-        <li>тикеты поддержки и сообщения между пользователем и администрацией;</li>
-        <li>скриншоты, видео и объяснения пользователя как вспомогательные материалы.</li>
-      </ol>
-      <div class="callout risk">
-        Скриншот не отменяет системный статус операции. Если база показывает завершенную, отклоненную или уже обработанную операцию, именно этот статус является основой решения.
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>20. Технические сбои</h2>
-      <ul>
-        <li>Сбой признается только после проверки по логам, базе данных, статусам операций и техническим следам.</li>
-        <li>Если ставка была списана, но игра не получила корректный финальный статус по технической причине, возможен возврат ставки или ручное решение по сессии.</li>
-        <li>Если операция корректно зафиксирована системой, она считается действительной даже при несогласии пользователя с результатом.</li>
-        <li>Администрация не отвечает за сбои Telegram, интернет-соединение пользователя, задержки доставки сообщений, работу устройства, браузера WebApp или сторонних сервисов.</li>
-        <li>На время инцидентов администрация может отключить игры, выводы, стейкинг, ускорители, промокоды, лидерборды или отдельные функции.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>21. Данные и аудит</h2>
-      <ul>
-        <li>Бот может хранить Telegram ID, username, имя, язык, дату регистрации, баланс, копилку, оборот, игры, выигрыши, ставки, транзакции, заявки, чеки, тикеты, вложения, промокоды, рефералов, стейкинг, ускорители, подписки, баны и служебные статусы.</li>
-        <li>Данные используются для работы функций, поддержки, антифрода, финансового учета, восстановления после ошибок и защиты администрации в спорных ситуациях.</li>
-        <li>Доступ к служебным данным имеют администраторы и технические процессы, которым эти данные нужны для работы сервиса.</li>
-        <li>Данные других пользователей не раскрываются при споре, если это не требуется по внутреннему решению администрации или обязательному требованию закона.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>22. Коммуникация и официальные ответы</h2>
-      <ul>
-        <li>Официальным ответом считается ответ администратора в боте, статус заявки, системное уведомление или опубликованная редакция политики.</li>
-        <li>Обещания, сделанные вне официального канала, не имеют силы, если они противоречат базе, логам, статусам или этой политике.</li>
-        <li>Администратор вправе использовать краткую формулировку решения: статус операции, основание, примененная мера и ссылка на пункт политики.</li>
-        <li>Повторное открытие закрытого вопроса без новых данных может быть отклонено без повторного полного разбора.</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>23. Обновление правил</h2>
-      <ul>
-        <li>Администрация может менять правила, лимиты, комиссии, названия, функции, тарифы, коэффициенты, стоимость игр, курс Stars, условия вывода и бонусов.</li>
-        <li>Продолжение использования бота после обновления означает согласие с новой редакцией.</li>
-        <li>Если новая редакция уточняет порядок разбора спора, администрация может применять ее к активным обращениям, если это не ухудшает уже завершенный статус операции без отдельного основания.</li>
-      </ul>
-    </section>
-
-    <footer class="footer reveal">
-      <div class="footer-top">
-        <strong>VORTEX BOT | Официальная политика сервиса</strong>
-        <span class="edition-badge">Редакция 4.0</span>
-      </div>
-      <p class="footer-text">
-        Документ предназначен для публичного ознакомления пользователей и практической работы администрации
-        при проверке игр, заявок, бонусов, тикетов, блокировок и конфликтных ситуаций.
-      </p>
-      <div class="footer-grid">
-        <article class="footer-card">
-          <h3>Статус документа</h3>
-          <p>Действующая обязательная редакция. Применяется ко всем пользователям VORTEX BOT.</p>
-        </article>
-        <article class="footer-card">
-          <h3>Основа решений</h3>
-          <p>Приоритет имеют база данных, транзакции, статусы заявок, игровые сессии, тикеты и логи.</p>
-        </article>
-        <article class="footer-card">
-          <h3>Позиция администрации</h3>
-          <p>Администрация принимает финальное решение по спору, если оно подтверждено системными данными.</p>
-        </article>
-      </div>
-      <div class="footer-sign">
-        <span>Утверждено администрацией VORTEX BOT</span>
-        <span>Публикация через кнопку «📄 Политика» является официальным каналом документа</span>
-      </div>
-    </footer>
-
-    <div class="legal-strip reveal">
-      VORTEX BOT оставляет за собой право защищать сервис, пользователей и администрацию от технических ошибок,
-      мошенничества, накрутки, давления и злоупотреблений. Все спорные решения принимаются по подтвержденным
-      системным данным и настоящей редакции политики.
-      <small>VORTEX BOT Policy • All Rights Reserved</small>
+  <section class="block anchor" id="quickstart" aria-labelledby="quick-title">
+    <div class="section-head"><div><h2 id="quick-title">Короткая инструкция</h2><p class="caption">Команды с точкой используются в группах и супергруппах.</p></div><span class="pill">Сохраните в чате</span></div>
+    <div class="grid">
+      <article class="card"><span class="number">01 / ДУЭЛИ</span><h3>Создайте комнату</h3><div class="commands"><code>.рул 3000</code><code>.куб 3000</code><code>.кнб 3000</code></div><p>Это открытый вызов. Для конкретного игрока: <code>.куб @username 3000</code> или команда ответом на его сообщение.</p><p>Если суммы нет, бот сначала попросит её ввести. Приглашение появится после ввода ставки.</p></article>
+      <article class="card"><span class="number">02 / ПОДТВЕРЖДЕНИЕ</span><h3>Оба должны согласиться</h3><p>Соперник нажимает <strong>«Сыграть»</strong>, создатель выбирает режим, затем оба нажимают <strong>«Подтвердить»</strong>.</p><p><strong>3 минуты</strong> на вызов, <strong>90 секунд</strong> на настройку и подтверждение, <strong>60 секунд</strong> на ход. Если подтверждения нет, настройка переходит второму игроку.</p></article>
+      <article class="card"><span class="number">03 / РЕЖИМЫ</span><h3>Три дуэльные игры</h3><ul><li><strong>Рулетка:</strong> быстрая или долгая; 6 или 12 камер.</li><li><strong>Кубики:</strong> 1 кубик, сумма 2 кубиков или серия до 2 побед.</li><li><strong>КНБ:</strong> секретный выбор в личном чате, общее раскрытие результата.</li></ul><p class="mini">Ничья — переигровка. Бесплатные пробные ходы для этих игр находятся в <code>/help</code>.</p></article>
+      <article class="card"><span class="number">04 / ОДИНОЧНЫЕ ИГРЫ</span><h3>Укажите ставку в команде</h3><div class="commands"><code>.мины 5000</code><code>.баскет 3000</code><code>.фут 3000</code></div><p>Без суммы GRAM не списываются и денежный раунд не запускается. Бесплатных пробных ходов у этих игр нет.</p></article>
+      <article class="card"><span class="number">05 / ПЕРЕВОДЫ</span><h3>Только в общих чатах</h3><p><code>.перевести @username 500</code><br>Или ответом на сообщение: <code>.перевести 500</code>.</p><p>Проверьте получателя и сумму. Перевод проводится после подтверждения отправителя; на подтверждение даётся 3 минуты.</p></article>
+      <article class="card"><span class="number">06 / ПОЛЕЗНЫЕ КОМАНДЫ</span><h3>Баланс, кабинет и бонусы</h3><ul class="plain-list"><li><code>Б</code> — баланс, титул и кэшбэк.</li><li><code>/start</code> в чате — подробный кабинет.</li><li><code>промокод НАЗВАНИЕ</code> — активировать код.</li><li><code>/help</code> — инструкция и демо.</li></ul><p class="mini">Ответы на эти команды в общем чате видят его участники.</p></article>
     </div>
-  </div>
+  </section>
 
-  <button class="to-top" id="toTopBtn" aria-label="Наверх">↑</button>
+  <section class="block anchor" id="penalties" aria-labelledby="fee-title">
+    <h2 id="fee-title">Выход, штрафы и возвраты</h2>
+    <p><strong>Штраф — 10% ставки с виновного в пользу соперника.</strong> Это перевод между игроками, а не комиссия администрации. Оставшиеся резервы возвращаются.</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Ситуация</th><th scope="col">Расчёт</th></tr></thead><tbody>
+      <tr><td>Отказ от адресного вызова или отсутствие ответа 3 минуты</td><td>10% с приглашённого — создателю.</td></tr>
+      <tr><td>Выход из адресного вызова или принятой комнаты</td><td>10% с вышедшего — сопернику.</td></tr>
+      <tr><td>Пропуск хода или секретного выбора одним игроком</td><td>10% с пропустившего — сопернику.</td></tr>
+      <tr><td>Пустая открытая комната, демо или оба не выбрали КНБ</td><td>Без штрафа; резервы возвращаются.</td></tr>
+      <tr><td>Режим передан второму игроку из-за неподтверждения</td><td>Игра не завершена; штраф не возникает.</td></tr>
+      <tr><td>Техническое прерывание, недоступность сообщения или удаление бота</td><td>Возврат резервов без штрафа.</td></tr>
+    </tbody></table></div>
+    <div class="notice"><strong>До ответа на адресный вызов:</strong> у приглашённого резервируются 10% ставки; при принятии они входят в его полную ставку. При ставке 3000 штраф равен 300 GRAM. Правомерность удержания требует надлежащего согласия пользователя: чужая команда сама по себе такого согласия не доказывает. Неожиданное или ошибочное списание можно оспорить через поддержку; при отсутствии основания оно подлежит возврату.</div>
+  </section>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    (function () {
-      var tg = window.Telegram && window.Telegram.WebApp;
-      if (tg) {
-        tg.ready();
-        tg.expand();
-      }
-
-      var reveals = document.querySelectorAll(".reveal");
-      var bar = document.getElementById("progressBar");
-      var topBtn = document.getElementById("toTopBtn");
-
-      if ("IntersectionObserver" in window) {
-        var revealObserver = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add("show");
-            revealObserver.unobserve(entry.target);
-          });
-        }, { threshold: 0.1 });
-
-        reveals.forEach(function (el, idx) {
-          el.style.setProperty("--reveal-delay", ((idx % 8) * 45) + "ms");
-          revealObserver.observe(el);
-        });
-      } else {
-        reveals.forEach(function (el) {
-          el.classList.add("show");
-        });
-      }
-
-      function refreshProgress() {
-        var scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-        var docH = document.documentElement.scrollHeight - window.innerHeight;
-        var ratio = docH > 0 ? Math.min(1, Math.max(0, scrollTop / docH)) : 0;
-        bar.style.width = (ratio * 100).toFixed(2) + "%";
-        topBtn.style.setProperty("--scroll-ratio", (ratio * 100).toFixed(2) + "%");
-        if (scrollTop > 380) {
-          topBtn.classList.add("show");
-        } else {
-          topBtn.classList.remove("show");
-        }
-      }
-
-      window.addEventListener("scroll", refreshProgress, { passive: true });
-      window.addEventListener("resize", refreshProgress);
-      refreshProgress();
-
-      topBtn.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    })();
-  </script>
+  <section class="block anchor" id="terms" aria-labelledby="terms-title">
+    <div class="section-head"><div><h2 id="terms-title">Полные правила сервиса</h2><p class="caption">Разверните нужный раздел. Неприменимое или незаконное условие не отменяет обязательные права пользователя.</p></div><button class="expand" type="button" id="expandAll" aria-pressed="false">Раскрыть все</button></div>
+    <nav class="toc" aria-label="Оглавление правил"><a href="#status">GRAM и оператор</a><a href="#participation">Участие</a><a href="#rooms">Комнаты</a><a href="#settlement">Расчёты</a><a href="#wallet">Баланс и заявки</a><a href="#bonuses">Бонусы и рефералы</a><a href="#violations">Нарушения</a><a href="#disputes">Споры и сбои</a><a href="#privacy">Данные</a><a href="#changes">Обновления</a></nav>
+    <div class="terms">
+      <details id="status" open><summary>1. Оператор, GRAM и границы сервиса</summary><div class="term-body">
+        <p>VORTEX BOT — самостоятельный Telegram-сервис владельца <a href="https://t.me/vortex_prgrambot">@vortex_prgrambot</a>. Официальный контакт по операциям, правилам и данным — кнопка <strong>«Поддержка»</strong> в этом боте. Реквизиты оператора и сведения о правовых основаниях деятельности следует запрашивать через этот контакт; настоящая страница не удостоверяет наличие лицензии.</p>
+        <p>GRAM — виртуальные единицы, используемые в экосистеме <a href="https://t.me/gram_piarbot">@gram_piarbot</a>. Баланс в VORTEX — внутренний учёт начислений, резервов и списаний. Он не является банковским вкладом, законным платёжным средством или обещанием обмена по фиксированному курсу.</p>
+        <p>Игровое вознаграждение может отсутствовать, а ставка — быть проиграна. Фиксированный доход, сохранность ставки, окупаемость и прибыль не обещаются. Слова «заработок», «выигрыш», «вывод» и «стейкинг» описывают функции учёта виртуальных GRAM и сами по себе не определяют их юридическую квалификацию.</p>
+        <p>@gram_piarbot и Telegram — отдельные сервисы со своими правилами. VORTEX не заявляет, что принадлежит Telegram, представляет его или является официальным партнёром @gram_piarbot. Доступность стороннего сервиса не гарантируется VORTEX; это не отменяет обязанности разобраться с ошибками собственного учёта.</p>
+      </div></details>
+      <details id="participation"><summary>2. Возраст, законность и согласие</summary><div class="term-body">
+        <ul><li>Участие предусмотрено для совершеннолетних пользователей от 18 лет и только там, где соответствующие функции разрешены применимым законом. Более строгие местные ограничения сохраняют силу.</li><li>Название «виртуальные GRAM» не отменяет требований к фактической деятельности. Если закон требует разрешений, лицензии, идентификации или специальных ограничений, они необходимы независимо от этого документа.</li><li>Перед действием пользователь должен видеть существенные условия: стоимость, получателя, резерв, возможный штраф и порядок результата. Подтверждение относится к показанной операции, а не к любым будущим списаниям.</li><li>Одно получение приглашения, нахождение в группе или действие другого участника не доказывает согласие на удержание GRAM. При споре администрация проверяет основание и фактические действия пользователя.</li><li>Условия не отменяют право на защиту данных, обращение в компетентный орган или суд и другие обязательные права. Противоречащее закону условие применяется только в допустимой части.</li></ul>
+      </div></details>
+      <details id="account"><summary>3. Аккаунт и доступ в чатах</summary><div class="term-body">
+        <ul><li>Учётная запись связана с Telegram ID. Пользователь отвечает за доступ к своему аккаунту; при подозрении на взлом следует немедленно обратиться в поддержку.</li><li>Для поиска по @username игрок должен быть известен боту. Ошибка в нике или ответ не на то сообщение может привести к выбору другого участника — проверяйте карточку до подтверждения.</li><li>Команды в группе и ответы на них доступны её участникам. Это относится к балансу, титулу, кэшбэку, кабинету, статусам и результатам игр. Секретные символы КНБ до раскрытия в общий чат не выводятся.</li><li>Обязательная подписка может проверяться повторно. Первый реферальный переход сохраняется до проверки подписки. Подписка сама по себе не означает выполнение всех условий бонуса.</li><li>Один игрок одновременно занимает не более одной активной дуэльной комнаты или адресного приглашения. Аккаунты с техническим бесконечным балансом не участвуют в денежных дуэлях и переводах, чтобы не создавать необеспеченные GRAM.</li></ul>
+      </div></details>
+      <details id="rooms"><summary>4. Дуэли, режимы и сроки</summary><div class="term-body">
+        <p>Команды и порядок создания приведены в <a href="#quickstart">короткой инструкции</a>. До ввода суммы бот не публикует приглашение. В открытом вызове участвует любой доступный игрок; в адресном — только выбранный соперник. В открытом приглашении нет кнопки «Отказаться».</p>
+        <ol><li>Приглашение действует 3 минуты. После «Сыграть» оба видят принятие и настройки.</li><li>Создатель выбирает режим. На настройку и подтверждение отводится 90 секунд. Если подтверждения нет, режим выбирается заново, а право настройки передаётся второму участнику.</li><li>Раунд начинается после подтверждения обоих игроков. Смена режима требует нового обоюдного подтверждения.</li><li>В рулетке и КНБ на ход или секретный выбор даётся 60 секунд. Актуальный срок показывается в комнате по времени Ташкента, UTC+5.</li></ol>
+        <ul><li><strong>Рулетка:</strong> в быстрой игре барабан не прокручивается заново после каждого хода; в долгой прокручивается. Доступны 6 или 12 камер; очередь и активный игрок показаны в комнате.</li><li><strong>Кубики:</strong> один кубик, сумма двух или серия до двух побед. Броски обоих запрашиваются одновременно; ничья переигрывается.</li><li><strong>КНБ:</strong> выбор через личные кнопки бота. В группе сначала отображается только факт выбора; затем оба символа раскрываются одновременно. При ничьей требуется новый выбор.</li></ul>
+        <p>Бесплатный пробный ход каждой дуэльной игры запускается отдельной демо-кнопкой в <code>/help</code>, без ставки и штрафа.</p>
+      </div></details>
+      <details id="settlement"><summary>5. Ставки, резервы и штраф 10%</summary><div class="term-body">
+        <p>Ставки временно исключаются из доступного баланса. В адресном приглашении создатель резервирует полную ставку, приглашённый — 10% до ответа и оставшуюся часть при принятии. При корректном завершении победителю зачисляются обе ставки; отдельная комиссия дуэли не предусмотрена.</p>
+        <p>Основания расчёта приведены в <a href="#penalties">таблице штрафов</a>. Сумма штрафа — целая часть от 10% ставки в GRAM. Повторное нажатие не является основанием для повторного списания. При штрафе возвращаются остальные резервы, а сумма штрафа зачисляется противоположному игроку.</p>
+        <p>Кнопка <strong>«Выйти из комнаты»</strong> доступна на всех этапах. Если соперника в открытой комнате ещё нет, штрафа нет. Передача настройки при неподтверждении не завершает игру и не создаёт штраф. Если оба участника не сделали выбор в КНБ, резервы возвращаются без штрафа.</p>
+        <p>Применение штрафа не освобождает администрацию от проверки согласия и обстоятельств остановки. Техническая причина не приравнивается к вине игрока. Удержание без подтверждённого основания подлежит исправлению и возврату.</p>
+      </div></details>
+      <details id="solo"><summary>6. Одиночные игры и WebApp</summary><div class="term-body">
+        <p><code>.мины СУММА</code>, <code>.баскет СУММА</code> и <code>.фут СУММА</code> запускают одиночную игру на указанную ставку. Команда без суммы не запускает платный раунд и не списывает баланс. Бесплатного пробного хода у этих игр нет. Начальная сложность мин берётся из доступных настроек сервиса.</p>
+        <p>Другие игры и WebApp доступны через меню бота. Стоимость, режим, коэффициенты, ограничения и условия награды следует проверить до запуска. Результат определяется правилами конкретной игры и подтверждённой серверной сессией; анимация или изображение приза сами по себе не подтверждают зачисление.</p>
+        <p>Нельзя подменять результат, session ID, device ID, параметры ссылки или повторно получать награду за одну сессию. Наличие программных лимитов и риск-контроля не является гарантией выигрыша. Стоимость и согласованные условия уже принятой ставки нельзя ухудшать задним числом.</p>
+      </div></details>
+      <details id="wallet"><summary>7. Баланс, пополнение и передача GRAM</summary><div class="term-body">
+        <ul><li>Доступный баланс не включает активные резервы. Списания, возвраты, награды и передачи отражаются в учёте операций. Ошибку следует сообщить с ID операции, суммой и временем.</li><li>Пополнение возможно только способами, которые включены в интерфейсе, например чеками @gram_piarbot или Telegram Stars. Наличие Stars не превращает GRAM в деньги и не создаёт фиксированного курса обмена вне показанной операции. Действуют также правила соответствующего платёжного сервиса.</li><li>До подтверждения необходимо проверить сумму, курс при его наличии, комиссии, получателя и требования заявки. Нельзя использовать чужие или уже использованные чеки. Не передавайте пароль, код входа Telegram или секретные ключи: поддержке они не нужны.</li><li>Функция «вывод» означает заявку на передачу виртуальных GRAM предусмотренным способом, в том числе через @gram_piarbot. Принятая заявка и её окончательное исполнение — разные статусы. Повторная отправка не создаёт дополнительной выплаты.</li><li>При отклонённой или неисполненной заявке собственный резерв должен быть возвращён, кроме случаев с отдельным доказанным и законным основанием удержания. Сбой стороннего сервиса требует проверки статуса; он не даёт права одновременно получить выплату и возврат.</li><li>Внешний обмен GRAM, его доступность и любые обещания третьих лиц не гарантируются VORTEX. Если фактическая операция подпадает под специальные требования закона, применяются именно эти требования.</li></ul>
+      </div></details>
+      <details id="transfers"><summary>8. Переводы между участниками</summary><div class="term-body">
+        <p>Переводы доступны исключительно в группах и супергруппах. После <code>.перевести @username СУММА</code> или команды ответом бот показывает получателя и сумму. Подтвердить может только отправитель, в течение 3 минут. Доступный баланс проверяется повторно при исполнении.</p>
+        <p>Самому себе переводить нельзя. Просроченное или отменённое подтверждение не списывает баланс. Повторное использование одного подтверждения не должно проводить второй перевод. После корректного исполнения возврат требует согласованной обратной операции либо проверки подтверждённой ошибки; автоматический односторонний отзыв не обещается.</p>
+      </div></details>
+      <details id="bonuses"><summary>9. Промокоды, рефералы, кэшбэк и награды</summary><div class="term-body">
+        <ul><li><code>промокод НАЗВАНИЕ</code> активирует код при соблюдении срока, лимита, аудитории и персонального назначения. Повторная активация сверх условий не допускается.</li><li>Пригласивший определяется первым допустимым реферальным запуском нового пользователя. Проверка подписки и перезапуск не должны терять сохранённую привязку. Повторные запуски не увеличивают счётчик и не меняют уже закреплённого пригласившего.</li><li>Число приглашённых и реферальная награда — разные показатели. Награда может требовать первого подходящего пополнения и игрового оборота; конкретные суммы и пороги отображаются в кабинете. Одна подписка на канал не гарантирует такой бонус.</li><li>Кэшбэк, титулы, лидерборды и награды зависят от показанных условий. Внутренние переводы и штрафы не считаются автоматически игровым оборотом или основанием для бонуса.</li><li>«Стейкинг» — внутриигровая заморозка виртуальных GRAM по выбранным условиям, а не банковский вклад или обещание инвестиционного дохода. Срок, вознаграждение, возможность досрочного выхода и условия сезонного закрытия проверяются до подтверждения.</li><li>Ускоритель действует в обозначенный срок и только для подходящих выигрышей. Он не гарантирует победу. При технической отмене оплаченной, но не предоставленной функции проводится проверка и соответствующий возврат.</li><li>Фиктивные приглашения, саморефералы, обход лимитов и повторное получение одной награды запрещены. Подтверждённые ошибочные бонусы могут быть пересчитаны; добросовестные остатки не обнуляются только из-за подозрения.</li></ul>
+      </div></details>
+      <details id="violations"><summary>10. Нарушения и меры администрации</summary><div class="term-body">
+        <p>Запрещены фальшивые чеки, подмена данных, повторные требования за одну операцию, эксплуатация ошибок, накрутка, обход блокировок, фишинг, выдача себя за администратора, угрозы, спам и автоматизация для обхода ограничений или создания чрезмерной нагрузки.</p>
+        <p>Администрация может временно ограничить функцию, запросить проверяемые сведения об операции, отменить доказанные неправомерные начисления или заблокировать доступ. Мера должна быть обоснованной и соразмерной. Проверка не даёт безусловного права присваивать остаток пользователя или отказывать в любом возврате.</p>
+        <p>При ограничении по возможности сообщаются причина, затронутые операции и порядок обжалования. Антифрод-методы, чужие персональные данные и секреты безопасности не раскрываются. Само обращение с жалобой или добросовестное сообщение об ошибке не является нарушением.</p>
+      </div></details>
+      <details id="disputes"><summary>11. Сбои, доказательства и обращение в поддержку</summary><div class="term-body">
+        <p>При техническом прерывании дуэли, недоступности её сообщения, удалении бота из чата либо истечении срока комнаты во время остановки бота резервы возвращаются без штрафа. Для одиночных игр и WebApp проверяются правила конкретной сессии и факт предоставления результата. Корректно завершённая проигранная игра сама по себе не является сбоем.</p>
+        <p>Для проверки сообщите Telegram ID участников, команду, сумму, примерное время, чат и ID комнаты или заявки, если он известен. Можно приложить переписку, скриншот, запись экрана и подтверждение операции. Не публикуйте чужие данные в общем чате.</p>
+        <p>Сопоставляются транзакции, статусы, технические журналы, переписка и материалы пользователя. База и логи могут содержать ошибки: у них нет безусловной силы против любых иных доказательств. При подтверждённом сбое исправляются связь, статус или сумма, а необоснованное удержание возвращается.</p>
+        <p>Ответ даётся через поддержку с описанием результата проверки в пределах допустимого раскрытия данных. Дополнительные материалы могут стать основанием для повторного рассмотрения. Рассмотрение администрацией не заменяет суд и не ограничивает обращение в уполномоченный орган.</p>
+        <p>Задержки Telegram, сети или стороннего сервиса учитываются при проверке, но этот пункт не отменяет ответственность оператора там, где её нельзя исключить законом. Универсальный отказ от всех возвратов и любой ответственности не устанавливается.</p>
+      </div></details>
+      <details id="privacy"><summary>12. Персональные данные и конфиденциальность</summary><div class="term-body">
+        <p><strong>Что обрабатывается:</strong> Telegram ID, имя и username, необходимые сведения о чате и подписке; команды и взаимодействия с ботом; балансы, игры, сессии, ставки, результаты, резервы, переводы и заявки; реферальные переходы, промокоды, бонусы, обращения, присланные вложения и технические журналы. Telegram может передавать доступные данные профиля. Страница на GitHub Pages и внешние ссылки обрабатываются также их владельцами.</p>
+        <p><strong>Для чего:</strong> исполнение запрошенных функций, учёт и сверка операций, поддержка, защита от злоупотреблений и выполнение обязательных требований. Основание обработки определяется применимым законом: исполнение запроса, необходимый законный интерес, согласие в требуемых случаях или обязанность по закону. Использование бота не означает согласие на любые несвязанные цели.</p>
+        <p><strong>Кому доступны данные:</strong> оператору, уполномоченным администраторам и необходимым техническим подрядчикам в пределах их задач. Telegram, GitHub и @gram_piarbot действуют по собственным условиям. Для передачи GRAM могут потребоваться данные получателя и операции. Раскрытие посторонним допускается только при надлежащем основании; жалоба другого игрока сама по себе не разрешает выдавать ему ваши данные.</p>
+        <p><strong>Срок хранения:</strong> только пока сведения необходимы для соответствующей цели, открытого спора или обязательного срока по закону. Запрос на доступ, уточнение, удаление, ограничение обработки или отзыв согласия направляется через «Поддержка». При необходимости сохранить часть сведений по закону оператор сообщает основание и пределы хранения. Право другого человека на данные не отменяется техническим наличием записи в журнале.</p>
+        <p>Для подтверждения запроса используются доступ к своему Telegram-аккаунту и сведения об операции; пароль, коды входа и секретные ключи не требуются. При прекращении обработки ненужные сведения подлежат удалению или обезличиванию с учётом обязательных требований.</p>
+      </div></details>
+      <details id="messages"><summary>13. Уведомления и рассылки</summary><div class="term-body">
+        <p>Сервисные сообщения сообщают об операциях, безопасности, поддержке и изменениях правил. Администратор может выбрать рассылку пользователям бота, добавленным чатам, конкретному чату либо обеим аудиториям. Это не разрешает спам, раскрытие персональных данных или рекламу без согласия там, где оно требуется.</p>
+        <p>Пользователь может отключить уведомления средствами Telegram или остановить бота. Администратор группы может удалить его из чата. Запросы об отказе от необязательных сообщений и обработке данных можно направить в поддержку.</p>
+      </div></details>
+      <details id="changes"><summary>14. Редакция правил и приоритет закона</summary><div class="term-body">
+        <p>Редакция <strong>5.0 от 19 октября 2026 года</strong> действует с момента публикации и относится к последующим действиям. Существенные изменения ставок, штрафов и обработки данных должны быть доведены до пользователя до применения; когда нужно, запрашивается новое согласие.</p>
+        <p>Новая редакция не создаёт задним числом основание для штрафа, отмены законного зачисления или ухудшения уже согласованной операции. Старые споры рассматриваются с учётом действовавших условий и обязательных норм. Историю публикаций можно посмотреть в <a href="https://github.com/isfandiyorkh/viralix-policy-/commits/main/webapps/policy/index.html">истории редакций</a>.</p>
+        <p>Применимое право и компетенция органов определяются обязательными нормами и обстоятельствами деятельности, а не произвольным выбором в этой странице. Публикация политики не является лицензией, юридическим заключением или гарантией разрешения любого спора в пользу администрации.</p>
+      </div></details>
+    </div>
+  </section>
+  <footer class="footer">
+    <div class="footer-line"><strong>VORTEX BOT · Правила и политика GRAM</strong><a href="#quickstart">К инструкции ↑</a></div>
+    <p>Поддержка: кнопка «Поддержка» в <a href="https://t.me/vortex_prgrambot">@vortex_prgrambot</a>. Не сообщайте коды входа и секретные ключи. Для отправки жалобы по операции укажите её сумму, время и ID.</p>
+    <p class="version-note">Связанные документы: <a href="https://telegram.org/tos/bot-developers">условия платформы Telegram</a> · <a href="https://telegram.org/privacy-tpa/">стандартная политика ботов</a> · <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">конфиденциальность GitHub</a>. Обязательные нормы закона имеют приоритет.</p>
+    <p class="version-note">Редакция 5.0 · 19.10.2026 · <span id="documentVersion">5.0-2026-10-19</span></p>
+  </footer>
+</main>
+<script>
+(()=>{const sections=[...document.querySelectorAll('.terms details')],toggle=document.getElementById('expandAll');
+const refresh=()=>{const all=sections.every(s=>s.open);toggle.textContent=all?'Свернуть все':'Раскрыть все';toggle.setAttribute('aria-pressed',String(all))};
+toggle.addEventListener('click',()=>{const open=!sections.every(s=>s.open);sections.forEach(s=>s.open=open);refresh()});sections.forEach(s=>s.addEventListener('toggle',refresh));
+const followHash=()=>{const id=decodeURIComponent(location.hash.slice(1));const target=document.getElementById(id);if(target&&target.tagName==='DETAILS')target.open=true};window.addEventListener('hashchange',followHash);followHash();refresh();
+let printState=[];window.addEventListener('beforeprint',()=>{printState=sections.map(s=>s.open);sections.forEach(s=>s.open=true)});window.addEventListener('afterprint',()=>{sections.forEach((s,i)=>s.open=printState[i]);refresh()});
+})();
+</script>
 </body>
 </html>
