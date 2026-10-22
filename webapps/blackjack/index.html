@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#09110f" />
+  <meta name="description" content="Карточная карточная игра 21 против дилера." />
+  <title>NOIR 21 — карточный клуб</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['DM Sans','sans-serif'],display:['Playfair Display','serif']}}}}</script>
+  <style>
+    :root{--bg:#09110f;--felt:#10241d;--gold:#d9bc78;--cream:#f4f0e6;--muted:#98a69f;--line:rgba(255,255,255,.09)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;background-image:radial-gradient(ellipse at 50% -15%,rgba(55,106,79,.19),transparent 48%),radial-gradient(ellipse at 100% 75%,rgba(141,104,44,.075),transparent 36%)}
+    button,input{font:inherit}button{transition:transform .2s,background .2s,border-color .2s,opacity .2s}button:active:not(:disabled){transform:scale(.97)}button:disabled{opacity:.36;cursor:not-allowed}
+    .glass{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--line);box-shadow:0 18px 60px rgba(0,0,0,.16)}
+    .table-felt{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,rgba(35,78,58,.47),transparent 72%),linear-gradient(145deg,#13251e,#0d1a16 68%);border:1px solid rgba(203,173,112,.17);box-shadow:inset 0 0 100px rgba(0,0,0,.26),0 25px 90px rgba(0,0,0,.27)}
+    .table-felt:before{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.14) .55px,transparent .55px);background-size:5px 5px;mask-image:linear-gradient(135deg,black,transparent 90%)}
+    .card{width:clamp(72px,10.5vw,108px);height:clamp(104px,15vw,150px);border-radius:13px;position:relative;flex:none;overflow:hidden;user-select:none;color:#ead69c;background:radial-gradient(ellipse at 50% 44%,#2b4438 0%,#192c23 48%,#101b16 100%);border:1px solid rgba(224,192,115,.72);box-shadow:0 17px 32px rgba(0,0,0,.48),0 0 0 3px rgba(218,187,112,.09),inset 0 1px 0 rgba(255,255,255,.16);animation:deal .58s cubic-bezier(.2,.8,.2,1) both;transform-origin:50% 85%;transition:transform .25s,box-shadow .25s}
+    .card:not(.face-down):hover{transform:translateY(-6px) rotate(-1.5deg);box-shadow:0 23px 40px rgba(0,0,0,.5),0 0 22px rgba(217,188,120,.22)}
+    .card:not(.face-down)::before{content:"";position:absolute;inset:6px;border:1px solid rgba(225,196,127,.44);border-radius:8px;pointer-events:none;z-index:1}
+    .card:not(.face-down)::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,rgba(217,188,120,.13),transparent 43%),linear-gradient(135deg,rgba(255,255,255,.12),transparent 32%,transparent 72%,rgba(217,188,120,.08));pointer-events:none}
+    .card.red{color:#ef9b8c;background:radial-gradient(ellipse at 50% 44%,#482b2b 0%,#2b1b1b 55%,#1a1213 100%)}
+    .card .corner{position:absolute;top:10px;left:11px;z-index:2;display:flex;flex-direction:column;align-items:center;font-family:Georgia,serif;font-size:clamp(12px,1.8vw,16px);line-height:1.03;font-weight:700;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+    .card .corner.bottom{left:auto;top:auto;right:11px;bottom:10px;transform:rotate(180deg)}
+    .card .card-value{position:absolute;z-index:2;left:50%;top:32%;transform:translate(-50%,-50%);font-family:'Playfair Display',Georgia,serif;font-size:clamp(34px,5.2vw,52px);line-height:1;color:#f0d58c;text-shadow:0 2px 0 #604922,0 4px 16px rgba(0,0,0,.48)}
+    .card.red .card-value{color:#f0a394;text-shadow:0 2px 0 #6e3231,0 4px 16px rgba(0,0,0,.5)}
+    .card .suit-big{position:absolute;z-index:2;left:50%;top:69%;transform:translate(-50%,-50%);font-size:clamp(27px,4.5vw,43px);line-height:1;opacity:.9;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+    .card .card-label{display:none}
+    .card.face-down{color:#e6cb87;background:repeating-linear-gradient(45deg,#14291f,#14291f 6px,#203b2c 6px,#203b2c 12px);border:3px solid #ddc178;display:grid;place-items:center}
+    .card.face-down:before{content:"";position:absolute;inset:7px;border:1px solid rgba(230,203,135,.66);border-radius:5px;box-shadow:inset 0 0 0 3px rgba(230,203,135,.12)}
+    .card.face-down:after{content:"✦  NOIR 21  ✦";border:1px solid rgba(230,203,135,.72);padding:9px 6px;border-radius:6px;background:rgba(5,17,12,.56);font-family:Georgia,serif;font-size:10px;letter-spacing:1px;transform:rotate(-36deg);box-shadow:0 2px 8px #0b1b13}
+    @keyframes deal{from{opacity:0;transform:translate(35px,-25px) rotate(12deg) scale(.85)}to{opacity:1;transform:translate(0,0) rotate(0) scale(1)}}@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(217,188,120,0)}50%{box-shadow:0 0 24px 2px rgba(217,188,120,.12)}}
+    .score-pop{animation:glow 1.5s ease-in-out infinite}.gold-text{color:var(--gold)}.muted{color:var(--muted)}.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent)}
+    .quick-btn{border:1px solid var(--line);background:rgba(255,255,255,.035);color:#d8ddd7}.quick-btn:hover:not(:disabled){border-color:rgba(217,188,120,.45);background:rgba(217,188,120,.09)}.action-btn{background:linear-gradient(135deg,#e5cb8e,#caa75c);color:#162019;box-shadow:0 8px 24px rgba(201,164,87,.15)}.action-btn:hover:not(:disabled){filter:brightness(1.07);transform:translateY(-1px)}.secondary-btn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.045);color:#f2f0e9}.secondary-btn:hover:not(:disabled){border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.08)}
+    .chip{display:grid;place-items:center;border-radius:999px;border:1px solid rgba(217,188,120,.44);background:radial-gradient(circle at 35% 30%,#ddc586,#a7803e);color:#151b14;font-weight:800;box-shadow:0 2px 0 #886932,0 5px 12px rgba(0,0,0,.25)}.chip:before{content:"";position:absolute;inset:4px;border:1px dashed rgba(30,33,24,.5);border-radius:inherit}
+    input[type=number]{appearance:textfield;-moz-appearance:textfield}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+    .toast{animation:deal .3s ease both}.modal-backdrop{position:fixed!important;inset:auto 16px 16px auto!important;width:min(480px,calc(100vw - 32px));height:auto!important;display:flex;align-items:stretch;justify-content:stretch;padding:0!important;background:transparent;backdrop-filter:none;pointer-events:none}.modal-box{width:100%;pointer-events:auto;padding:19px 21px!important;border-radius:20px!important;animation:deal .32s cubic-bezier(.2,.8,.2,1) both}.modal-box .divider,.modal-box .result-balance{display:none}.result-icon{width:66px;height:66px;margin:0 auto 13px;display:grid;place-items:center;border-radius:16px;border:1px solid rgba(217,188,120,.28);background:linear-gradient(145deg,rgba(217,188,120,.17),rgba(217,188,120,.05));color:var(--gold);font-size:31px;box-shadow:0 8px 24px rgba(0,0,0,.2)}.modal-box #roundScores{display:flex}.modal-box h2{font-size:1.4rem;line-height:1.2}.modal-box #resultDescription{margin-top:7px;font-size:13px}.modal-box #nextRoundBtn{margin-top:12px;padding-top:12px;padding-bottom:12px;font-size:13px}.modal-box .my-5{display:none}
+    @media(max-width:640px){.card{border-radius:8px}.card .corner{top:6px;left:7px}.card .corner.bottom{right:7px;bottom:6px}.mobile-tight{padding:14px}.table-felt{min-height:440px}}
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <div class="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+    <header class="flex items-center justify-between py-5 sm:py-7">
+      <a href="#" class="flex items-center gap-3 no-underline text-inherit" aria-label="NOIR 21 — главная">
+        <div class="grid h-10 w-10 place-items-center rounded-xl border border-amber-200/20 bg-amber-100/[.06] text-lg gold-text"><i class="fa-solid fa-spade"></i></div>
+        <div><div class="font-display text-xl tracking-[.12em] sm:text-2xl">NOIR <span class="gold-text">21</span></div></div>
+      </a>
+
+    </header>
+    <main>
+      <section class="grid gap-5 lg:grid-cols-[1fr_304px] lg:items-start">
+        <div class="table-felt min-h-[496px] rounded-[26px] p-5 sm:p-7" aria-label="Игровой стол">
+          <div class="relative z-10 flex min-h-[450px] flex-col justify-between sm:min-h-[452px]">
+            <div>
+              <div class="mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-3"><div class="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[.06] text-sm text-stone-200"><i class="fa-solid fa-user-tie"></i></div><div class="text-sm font-semibold">Дилер</div></div>
+                <div class="score-pop flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2"><span class="text-[9px] uppercase tracking-[.15em] muted">Очки</span><span id="dealerScore" class="min-w-[18px] text-right text-sm font-bold">—</span></div>
+              </div>
+              <div id="dealerCards" class="flex min-h-[150px] items-start justify-center gap-2.5 sm:justify-start sm:pl-12" aria-label="Карты дилера"></div>
+            </div>
+            <div class="my-4 divider"></div>
+            <div>
+              <div class="mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-3"><div class="grid h-9 w-9 place-items-center rounded-full border border-amber-100/15 bg-amber-100/[.07] text-sm gold-text"><i class="fa-solid fa-user"></i></div><div class="text-sm font-semibold">Вы</div></div>
+                <div class="score-pop flex items-center gap-2 rounded-xl border border-amber-100/15 bg-black/20 px-3 py-2"><span class="text-[9px] uppercase tracking-[.15em] muted">Очки</span><span id="playerScore" class="min-w-[18px] text-right text-sm font-bold gold-text">—</span></div>
+              </div>
+              <div id="playerCards" class="flex min-h-[150px] items-start justify-center gap-2.5 sm:justify-start sm:pl-12" aria-label="Ваши карты"></div>
+            </div>
+          </div>
+          <div id="statusToast" class="absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-black/40 px-4 py-2 text-xs text-stone-200 sm:bottom-5"></div>
+        </div>
+        <aside class="glass mobile-tight rounded-[24px] p-5 sm:p-6">
+          <div class="mb-4 flex items-center justify-between"><h2 class="font-display text-lg">Игра</h2><span class="rounded-full border border-amber-100/20 bg-amber-100/[.06] px-3 py-1 text-[11px] font-bold gold-text"><span id="multBadge">x2.00</span></span></div>
+          <div class="mb-5 rounded-xl border border-white/[.07] bg-black/20 px-4 py-3 text-center"><div class="text-[9px] uppercase tracking-[.16em] muted">Коэффициент выигрыша</div><div class="mt-1 font-display text-2xl gold-text"><span id="multValue">×2.00</span></div></div>
+          <div id="betControls" class="mb-4"><label for="betInput" class="muted text-xs">Ставка · 1 000–15 000 GRAM</label><input id="betInput" type="number" min="1000" max="15000" step="100" value="1000" class="mt-2 w-full rounded-xl bg-black/30 border border-white/20 px-3 py-2"><button id="allBtn" class="secondary-btn mt-2 w-full rounded-xl py-2 text-xs">Алл</button></div><div id="wallet" class="mb-3 text-xs muted"></div><div class="grid grid-cols-2 gap-2.5"><button id="dealBtn" class="action-btn col-span-2 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold"><i class="fa-solid fa-play text-xs"></i> Начать игру</button><button id="hitBtn" class="secondary-btn rounded-xl px-3 py-3 text-xs font-semibold" disabled><i class="fa-solid fa-plus mr-1.5 gold-text"></i>Взять карту</button><button id="standBtn" class="secondary-btn rounded-xl px-3 py-3 text-xs font-semibold" disabled><i class="fa-solid fa-hand mr-1.5 gold-text"></i>Остановиться</button></div>
+          <p id="hint" class="mt-3 min-h-[16px] text-center text-[10px] leading-relaxed muted" aria-live="polite">Наберите больше очков, чем дилер.</p>
+        </aside>
+      </section>
+    </main>
+  </div>
+  <div id="resultModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="modal-box glass w-full max-w-sm rounded-[28px] p-7 text-center"><div id="resultIcon" class="result-icon"><i class="fa-solid fa-trophy"></i></div><div class="mb-1 text-[9px] uppercase tracking-[.16em] gold-text">Раунд завершён</div><h2 id="resultTitle" class="font-display text-xl">Ваш ход.</h2><div id="roundScores" class="my-2 flex items-center justify-between rounded-lg border border-white/[.08] bg-black/20 px-3 py-2 text-xs"><span>Вы <b id="resultPlayerScore" class="ml-1 gold-text">—</b></span><span class="muted">·</span><span>Дилер <b id="resultDealerScore" class="ml-1 text-white">—</b></span></div><p id="resultDescription" class="mt-1 text-xs leading-relaxed muted"></p><button id="nextRoundBtn" class="action-btn mt-5 w-full rounded-xl px-4 py-3.5 text-sm font-bold">Следующий раунд <i class="fa-solid fa-arrow-right ml-2 text-xs"></i></button></div>
+  </div>
+  <script>
+(() => {
+  'use strict';
+  const tg=window.Telegram?.WebApp, $=id=>document.getElementById(id);
+  tg?.ready(); tg?.expand();
+  const params=new URLSearchParams(location.search);
+  let server=null, invalid=false;
+  if(params.has('state')) {try {server=JSON.parse(params.get('state')); if(!server || !/^[a-f0-9]{16}$/.test(server.token) || !Number.isInteger(server.revision) || !Array.isArray(server.player) || !Array.isArray(server.dealer) || ![...server.player,...server.dealer].every(c=>Number.isInteger(c)&&c>=0&&c<52))throw Error('invalid');}catch {invalid=true;server=null;}}
+  const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'], suits=['♠','♥','♦','♣'];
+  const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+  let player=[],dealer=[],deck=[],phase='betting',balance=50000,bet=1000,mult=2,busy=false;
+  function score(cards){let s=cards.reduce((n,c)=>n+(c%13===0?11:Math.min(c%13+1,10)),0),a=cards.filter(c=>c%13===0).length;while(s>21&&a--){s-=10;}return s;}
+  function card(c,hidden=false){const e=document.createElement('div');e.className='card '+(hidden?'face-down':(Math.floor(c/13)%3?'red':''));if(!hidden){const r=ranks[c%13],s=suits[Math.floor(c/13)];e.setAttribute('aria-label',r+s);e.innerHTML='<span class="corner"><span>'+r+'</span><span>'+s+'</span></span><span class="card-value">'+r+'</span><span class="suit-big">'+s+'</span><span class="corner bottom"><span>'+r+'</span><span>'+s+'</span></span>';}return e;}
+  function render(){const hidden=phase==='playing';$('playerCards').replaceChildren(...player.map(c=>card(c)));$('dealerCards').replaceChildren(...dealer.map((c,i)=>card(c,hidden&&i>0)));if(server&&hidden)$('dealerCards').append(card(0,true));$('playerScore').textContent=player.length?score(player):'—';$('dealerScore').textContent=dealer.length?score(hidden?dealer.slice(0,1):dealer):'—';$('multBadge').textContent='x'+mult.toFixed(2);$('multValue').textContent='×'+mult.toFixed(2);$('hitBtn').disabled=phase!=='playing'||busy;$('standBtn').disabled=phase!=='playing'||busy;$('dealBtn').disabled=phase!=='betting'||busy||invalid;$('betControls').hidden=!!server||invalid;$('dealBtn').hidden=!!server;$('wallet').textContent=server?'Ставка: '+fmt(bet)+' GRAM · расчёт в боте':'Демо · баланс '+fmt(balance)+' · GRAM не начисляются';$('hint').textContent=invalid?'Откройте актуальную партию в боте.':server?'Выберите действие. Telegram вернёт вас к обновлённой раздаче.':'Демо: туз — 1 или 11, картинки — 10. Дилер набирает до 17.';}
+  function toast(t){$('statusToast').textContent=t;$('statusToast').classList.remove('hidden');}
+  function shuffle(){deck=Array.from({length:52},(_,i)=>i);for(let i=51;i>0;i--){const n=new Uint32Array(1);crypto.getRandomValues(n);const j=Math.floor(n[0]/4294967296*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}}
+  function deal(replay=false){if(phase!=='betting'&&!replay)return;if(!replay){bet=Number($('betInput').value);if(!Number.isSafeInteger(bet)||bet<1000||bet>15000||bet>balance){toast('Ставка от 1 000 до 15 000, в пределах баланса.');return;}balance-=bet;}shuffle();player=[deck.pop(),deck.pop()];dealer=[deck.pop(),deck.pop()];phase='playing';render();if(score(player)===21||score(dealer)===21)settle();}
+  function settle(){while(score(player)<=21&&score(dealer)<17)dealer.push(deck.pop());const p=score(player),d=score(dealer);if(p===d){toast('Ничья — переигровка без списания');deal(true);return;}const win=p<=21&&(d>21||p>d);if(win)balance+=Math.floor(bet*mult);phase='settled';render();$('resultTitle').textContent=win?'Вы выиграли!':'Дилер выиграл';$('resultDescription').textContent='Демо. Выплата: '+fmt(win?Math.floor(bet*mult):0)+' GRAM';$('resultPlayerScore').textContent=p;$('resultDealerScore').textContent=d;$('resultModal').classList.remove('hidden');$('resultModal').classList.add('flex');}
+  function action(a){if(phase!=='playing'||busy)return;if(server){if(!tg?.sendData||params.get('return')!=='keyboard'){toast('Для хода откройте карточный стол кнопкой в боте.');return;}busy=true;render();try{tg.sendData(JSON.stringify({game:'blackjack',token:server.token,revision:server.revision,action:a}));}catch{busy=false;render();toast('Повторите ход или используйте кнопки в боте.');}return;}if(a==='hit'){player.push(deck.pop());render();if(score(player)>=21)settle();}else settle();}
+  $('dealBtn').addEventListener('click',()=>deal());$('allBtn').addEventListener('click',()=>{$('betInput').value=balance;toast('Алл — весь баланс; лимит блэкджека 15 000.');});$('hitBtn').addEventListener('click',()=>action('hit'));$('standBtn').addEventListener('click',()=>action('stand'));$('nextRoundBtn').addEventListener('click',()=>{$('resultModal').classList.add('hidden');$('resultModal').classList.remove('flex');phase='betting';player=[];dealer=[];render();});
+  if(server){player=server.player;dealer=server.dealer;bet=Number(server.bet);mult=Number(server.multiplier);phase=server.status==='done'?'settled':'playing';if(server.replays)toast('Ничья — новая раздача без списания');if(phase==='settled')toast((server.outcome==='win'?'Победа':'Проигрыш')+' · Выплата '+fmt(server.payout||0)+' GRAM');}
+  render();
+})();
+  </script>
+</body>
+</html>
