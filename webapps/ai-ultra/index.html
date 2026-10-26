@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="ru" data-build="ai-ultra-miniapp-20261025-v2">
+<html lang="ru" data-build="ai-ultra-miniapp-20261026-dark-v3">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f7f8fa">
+  <meta name="theme-color" content="#070809">
   <meta name="referrer" content="no-referrer">
   <meta name="description" content="AI Ultra — ваши идеи, творчество и задачи в одном приложении.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://*.trycloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'">
   <title>AI Ultra — приложение (бета)</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="app.css?v=20261025-2">
+  <link rel="stylesheet" href="app.css?v=20261026-3">
   <script src="https://telegram.org/js/telegram-web-app.js?64" defer></script>
-  <script src="client-config.js?v=20261025-2" defer></script>
-  <script src="app.js?v=20261025-2" defer></script>
+  <script src="client-config.js?v=20261026-3" defer></script>
+  <script src="app.js?v=20261026-3" defer></script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -39,37 +39,37 @@
       <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
       <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
       <symbol id="i-link" viewBox="0 0 24 24"><path d="m9 15 6-6m-5-3 2-2a5 5 0 0 1 7 7l-3 3M8 10l-3 3a5 5 0 0 0 7 7l2-2"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h11"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3.5 10 8.5-7 8.5 7v9a2 2 0 0 1-2 2H15v-7H9v7H5.5a2 2 0 0 1-2-2Z"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4.2" ry="9"/><path d="M3 12h18M5 6.5c4 2.2 10 2.2 14 0M5 17.5c4-2.2 10-2.2 14 0"/></symbol>
+      <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 3v18M16 7v10M20 10v4"/></symbol>
     </defs>
   </svg>
   <main class="app-shell">
+    <div class="ambient" aria-hidden="true"><div class="orb orb-top"></div><div class="orb orb-right"></div><div class="orb orb-bottom"></div></div>
     <header class="app-header">
-      <div class="brand"><span class="brand-icon"><svg><use href="#i-sparkles"/></svg></span><span class="brand-name">AI Ultra</span><span class="beta">BETA</span></div>
-      <div class="header-tools"><span class="status-pill" id="connection-status" data-connected="false"><i class="status-dot"></i><span id="connection-text">AI-помощник</span></span><button class="icon-button" id="fullscreen" aria-label="На весь экран" title="На весь экран"><svg><use href="#i-fullscreen"/></svg></button><button class="header-avatar" id="header-avatar" aria-label="Открыть профиль"><svg><use href="#i-person"/></svg></button></div>
+      <button class="menu-trigger glass-circle" id="mode-trigger" aria-label="Открыть меню" aria-controls="mode-menu" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
+      <div class="mode-segment" aria-label="Режим работы"><button data-mode="chat" class="selected" aria-pressed="true">Чат</button><button data-mode="agent" aria-pressed="false">Агент</button></div>
+      <div class="header-tools"><span class="status-pill" id="connection-status" data-connected="false"><i class="status-dot"></i><span id="connection-text">AI-помощник</span></span><button class="header-avatar" id="header-avatar" aria-label="Открыть профиль"><svg><use href="#i-person"/></svg></button></div>
     </header>
+    <div class="mode-menu" id="mode-menu" hidden>
+      <p class="menu-caption">AI Ultra</p>
+      <button data-tab="profile" aria-current="false"><svg><use href="#i-person"/></svg>Личный кабинет</button>
+      <button data-mode="chat"><svg><use href="#i-chat"/></svg>Обычный чат</button>
+      <button data-mode="image"><svg><use href="#i-image"/></svg>Создать изображение</button>
+      <button data-mode="video"><svg><use href="#i-video"/></svg>Создать видео</button>
+      <button data-mode="music"><svg><use href="#i-music"/></svg>Создать музыку</button>
+      <button data-mode="agent"><svg><use href="#i-sparkles"/></svg>Режим агента</button>
+      <button id="fullscreen"><svg><use href="#i-fullscreen"/></svg>На весь экран</button>
+    </div>
     <div class="connection-banner" id="connection-banner" hidden><span id="banner-text"></span><a id="open-bot" href="https://t.me/aiultrabot?start=app" target="_blank" rel="noopener noreferrer">Открыть бота ↗</a></div>
     <div class="workspace">
-      <section class="view chat-view" id="chat-view" aria-label="Чат">
-        <div class="chat-topline" style="position:relative"><button class="mode-button" id="mode-trigger" aria-label="Выбрать режим"><i class="mode-dot"></i><span id="mode-label">Универсальный помощник</span><svg><use href="#i-down"/></svg></button>
-          <div class="mode-menu" id="mode-menu" hidden>
-            <button data-mode="chat"><svg><use href="#i-chat"/></svg>Обычный чат</button>
-            <button data-mode="image"><svg><use href="#i-image"/></svg>Изображения · 3.500</button>
-            <button data-mode="video"><svg><use href="#i-video"/></svg>Видео · от 4.000</button>
-            <button data-mode="music"><svg><use href="#i-music"/></svg>Музыка · 4.000</button>
-            <button data-mode="agent"><svg><use href="#i-sparkles"/></svg>Режим агента</button>
-          </div>
-        </div>
+      <section class="view chat-view is-empty" id="chat-view" aria-label="Чат">
+        <span class="sr-only" id="mode-label">Универсальный помощник</span>
         <div class="chat-scroll" id="chat-scroll">
           <div class="intro" id="intro">
-            <div class="intro-symbol" aria-hidden="true"><svg><use href="#i-sparkles"/></svg></div>
-            <p class="eyebrow">Немного магии. Много возможностей.</p>
-            <h1>Что создадим сегодня?</h1>
-            <p class="lead">От первой идеи до готового результата.<br>Просто напишите, что вам нужно.</p>
-            <div class="suggestions">
-              <button class="suggestion" data-suggest="image"><span class="suggestion-icon"><svg><use href="#i-image"/></svg></span><span><strong>Создать изображение</strong><small>Превратите идею в картинку</small></span><svg><use href="#i-chevron"/></svg></button>
-              <button class="suggestion" data-suggest="video"><span class="suggestion-icon"><svg><use href="#i-video"/></svg></span><span><strong>Создать видео</strong><small>Истории, которые оживают</small></span><svg><use href="#i-chevron"/></svg></button>
-              <button class="suggestion" data-suggest="code"><span class="suggestion-icon"><svg><use href="#i-code"/></svg></span><span><strong>Написать код</strong><small>От задачи до решения</small></span><svg><use href="#i-chevron"/></svg></button>
-              <button class="suggestion" data-suggest="agent"><span class="suggestion-icon"><svg><use href="#i-sparkles"/></svg></span><span><strong>Поручить задачу</strong><small>Доверьте детали агенту</small></span><svg><use href="#i-chevron"/></svg></button>
-            </div>
+            <h1>AI Ultra</h1>
+            <p class="lead">Ваш универсальный помощник</p>
           </div>
           <div class="messages" id="messages" aria-live="polite" aria-relevant="additions text"></div>
         </div>
@@ -82,9 +82,13 @@
           </div>
           <div class="composer-wrap">
             <div class="attachments-strip" id="attachments-strip" hidden></div>
-            <div class="composer-main"><button class="attach-trigger" id="attach-trigger" aria-label="Добавить вложение"><svg><use href="#i-plus"/></svg></button><textarea id="prompt" rows="1" maxlength="20000" placeholder="Спросите что угодно…" aria-label="Ваше сообщение"></textarea><button class="send-button press" id="send" aria-label="Отправить сообщение" disabled><svg><use href="#i-up"/></svg></button></div>
+            <div class="composer-main"><button class="attach-trigger glass-circle" id="attach-trigger" aria-label="Добавить вложение"><svg><use href="#i-plus"/></svg></button><textarea id="prompt" rows="1" maxlength="20000" placeholder="Спросите что угодно..." aria-label="Ваше сообщение"></textarea><button class="voice-trigger" id="voice-trigger" aria-label="Записать голос"><svg><use href="#i-audio"/></svg></button><button class="send-button glass-circle press" id="send" aria-label="Начать запись голоса" data-empty="true" disabled><svg><use href="#i-wave"/></svg></button></div>
           </div>
-          <p class="composer-note">Ваши идеи. Ваш ритм. Один помощник.</p>
+          <div class="quick-actions">
+            <button class="action-card" data-suggest="code"><span class="tile-icon tile-code"><svg><use href="#i-code"/></svg></span><span>Создание<br>приложений</span></button>
+            <button class="action-card" data-suggest="music"><span class="tile-icon tile-music"><svg><use href="#i-music"/></svg></span><span>Музыка</span></button>
+            <button class="action-card" data-suggest="website"><span class="tile-icon tile-site"><svg><use href="#i-globe"/></svg></span><span>Сайт</span></button>
+          </div>
         </div>
         <div class="bottom-space"></div>
       </section>
@@ -100,7 +104,7 @@
       </div></div></section>
       <section class="view history-view" id="history-view" aria-label="История" hidden><div class="history-symbol"><svg><use href="#i-history"/></svg></div><h1>Бета-тест</h1></section>
     </div>
-    <nav class="bottom-nav" aria-label="Основная навигация"><button class="nav-button" data-tab="profile" aria-current="false"><svg><use href="#i-person"/></svg><span>Профиль</span></button><button class="nav-button nav-chat" data-tab="chat" aria-current="page"><span class="chat-circle"><svg><use href="#i-chat"/></svg></span><span>Чат</span></button><button class="nav-button" data-tab="history" aria-current="false"><svg><use href="#i-history"/></svg><span>История</span></button></nav>
+    <nav class="bottom-nav" aria-label="Основная навигация"><button class="nav-button nav-home" data-tab="chat" aria-current="page" aria-label="Главная"><svg><use href="#i-home"/></svg></button><button class="nav-button nav-create" id="create-trigger" aria-label="Создать" aria-controls="mode-menu" aria-expanded="false"><svg><use href="#i-plus"/></svg></button><button class="nav-button" data-tab="history" aria-current="false" aria-label="История"><svg><use href="#i-history"/></svg></button></nav>
     <div class="toast" id="toast" role="status"></div>
     <div class="modal-backdrop" id="modal-layer" role="dialog" aria-modal="true" aria-label="Просмотр материала" hidden></div>
     <div class="drag-shield" id="drag-shield" hidden><div><svg><use href="#i-upload"/></svg><span>Отпустите файл, чтобы добавить его</span></div></div>
