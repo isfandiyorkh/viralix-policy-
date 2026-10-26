@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" data-build="ai-ultra-miniapp-20261026-activity-v6">
+<html lang="ru" data-build="ai-ultra-miniapp-20261026-sidebar-v7">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
@@ -9,10 +9,10 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://*.trycloudflare.com; object-src 'none'; base-uri 'self'; form-action 'none'">
   <title>AI Ultra — приложение (бета)</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="app.css?v=20261026-6">
+  <link rel="stylesheet" href="app.css?v=20261026-7">
   <script src="https://telegram.org/js/telegram-web-app.js?64" defer></script>
-  <script src="client-config.js?v=20261026-6" defer></script>
-  <script src="app.js?v=20261026-6" defer></script>
+  <script src="client-config.js?v=20261026-7" defer></script>
+  <script src="app.js?v=20261026-7" defer></script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -45,15 +45,32 @@
       <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 3v18M16 7v10M20 10v4"/></symbol>
       <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 5 5"/></symbol>
       <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="m7 9 3 3-3 3m6 0h4"/></symbol>
+      <symbol id="i-library" viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="2"/><rect x="9" y="3" width="4" height="18" rx="2"/><path d="m16 3 3-1 4 18-4 1Z"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="m10 8 6 4-6 4Z"/></symbol>
+      <symbol id="i-compose" viewBox="0 0 24 24"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M15 3l6 6M10 15l-1 4 4-1L22 9l-5-5Z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="m9 3 6 0-1 6 4 4v2H6v-2l4-4-1-6Zm3 12v7"/></symbol>
     </defs>
   </svg>
   <main class="app-shell">
     <div class="ambient" aria-hidden="true"><div class="orb orb-top"></div><div class="orb orb-right"></div><div class="orb orb-bottom"></div></div>
     <header class="app-header">
-      <button class="menu-trigger glass-circle" id="mode-trigger" aria-label="Открыть меню" aria-controls="mode-menu" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
+      <button class="menu-trigger glass-circle" id="mode-trigger" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
       <div class="mode-segment" aria-label="Режим работы"><button data-mode="chat" class="selected" aria-pressed="true">Чат</button><button data-mode="agent" aria-pressed="false">Агент</button></div>
       <div class="header-tools"><span class="status-pill" id="connection-status" data-connected="false"><i class="status-dot"></i><span id="connection-text">AI-помощник</span></span><button class="header-avatar" id="header-avatar" aria-label="Открыть профиль"><svg><use href="#i-person"/></svg></button></div>
     </header>
+    <div class="drawer-layer" id="drawer-layer" hidden>
+      <button class="drawer-backdrop" id="drawer-backdrop" aria-label="Закрыть меню" tabindex="-1"></button>
+      <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Меню AI Ultra" tabindex="-1">
+        <div class="sidebar-heading"><h2>AI Ultra</h2><button class="sidebar-search glass-circle" id="sidebar-search-toggle" aria-label="Поиск по запросам" aria-expanded="false" aria-controls="sidebar-search"><svg><use href="#i-search"/></svg></button></div>
+        <div class="sidebar-search-field" id="sidebar-search" hidden><svg><use href="#i-search"/></svg><input id="sidebar-query" type="search" placeholder="Найти запрос" aria-label="Найти запрос" autocomplete="off"></div>
+        <div class="sidebar-scroll">
+          <nav class="sidebar-library" aria-label="Библиотека"><button data-library="all"><svg><use href="#i-library"/></svg><span>Библиотека</span></button><button data-library="video"><svg><use href="#i-play"/></svg><span>Видео</span></button><button data-library="image"><svg><use href="#i-image"/></svg><span>Изображения</span></button><button data-library="music"><svg><use href="#i-music"/></svg><span>Музыка</span></button></nav>
+          <section class="sidebar-section"><h3>Закреплённое</h3><div id="sidebar-pinned"></div></section>
+          <section class="sidebar-section"><h3>Недавнее</h3><div id="sidebar-recent"></div></section>
+        </div>
+        <footer class="sidebar-footer"><button class="sidebar-chat" id="sidebar-chat"><svg><use href="#i-compose"/></svg><span>Чат</span></button><button class="sidebar-profile glass-circle" id="sidebar-profile" aria-label="Открыть профиль"><span id="sidebar-avatar">AI</span></button></footer>
+      </aside>
+    </div>
     <div class="mode-menu" id="mode-menu" hidden>
       <p class="menu-caption">AI Ultra</p>
       <button data-tab="profile" aria-current="false"><svg><use href="#i-person"/></svg>Личный кабинет</button>
