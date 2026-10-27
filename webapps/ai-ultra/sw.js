@@ -1,0 +1,7 @@
+/* Public shell only: never cache identities, conversations, files or API calls. */
+'use strict';
+const CACHE='ai-ultra-shell-20261027-v9';
+const SHELL=['./','./index.html','./app.css','./app-upgrade.css','./app.js','./app-upgrade.js','./client-config.js','./manifest.webmanifest','./app-icon.svg','./app-icon-192.png','./app-icon-512.png'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL.map(url=>new Request(url,{cache:'reload',credentials:'omit'})))).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('ai-ultra-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',event=>{const request=event.request,url=new URL(request.url);if(request.method!=='GET'||url.origin!==self.location.origin||request.headers.has('Authorization')||request.headers.has('X-Telegram-Init-Data'))return;const scope=new URL('./',self.location.href),key=request.mode==='navigate'?new URL('index.html',scope).href:new URL(url.pathname,scope.origin).href;if(!SHELL.some(path=>new URL(path,scope).href===key))return;event.respondWith(fetch(new Request(request,{cache:'no-store'})).then(response=>{if(response.ok&&response.type!=='opaque'){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(key,copy))}return response}).catch(()=>caches.open(CACHE).then(cache=>cache.match(key)).then(response=>response||Response.error())))});

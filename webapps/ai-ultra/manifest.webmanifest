@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "AI Ultra",
+  "short_name": "AI Ultra",
+  "description": "Ваши диалоги, творчество и задачи — в одном приложении.",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "background_color": "#080b11",
+  "theme_color": "#080b11",
+  "orientation": "any",
+  "icons": [
+    {"src": "app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ],
+  "categories": ["productivity", "utilities"]
+}
