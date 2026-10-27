@@ -28,3 +28,39 @@
 :root[data-theme=dark] .plan-card,:root[data-theme=dark] .plan-pro,:root[data-theme=dark] .plan-ultra{background:var(--ui-surface);border-color:var(--ui-border)}:root[data-theme=dark] .plan-pro{border-color:#6c8bc3}:root[data-theme=dark] .plan-price,:root[data-theme=dark] .plan-features li:first-child,:root[data-theme=dark] .login-card h1{color:var(--ui-text)}:root[data-theme=dark] .plan-features li,:root[data-theme=dark] .plan-conditions,:root[data-theme=dark] .login-card p,:root[data-theme=dark] .login-card small{color:var(--ui-muted)}:root[data-theme=dark] .plan-badge{background:var(--ui-raised);color:var(--ui-muted)}:root[data-theme=dark] .lightbox-tools button{background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
 @media(max-height:650px){.theme-preview{height:100px}.friends-list{max-height:220px}.friends-footer{padding-top:12px;gap:6px}.friends-count{margin-bottom:12px}}
 @media(prefers-reduced-motion:reduce){.theme-choice.is-saving .theme-tick:after{animation:none}}
+
+/* Reference opening screen. All overrides are limited to an empty conversation. */
+:root{--start-wordmark:#daddE2}
+:root[data-theme=dark]{--start-wordmark:#424750}
+.is-empty #intro{
+ position:absolute;left:14px;right:14px;
+ top:calc(var(--app-height,100dvh) * .464 - var(--header-height));
+ transform:translateY(-50%);margin:0;padding:0;pointer-events:none;
+}
+.is-empty #intro h1{
+ margin:0;font-size:clamp(48px,19.8vw,118px);line-height:1.05;
+ font-weight:750;letter-spacing:-.065em;color:var(--start-wordmark);
+ text-shadow:none;white-space:nowrap;
+}
+.is-empty #intro .lead,.is-empty #intro .intro-note,
+:root:not([data-mode=agent]) .is-empty .quick-actions{display:none}
+.app-shell:not(.has-messages) .mode-segment{
+ width:min(54vw,240px);background:#f4f5f8;border-color:#eff0f4;
+ box-shadow:inset 0 1px 3px #202c4c02;
+}
+.app-shell:not(.has-messages) .mode-segment button:not(.selected){color:#9a9ca5}
+.is-empty .composer-main{gap:10px;min-height:48px;align-items:center}
+.is-empty .input-capsule{min-height:48px;padding:0 4px 0 0;border-radius:28px}
+.is-empty .composer-main textarea{padding-top:10px;padding-bottom:10px;height:44px;min-height:44px}
+.is-empty .composer-main .input-capsule .voice-trigger{width:44px;min-width:44px;height:44px}
+.is-empty .attach-trigger,.is-empty .send-button{
+ height:46px;width:46px;min-height:46px;min-width:46px;margin-bottom:0;
+}
+.is-empty .send-button[data-empty=true]:disabled{background:#e2ecfc;color:#9bbff4}
+.is-empty .bottom-space{height:calc(16px + var(--safe-bottom))}
+:root[data-theme=dark] .app-shell:not(.has-messages) .mode-segment{background:var(--ui-surface);border-color:var(--ui-border);box-shadow:none}
+:root[data-theme=dark] .app-shell:not(.has-messages) .mode-segment button:not(.selected){color:var(--ui-muted)}
+:root[data-theme=dark] .is-empty .send-button[data-empty=true]:disabled{background:#273650;color:#9ab3df}
+@media(min-width:800px){.is-empty #intro h1{font-size:112px;letter-spacing:-.06em}.is-empty .composer-main{gap:14px}.is-empty .input-capsule{min-height:56px}.is-empty .attach-trigger,.is-empty .send-button{height:52px;width:52px;min-height:52px;min-width:52px}}
+@media(max-height:450px){.is-empty #intro h1{font-size:clamp(44px,10vw,70px)}}
+.keyboard-open .is-empty #intro{display:none}
