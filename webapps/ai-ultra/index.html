@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ru" data-build="ai-ultra-app-20261027-v9">
+<html lang="ru" data-build="ai-ultra-light-20261027-v11">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#070809">
+  <meta name="theme-color" content="#f8f9fc">
   <meta name="referrer" content="no-referrer">
   <meta name="description" content="AI Ultra — ваши идеи, творчество и задачи в одном приложении.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://*.trycloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
@@ -14,74 +14,853 @@
   <link rel="icon" type="image/svg+xml" href="app-icon.svg">
   <link rel="apple-touch-icon" href="app-icon-192.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="app.css?v=20261027-9">
-  <link rel="stylesheet" href="app-upgrade.css?v=20261027-9">
+  <link rel="stylesheet" href="app.css?v=20261027-11">
+  <link rel="stylesheet" href="app-upgrade.css?v=20261027-11">
   <script src="https://telegram.org/js/telegram-web-app.js?64" defer></script>
-  <script src="client-config.js?v=20261027-9" defer></script>
-  <script src="app.js?v=20261027-9" defer></script>
-  <script src="app-upgrade.js?v=20261027-9" defer></script>
+  <script src="client-config.js?v=20261027-11" defer></script>
+  <script src="app.js?v=20261027-11" defer></script>
+  <script src="app-upgrade.js?v=20261027-11" defer></script>
+  <script src="app-light.js?v=20261027-11" defer></script>
 </head>
 <body>
+<!-- Lucide icon license
+ISC License
+
+Copyright (c) 2026 Lucide Icons and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+---
+
+The following Lucide icons are derived from the Feather project:
+
+airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
+
+The MIT License (MIT) (for the icons listed above)
+
+Copyright (c) 2013-present Cole Bemis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
     <defs>
-      <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3 2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1L12 3Z"/><path d="m20 2 .6 2.4L23 5l-2.4.6L20 8l-.6-2.4L17 5l2.4-.6L20 2Z"/></symbol>
-      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 11.2a8.4 8.4 0 0 1-8.6 8.2 9.6 9.6 0 0 1-3.6-.7L3.5 20l1.2-4.5a7.8 7.8 0 0 1-1.2-4.3 8.4 8.4 0 0 1 8.4-8.3 8.5 8.5 0 0 1 8.6 8.3Z"/><path d="M8 10h8M8 13.5h5"/></symbol>
-      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="8.3" cy="8.2" r="1.4"/><path d="m4 17 5-5 4 3 3-4 4 5"/></symbol>
-      <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="4"/><path d="m16 9 5-3v12l-5-3"/></symbol>
-      <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></symbol>
-      <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-5 6 5 6m8-12 5 6-5 6M14 4l-4 16"/></symbol>
-      <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M4.5 20v-1.5a7.5 7.5 0 0 1 15 0V20"/></symbol>
-      <symbol id="i-history" viewBox="0 0 24 24"><path d="M4 8a8.5 8.5 0 1 1-1 5M3 3v5h5M12 7v5l3 2"/></symbol>
-      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-      <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5m-5 5 5-5 5 5"/></symbol>
-      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m8 5 7 7-7 7"/></symbol>
-      <symbol id="i-down" viewBox="0 0 24 24"><path d="m7 9 5 5 5-5"/></symbol>
-      <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-      <symbol id="i-fullscreen" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="3"/><path d="M15 8V6a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h2"/></symbol>
-      <symbol id="i-audio" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-4 0h8"/></symbol>
-      <symbol id="i-file" viewBox="0 0 24 24"><path d="M13 3H7a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V10l-7-7Zm0 0v5a2 2 0 0 0 2 2h5M8 14h8m-8 3h5"/></symbol>
-      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-      <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m1-15a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/></symbol>
-      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
-      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
-      <symbol id="i-link" viewBox="0 0 24 24"><path d="m9 15 6-6m-5-3 2-2a5 5 0 0 1 7 7l-3 3M8 10l-3 3a5 5 0 0 0 7 7l2-2"/></symbol>
-      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h11"/></symbol>
-      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3.5 10 8.5-7 8.5 7v9a2 2 0 0 1-2 2H15v-7H9v7H5.5a2 2 0 0 1-2-2Z"/></symbol>
-      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4.2" ry="9"/><path d="M3 12h18M5 6.5c4 2.2 10 2.2 14 0M5 17.5c4-2.2 10-2.2 14 0"/></symbol>
-      <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 3v18M16 7v10M20 10v4"/></symbol>
-      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 5 5"/></symbol>
-      <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="m7 9 3 3-3 3m6 0h4"/></symbol>
-      <symbol id="i-library" viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="2"/><rect x="9" y="3" width="4" height="18" rx="2"/><path d="m16 3 3-1 4 18-4 1Z"/></symbol>
-      <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="m10 8 6 4-6 4Z"/></symbol>
-      <symbol id="i-compose" viewBox="0 0 24 24"><path d="M12 4H6a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-6M15 3l6 6M10 15l-1 4 4-1L22 9l-5-5Z"/></symbol>
-      <symbol id="i-pin" viewBox="0 0 24 24"><path d="m9 3 6 0-1 6 4 4v2H6v-2l4-4-1-6Zm3 12v7"/></symbol>
-      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
-      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-      <symbol id="i-back" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol>
-      <symbol id="i-crown" viewBox="0 0 24 24"><path d="m3 6 4 4 5-7 5 7 4-4-2 13H5L3 6ZM6 22h12"/></symbol>
-      <symbol id="i-install" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M14 3v10m-4-4 4 4 4-4"/></symbol>
-      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
-    </defs>
+      <symbol id="i-sparkles" viewBox="0 0 24 24"><svg
+  class="lucide lucide-sparkles"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
+  <path d="M20 2v4" />
+  <path d="M22 4h-4" />
+  <circle cx="4" cy="20" r="2" /></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><svg
+  class="lucide lucide-message-circle"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><svg
+  class="lucide lucide-image"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+  <circle cx="9" cy="9" r="2" />
+  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></symbol>
+      <symbol id="i-video" viewBox="0 0 24 24"><svg
+  class="lucide lucide-video"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
+  <rect x="2" y="6" width="14" height="12" rx="2" /></symbol>
+      <symbol id="i-music" viewBox="0 0 24 24"><svg
+  class="lucide lucide-music"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M21 16V3a1 1 0 0 0-1.28-.96l-10 2.917a1 1 0 0 0-.72.96V19" />
+  <circle cx="18" cy="16" r="3" />
+  <circle cx="6" cy="19" r="3" /></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><svg
+  class="lucide lucide-code-xml"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m18 16 4-4-4-4" />
+  <path d="m6 8-4 4 4 4" />
+  <path d="m14.5 4-5 16" /></symbol>
+      <symbol id="i-person" viewBox="0 0 24 24"><svg
+  class="lucide lucide-user-round"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="8" r="5" />
+  <path d="M20 21a8 8 0 0 0-16 0" /></symbol>
+      <symbol id="i-history" viewBox="0 0 24 24"><svg
+  class="lucide lucide-history"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+  <path d="M3 3v5h5" />
+  <path d="M12 7v5l4 2" /></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><svg
+  class="lucide lucide-plus"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 12h14" />
+  <path d="M12 5v14" /></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><svg
+  class="lucide lucide-arrow-up"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m5 12 7-7 7 7" />
+  <path d="M12 19V5" /></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><svg
+  class="lucide lucide-chevron-right"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m9 18 6-6-6-6" /></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><svg
+  class="lucide lucide-chevron-down"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m6 9 6 6 6-6" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><svg
+  class="lucide lucide-x"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M18 6 6 18" />
+  <path d="m6 6 12 12" /></symbol>
+      <symbol id="i-fullscreen" viewBox="0 0 24 24"><svg
+  class="lucide lucide-maximize"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+  <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+  <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+  <path d="M16 21h3a2 2 0 0 0 2-2v-3" /></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><svg
+  class="lucide lucide-copy"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></symbol>
+      <symbol id="i-audio" viewBox="0 0 24 24"><svg
+  class="lucide lucide-mic"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 19v3" />
+  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+  <rect x="9" y="2" width="6" height="13" rx="3" /></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><svg
+  class="lucide lucide-file"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" /></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><svg
+  class="lucide lucide-clock-3"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="10" />
+  <path d="M12 6v6h4" /></symbol>
+      <symbol id="i-people" viewBox="0 0 24 24"><svg
+  class="lucide lucide-users-round"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M18 21a8 8 0 0 0-16 0" />
+  <circle cx="10" cy="8" r="5" />
+  <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><svg
+  class="lucide lucide-download"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 15V3" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+  <path d="m7 10 5 5 5-5" /></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><svg
+  class="lucide lucide-upload"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 3v12" />
+  <path d="m17 8-5-5-5 5" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><svg
+  class="lucide lucide-link"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><svg
+  class="lucide lucide-menu"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M4 5h16" />
+  <path d="M4 12h16" />
+  <path d="M4 19h16" /></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><svg
+  class="lucide lucide-house"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+  <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><svg
+  class="lucide lucide-globe"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="10" />
+  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+  <path d="M2 12h20" /></symbol>
+      <symbol id="i-wave" viewBox="0 0 24 24"><svg
+  class="lucide lucide-audio-lines"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M2 10v3" />
+  <path d="M6 6v11" />
+  <path d="M10 3v18" />
+  <path d="M14 8v7" />
+  <path d="M18 5v13" />
+  <path d="M22 10v3" /></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><svg
+  class="lucide lucide-search"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" /></symbol>
+      <symbol id="i-terminal" viewBox="0 0 24 24"><svg
+  class="lucide lucide-square-terminal"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m7 11 2-2-2-2" />
+  <path d="M11 13h4" />
+  <rect width="18" height="18" x="3" y="3" rx="2" ry="2" /></symbol>
+      <symbol id="i-library" viewBox="0 0 24 24"><svg
+  class="lucide lucide-layout-grid"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="7" height="7" x="3" y="3" rx="1" />
+  <rect width="7" height="7" x="14" y="3" rx="1" />
+  <rect width="7" height="7" x="14" y="14" rx="1" />
+  <rect width="7" height="7" x="3" y="14" rx="1" /></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><svg
+  class="lucide lucide-square-play"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="3" y="3" width="18" height="18" rx="2" />
+  <path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z" /></symbol>
+      <symbol id="i-compose" viewBox="0 0 24 24"><svg
+  class="lucide lucide-square-pen"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><svg
+  class="lucide lucide-pin"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 17v5" />
+  <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" /></symbol>
+      <symbol id="i-more" viewBox="0 0 24 24"><svg
+  class="lucide lucide-ellipsis"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="1" />
+  <circle cx="19" cy="12" r="1" />
+  <circle cx="5" cy="12" r="1" /></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><svg
+  class="lucide lucide-check"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" /></symbol>
+      <symbol id="i-back" viewBox="0 0 24 24"><svg
+  class="lucide lucide-chevron-left"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m15 18-6-6 6-6" /></symbol>
+      <symbol id="i-crown" viewBox="0 0 24 24"><svg
+  class="lucide lucide-crown"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+  <path d="M5 21h14" /></symbol>
+      <symbol id="i-install" viewBox="0 0 24 24"><svg
+  class="lucide lucide-download"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 15V3" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+  <path d="m7 10 5 5 5-5" /></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><svg
+  class="lucide lucide-info"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="10" />
+  <path d="M12 16v-4" />
+  <path d="M12 8h.01" /></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><svg
+  class="lucide lucide-settings"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+  <circle cx="12" cy="12" r="3" /></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><svg
+  class="lucide lucide-bell"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+  <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><svg
+  class="lucide lucide-trending-up"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M16 7h6v6" />
+  <path d="m22 7-8.5 8.5-5-5L2 17" /></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><svg
+  class="lucide lucide-box"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+  <path d="m3.3 7 8.7 5 8.7-5" />
+  <path d="M12 22V12" /></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24"><svg
+  class="lucide lucide-palette"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z" />
+  <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+  <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+  <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+  <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /></symbol>
+<symbol id="i-chip" viewBox="0 0 24 24"><svg
+  class="lucide lucide-cpu"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M12 20v2" />
+  <path d="M12 2v2" />
+  <path d="M17 20v2" />
+  <path d="M17 2v2" />
+  <path d="M2 12h2" />
+  <path d="M2 17h2" />
+  <path d="M2 7h2" />
+  <path d="M20 12h2" />
+  <path d="M20 17h2" />
+  <path d="M20 7h2" />
+  <path d="M7 20v2" />
+  <path d="M7 2v2" />
+  <rect x="4" y="4" width="16" height="16" rx="2" />
+  <rect x="8" y="8" width="8" height="8" rx="1" /></symbol>
+<symbol id="i-report" viewBox="0 0 24 24"><svg
+  class="lucide lucide-message-square-warning"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+  <path d="M12 15h.01" />
+  <path d="M12 7v4" /></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><svg
+  class="lucide lucide-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" /></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><svg
+  class="lucide lucide-smartphone"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+  <path d="M12 18h.01" /></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><svg
+  class="lucide lucide-list"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M3 5h.01" />
+  <path d="M3 12h.01" />
+  <path d="M3 19h.01" />
+  <path d="M8 5h13" />
+  <path d="M8 12h13" />
+  <path d="M8 19h13" /></symbol>
+<symbol id="i-thumb-up" viewBox="0 0 24 24"><svg
+  class="lucide lucide-thumbs-up"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+  <path d="M7 10v12" /></symbol>
+<symbol id="i-thumb-down" viewBox="0 0 24 24"><svg
+  class="lucide lucide-thumbs-down"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
+  <path d="M17 14V2" /></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><svg
+  class="lucide lucide-rotate-cw"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+  <path d="M21 3v5h-5" /></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><svg
+  class="lucide lucide-share-2"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="18" cy="5" r="3" />
+  <circle cx="6" cy="12" r="3" />
+  <circle cx="18" cy="19" r="3" />
+  <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+  <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></symbol>
+</defs>
   </svg>
   <main class="app-shell">
     <div class="ambient" aria-hidden="true"><div class="orb orb-top"></div><div class="orb orb-right"></div><div class="orb orb-bottom"></div></div>
     <header class="app-header">
       <button class="menu-trigger glass-circle" id="mode-trigger" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
       <div class="mode-segment" aria-label="Режим работы"><button data-mode="chat" class="selected" aria-pressed="true">Чат</button><button data-mode="agent" aria-pressed="false">Агент</button></div>
-      <div class="header-tools"><span class="status-pill" id="connection-status" data-connected="false"><i class="status-dot"></i><span id="connection-text">AI-помощник</span></span><button class="header-avatar" id="header-avatar" aria-label="Открыть профиль"><svg><use href="#i-person"/></svg></button></div>
+      <button class="header-new" id="header-new" aria-label="Новый диалог"><svg><use href="#i-compose"/></svg></button><div class="header-tools" hidden><span class="status-pill" id="connection-status" data-connected="false"><i class="status-dot"></i><span id="connection-text">AI-помощник</span></span><button class="header-avatar" id="header-avatar" aria-label="Открыть профиль"><svg><use href="#i-person"/></svg></button></div>
     </header>
     <div class="drawer-layer" id="drawer-layer" hidden>
       <button class="drawer-backdrop" id="drawer-backdrop" aria-label="Закрыть меню" tabindex="-1"></button>
       <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Меню AI Ultra" tabindex="-1">
-        <div class="sidebar-heading"><h2>AI Ultra</h2><button class="sidebar-search glass-circle" id="sidebar-search-toggle" aria-label="Поиск по запросам" aria-expanded="false" aria-controls="sidebar-search"><svg><use href="#i-search"/></svg></button></div>
+        <div class="sidebar-heading"><button class="sidebar-brand" id="sidebar-brand">AI Ultra<svg><use href="#i-chevron"/></svg></button><button class="sidebar-search glass-circle" id="sidebar-search-toggle" aria-label="Поиск по запросам" aria-expanded="false" aria-controls="sidebar-search"><svg><use href="#i-search"/></svg></button><button class="sidebar-close" id="sidebar-close" aria-label="Закрыть меню"><svg><use href="#i-close"/></svg></button></div>
         <div class="sidebar-search-field" id="sidebar-search" hidden><svg><use href="#i-search"/></svg><input id="sidebar-query" type="search" placeholder="Найти запрос" aria-label="Найти запрос" autocomplete="off"></div>
         <div class="sidebar-scroll">
           <nav class="sidebar-library" aria-label="Библиотека"><button data-library="all"><svg><use href="#i-library"/></svg><span>Библиотека</span></button><button data-library="video"><svg><use href="#i-play"/></svg><span>Видео</span></button><button data-library="image"><svg><use href="#i-image"/></svg><span>Изображения</span></button><button data-library="music"><svg><use href="#i-music"/></svg><span>Музыка</span></button></nav>
-          <section class="sidebar-section"><h3>Закреплённое</h3><div id="sidebar-pinned"></div></section>
-          <section class="sidebar-section"><h3>Недавнее</h3><div id="sidebar-recent"></div></section>
+          <section class="sidebar-section"><h3><button class="section-toggle" id="fold-pinned" aria-expanded="true" aria-controls="sidebar-pinned"><svg><use href="#i-pin"/></svg>Закреплённые чаты<svg><use href="#i-down"/></svg></button></h3><div id="sidebar-pinned"></div></section>
+          <section class="sidebar-section"><h3><button class="section-toggle" id="fold-recent" aria-expanded="true" aria-controls="sidebar-recent"><svg><use href="#i-clock"/></svg>Последние чаты<svg><use href="#i-down"/></svg></button></h3><div id="sidebar-recent"></div></section>
         </div>
-        <button class="sidebar-membership" id="sidebar-plans"><svg><use href="#i-crown"/></svg><span>AI Ultra <b id="sidebar-plan-label">FREE</b></span><svg><use href="#i-chevron"/></svg></button><button class="sidebar-install" id="install-app"><svg><use href="#i-install"/></svg>Установить приложение</button><footer class="sidebar-footer"><button class="sidebar-chat" id="sidebar-chat"><svg><use href="#i-compose"/></svg><span id="sidebar-chat-label">Новый чат</span></button><button class="sidebar-profile glass-circle" id="sidebar-profile" aria-label="Открыть профиль"><span id="sidebar-avatar">AI</span></button></footer>
+        <button class="sidebar-settings" id="sidebar-settings"><svg><use href="#i-settings"/></svg>Настройки</button><button class="sidebar-membership" id="sidebar-plans"><svg><use href="#i-crown"/></svg><span>AI Ultra <b id="sidebar-plan-label">FREE</b></span><svg><use href="#i-chevron"/></svg></button><button class="sidebar-install" id="install-app"><svg><use href="#i-install"/></svg>Установить приложение</button><footer class="sidebar-footer"><button class="sidebar-chat" id="sidebar-chat"><svg><use href="#i-compose"/></svg><span id="sidebar-chat-label">Новый чат</span></button><button class="sidebar-profile glass-circle" id="sidebar-profile" aria-label="Открыть профиль"><span id="sidebar-avatar">AI</span></button></footer>
       </aside>
     </div>
     <div class="mode-menu" id="mode-menu" hidden>
@@ -114,32 +893,54 @@
             <button data-upload="video"><svg><use href="#i-video"/></svg><span>Видео<small>До 5 минут · 1080p · 20 МБ</small></span></button>
             <button data-upload="audio"><svg><use href="#i-music"/></svg><span>Аудиофайл<small>До 10 минут · 20 МБ</small></span></button>
             <button id="record-audio"><svg><use href="#i-audio"/></svg><span>Записать голос<small>Расскажите о вашей задаче</small></span></button>
+            <div class="attach-divider"></div>
+            <button data-mode="image"><svg><use href="#i-image"/></svg><span>Создать изображение</span></button>
+            <button data-mode="video"><svg><use href="#i-video"/></svg><span>Создать видео</span></button>
+            <button data-mode="music"><svg><use href="#i-music"/></svg><span>Создать музыку</span></button>
           </div>
           <div class="composer-wrap">
             <div class="voice-panel" id="voice-panel" hidden><button id="voice-cancel" class="icon-button" aria-label="Отменить диктовку"><svg><use href="#i-close"/></svg></button><span id="voice-time">0 с</span><canvas id="voice-canvas" aria-label="Уровень вашего голоса"></canvas><button id="voice-done" class="voice-done" aria-label="Завершить диктовку"><svg><use href="#i-check"/></svg></button></div>
             <div class="dictation-status" id="dictation-status" hidden><span class="mini-spinner"></span><span class="shimmer-text">Преобразую голос в текст…</span><button id="dictation-cancel" aria-label="Отменить распознавание">Отмена</button></div>
             <div class="attachments-strip" id="attachments-strip" hidden></div>
-            <div class="composer-main"><button class="attach-trigger glass-circle" id="attach-trigger" aria-label="Добавить вложение"><svg><use href="#i-plus"/></svg></button><textarea id="prompt" rows="1" maxlength="20000" placeholder="Спросите что угодно..." aria-label="Ваше сообщение"></textarea><button class="voice-trigger" id="voice-trigger" aria-label="Записать голос"><svg><use href="#i-audio"/></svg></button><button class="send-button glass-circle press" id="send" aria-label="Начать запись голоса" data-empty="true" disabled><svg><use href="#i-wave"/></svg></button></div>
+            <div class="composer-main"><button class="attach-trigger glass-circle" id="attach-trigger" aria-label="Добавить вложение"><svg><use href="#i-plus"/></svg></button><div class="input-capsule"><textarea id="prompt" rows="1" maxlength="20000" placeholder="Сообщение…" aria-label="Ваше сообщение"></textarea><button class="voice-trigger" id="voice-trigger" aria-label="Записать голос"><svg><use href="#i-audio"/></svg></button></div><button class="send-button glass-circle press" id="send" aria-label="Начать запись голоса" data-empty="true" disabled><svg><use href="#i-wave"/></svg></button></div>
           </div>
           <div class="quick-actions">
-            <button class="action-card" data-suggest="code"><span class="tile-icon tile-code"><svg><use href="#i-code"/></svg></span><span>Создание<br> приложений</span></button>
+            <button class="action-card" data-suggest="code"><span class="tile-icon tile-code"><svg><use href="#i-code"/></svg></span><span>Создать приложение</span></button>
             <button class="action-card" data-suggest="music"><span class="tile-icon tile-music"><svg><use href="#i-music"/></svg></span><span>Музыка</span></button>
-            <button class="action-card" data-suggest="website"><span class="tile-icon tile-site"><svg><use href="#i-globe"/></svg></span><span>Сайт</span></button>
+            <button class="action-card" data-suggest="website"><span class="tile-icon tile-site"><svg><use href="#i-globe"/></svg></span><span>Создать сайт</span></button>
           </div>
         </div>
         <div class="bottom-space"></div>
       </section>
       <section class="view" id="profile-view" aria-label="Профиль" hidden><div class="profile-scroll"><div class="profile-content">
-        <p class="page-caption">Всё ваше — в одном месте</p>
-        <div class="profile-heading"><div class="profile-avatar" id="profile-avatar"><svg><use href="#i-person"/></svg></div><div><h1 id="profile-name">Ваш профиль</h1><p id="profile-username">Аккаунт AI Ultra</p><small id="profile-id">Вход через Telegram</small></div><button class="icon-button profile-edit" id="profile-referral" aria-label="Партнёрская программа"><svg><use href="#i-link"/></svg></button></div>
-        <button class="profile-plan-card" id="show-plans"><span class="plan-emblem"><svg><use href="#i-crown"/></svg></span><span><small>Ваше пространство возможностей</small><strong>AI Ultra <span id="profile-plan">FREE</span></strong></span><svg><use href="#i-chevron"/></svg></button>
-        <div class="balance-card"><div class="balance-label"><span>Ваш баланс</span><svg><use href="#i-sparkles"/></svg></div><div class="balance-value"><span id="balance-value"><i class="skeleton"></i></span><small>токенов</small></div><div class="balance-progress"><i id="balance-progress" style="width:0"></i></div><div class="balance-footer"><svg><use href="#i-clock"/></svg><span id="balance-reset">Обновляется каждые 5 часов</span></div><p class="balance-details" id="balance-details">15.000 токенов на каждые 5 часов</p><button class="buy-tokens" id="buy-tokens"><svg><use href="#i-plus"/></svg>Купить токены</button></div>
-        <div class="profile-stats"><div class="stat-card"><span class="stat-icon"><svg><use href="#i-sparkles"/></svg></span><span><strong id="agent-value">— / 3</strong><small id="agent-window-label">Запросы агента · 5 часов</small></span></div><button class="stat-card" id="referral-card"><span class="stat-icon"><svg><use href="#i-people"/></svg></span><span><strong id="referral-value">—</strong><small>Приглашённые друзья</small></span></button></div>
-        <div class="section-heading"><h2>Мои материалы</h2><span id="creation-total">Ваша коллекция</span></div>
-        <div class="collection-tabs" aria-label="Материалы"><button class="active" data-collection="image">Картинки <span>0</span></button><button data-collection="video">Видео <span>0</span></button><button data-collection="music">Музыка <span>0</span></button><button data-collection="references">Референсы <span>0</span></button></div>
-        <div class="gallery" id="gallery"><div class="collection-empty"><svg><use href="#i-image"/></svg><p>Здесь будут ваши созданные материалы.</p></div></div>
-        <button class="logout-app" id="logout-app">Выйти из приложения</button><p class="profile-note">AI Ultra · Пространство для ваших идей</p>
+        <div class="page-top"><button class="icon-button" id="profile-back" aria-label="Вернуться в чат"><svg><use href="#i-back"/></svg></button><h1 class="profile-brand">AI Ultra</h1><button class="icon-button" id="profile-notifications" aria-label="Уведомления"><svg><use href="#i-bell"/></svg></button></div>
+        <button class="profile-identity" id="profile-identity"><span class="profile-avatar" id="profile-avatar"><svg><use href="#i-person"/></svg></span><span><strong id="profile-name">Ваш профиль</strong><span id="profile-username">Личный профиль</span><small id="profile-id"></small></span><svg class="identity-chevron"><use href="#i-chevron"/></svg></button>
+        <div class="settings-group">
+          <button class="settings-row" id="show-plans"><svg><use href="#i-crown"/></svg><span>Подписки</span><small id="profile-plan">FREE</small><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="open-usage"><svg><use href="#i-trend"/></svg><span>Использование</span><small id="usage-percent">0%</small><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+        </div>
+        <div class="settings-group">
+          <button class="settings-row" id="profile-library"><svg><use href="#i-box"/></svg><span>Элементы</span><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="profile-referral"><svg><use href="#i-people"/></svg><span>Друзья</span><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="profile-appearance"><svg><use href="#i-palette"/></svg><span>Внешний вид</span><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="profile-model"><svg><use href="#i-chip"/></svg><span>Режим помощника</span><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="profile-support"><svg><use href="#i-report"/></svg><span>Сообщить об ошибке</span><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+        </div>
+        <div class="settings-group">
+          <button class="settings-row" id="profile-email"><svg><use href="#i-mail"/></svg><span>Email</span><small id="email-summary"></small><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+          <button class="settings-row" id="profile-language"><svg><use href="#i-phone"/></svg><span>Язык бота</span><small id="language-summary">Русский</small><svg class="row-chevron"><use href="#i-chevron"/></svg></button>
+        </div>
+        <button class="logout-app" id="logout-app">Выйти из приложения</button>
+        <p class="profile-note">AI Ultra · Всё начинается с идеи</p>
+        <div hidden aria-hidden="true"><span id="balance-value"></span><i id="balance-progress"></i><span id="balance-reset"></span><span id="balance-details"></span><span id="agent-value"></span><span id="agent-window-label"></span><span id="referral-value"></span><span id="creation-total"></span><button id="referral-card"></button><button id="buy-tokens"></button></div>
       </div></div></section>
+      <section class="view library-view" id="library-view" aria-label="Библиотека" hidden><div class="library-scroll">
+        <div class="page-top library-top"><button class="icon-button" id="library-back" aria-label="Вернуться в чат"><svg><use href="#i-back"/></svg></button><h1>Библиотека</h1><button class="icon-button" id="library-search-toggle" aria-label="Поиск материалов"><svg><use href="#i-search"/></svg></button><button class="icon-button" id="library-more" aria-label="Параметры библиотеки"><svg><use href="#i-more"/></svg></button></div>
+        <div id="library-search-box" class="library-search-box" hidden><svg><use href="#i-search"/></svg><input id="library-query" type="search" placeholder="Найти материал" aria-label="Найти материал"></div>
+        <div class="collection-tabs" aria-label="Виды материалов"><button data-collection="video"><svg><use href="#i-play"/></svg>Видео<span>0</span></button><button data-collection="music"><svg><use href="#i-music"/></svg>Музыка<span>0</span></button><button data-collection="image"><svg><use href="#i-image"/></svg>Картины<span>0</span></button><button data-collection="file"><svg><use href="#i-file"/></svg>Файлы<span>0</span></button></div>
+        <div class="library-toolbar"><h2 id="library-title">Все материалы</h2><button id="library-sort" class="sort-button" aria-label="Сортировка материалов">Недавние<svg><use href="#i-down"/></svg></button><button class="icon-button" id="library-layout" aria-label="Показать списком" aria-pressed="false"><svg><use href="#i-list"/></svg></button></div>
+        <div class="gallery" id="gallery"></div>
+      </div></section>
       <section class="view history-view" id="history-view" aria-label="История" hidden><div class="history-symbol"><svg><use href="#i-history"/></svg></div><h1>Всё начинается с диалога</h1><p>Ваши сохранённые переписки — в боковом меню.</p><button class="primary-button history-open-menu" id="history-open-menu">Открыть диалоги</button></section>
       <section class="view plans-view" id="plans-view" aria-label="Подписки" hidden><div class="plans-scroll"><div class="plans-content"><button class="plans-back" id="plans-back"><svg><use href="#i-back"/></svg>Профиль</button><div class="plans-hero"><span class="plans-eyebrow">AI ULTRA MEMBERSHIP</span><h1>Больше пространства<br> для ваших идей.</h1><p>Выберите свой темп. Все инструменты — в одном приложении.</p><span class="plan-current" id="plan-current">Сейчас у вас FREE</span></div><div class="plan-cards" id="plan-cards"></div><div class="plan-conditions"><svg><use href="#i-info"/></svg><p>Предварительные тарифы на месяц. Покупка пока недоступна — деньги не списываются. Ежедневный лимит подписки обновляется каждые 24 часа без накопления остатка. Базовый лимит и несгораемые токены учитываются отдельно.</p></div></div></div></section>
     </div>
