@@ -1,6 +1,6 @@
 /* Public shell only: never cache identities, conversations, files or API calls. */
 'use strict';
-const CACHE='ai-ultra-shell-20261027-v12';
+const CACHE='ai-ultra-shell-20261027-v13';
 const SHELL=['./','./index.html','./app.css','./app-upgrade.css','./app.js','./app-upgrade.js','./app-light.js','./client-config.js','./manifest.webmanifest','./app-icon.svg','./app-icon-192.png','./app-icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL.map(url=>new Request(url,{cache:'reload',credentials:'omit'})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('ai-ultra-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});

@@ -88,3 +88,7 @@ html,body{background:var(--ui-bg);font-family:-apple-system,BlinkMacSystemFont,"
 @media(prefers-reduced-motion:reduce){.detailed-activity .activity-steps,.detailed-activity .activity-step>svg{animation:none!important}}
 
 .detailed-activity .activity-step,.detailed-activity .activity-step.done,.detailed-activity .activity-elapsed{color:#667286}.detailed-activity .activity-step.running{color:#344e7c}.detailed-activity .activity-step.failed,.detailed-activity .activity-step.cancelled{color:#855d68}
+
+/* Compact vertical rhythm for task stages; keep text size and header tap area. */
+.detailed-activity{margin-bottom:6px}.detailed-activity summary{min-height:44px;padding:3px 0;line-height:1.4}.detailed-activity .activity-steps{margin:0 0 2px 11px!important;padding:0 0 0 18px!important}.detailed-activity .activity-step{padding:4px 0!important;min-height:30px;line-height:1.4;gap:9px}.detailed-activity .activity-step>svg{margin-top:0}.detailed-activity .activity-step>span{margin:0;padding:0}
+@media(min-width:800px){.detailed-activity .activity-steps{padding-left:20px!important}.detailed-activity .activity-step{padding:4px 0!important;min-height:31px;gap:10px}}
