@@ -16,6 +16,19 @@
  initTelegram=function(){try{tg?.ready();tg?.expand();for(const method of ['setHeaderColor','setBackgroundColor','setBottomBarColor'])tg?.[method]?.('#f8f9fc');for(const event of ['viewportChanged','safeAreaChanged','contentSafeAreaChanged','fullscreenChanged'])tg?.onEvent?.(event,viewport);if(tg?.isVersionAtLeast?.('8.0')&&!tg.isFullscreen)setTimeout(()=>{try{tg.requestFullscreen()}catch{}},250)}catch{}viewport();window.visualViewport?.addEventListener('resize',viewport);window.addEventListener('resize',viewport)};
  const baseMode=renderMode;
  renderMode=function(mode){baseMode(mode);root.dataset.mode=mode};
+ const activityExpansion=new Map();
+ renderActivity=function(message){
+  const activity=message.activity;if(!activity?.steps?.length)return null;
+  const live=['working','streaming'].includes(message.status),panel=el('details','activity-panel detailed-activity'+(live?' is-live':'')),summary=el('summary');
+  const key=[state.authEpoch,state.profile?.id,state.dialogId,message.id].join(':');panel.open=activityExpansion.has(key)?activityExpansion.get(key):live;panel.dataset.message=message.id;
+  summary.onclick=()=>{activityExpansion.set(key,!panel.open);if(activityExpansion.size>200)activityExpansion.delete(activityExpansion.keys().next().value)};
+  const symbols={prepare:'sparkles',submit:'up',attachment:'image',search:'search',file:'file',code:'code',work:'sparkles',music:'music',image:'image',video:'video',verify:'check',result:'download'};
+  const last=activity.steps.at(-1);summary.append(icon(live?(symbols[last.kind]||'sparkles'):message.status==='done'?'check':'info'));
+  summary.append(el('span','activity-label',live?(activity.current||last.label):message.status==='done'?'Готово':'Выполнение остановлено'));
+  if(activity.started_at){const elapsed=el('span','activity-elapsed');elapsed.dataset.activityStart=activity.started_at;if(activity.finished_at)elapsed.dataset.activityEnd=activity.finished_at;summary.append(elapsed)}
+  const chevron=icon('down');chevron.classList.add('activity-chevron');summary.append(chevron);summary.title='Показать или свернуть этапы выполнения';panel.append(summary);
+  const list=el('ol','activity-steps');for(const step of activity.steps){const row=el('li','activity-step '+step.state);row.dataset.step=step.id;row.append(icon(step.state==='done'?'check':symbols[step.kind]||'sparkles'),el('span','',step.label));if(step.state==='running')row.setAttribute('aria-current','step');list.append(row)}panel.append(list);return panel;
+ };
  const baseConnected=connected;
  connected=function(value){baseConnected(value);root.classList.toggle('app-loading',!value&&!$('login-panel').hidden?false:!value);if(value)root.classList.remove('app-loading')};
  const baseBanner=banner;
